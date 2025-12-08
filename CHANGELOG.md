@@ -6,6 +6,35 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [2.7.0] - 2025-12-08
+
+### Added
+
+#### Installer Enhancements
+- **GitHub workflow integration** (#136) - Installer now deploys workflow-trigger.js hook and configures settings.local.json with UserPromptSubmit hook for automatic issue creation
+- **Prerequisite detection** (#141) - Installer checks for git (required), gh and jq (optional) before installation with helpful installation links
+- **Git repository initialization** (#141) - Prompts to initialize git repo if .git directory not found in target
+- **Auto-install prompts module** (#142) - Installer automatically runs `npm install prompts` if module is missing
+
+#### Workflow Hooks
+- **UserPromptSubmit hook** (#134) - New workflow-trigger.js detects trigger prefixes (bug:, enhancement:, finding:, idea:, proposal:) and injects context reminder
+- **Visual indication** (#138) - Hook displays "⚡ Workflow trigger detected" message when firing
+
+#### Change History Tracking
+- **_chg.md validation script** (#132) - validate-chg-sync.js ensures all rule-set files have synchronized change history files
+- **82 _chg.md files created** (#129) - Complete coverage for all rule-set files
+- **_chg.md handling rules** (#133) - Added to CLAUDE.md for consistent change tracking
+
+### Fixed
+- **Installer .claude/commands directory** (#140) - generateSwitchRole() and generateAddRole() now create directory before writing files
+- **UserPromptSubmit hook error** (#135) - Fixed JSON output format for proper context injection
+- **Shell construct limitations** - Documented heredoc and command substitution workarounds in GitHub-Workflow.md
+
+### Changed
+- **CLAUDE.md** - Added _chg.md handling section and improved with standard header
+
+---
+
 ## [2.6.3] - 2025-12-07
 
 ### Added

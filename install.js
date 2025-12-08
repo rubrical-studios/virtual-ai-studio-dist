@@ -109,6 +109,45 @@ function divider() {
 }
 
 /**
+ * Check if a command is available in PATH
+ */
+function checkCommand(cmd) {
+  try {
+    const checkCmd = process.platform === 'win32' ? `where ${cmd}` : `which ${cmd}`;
+    execSync(checkCmd, { stdio: 'pipe' });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Check prerequisites and return missing tools
+ */
+function checkPrerequisites() {
+  const prerequisites = [
+    { cmd: 'git', name: 'Git', url: 'https://git-scm.com/downloads', required: true },
+    { cmd: 'gh', name: 'GitHub CLI', url: 'https://cli.github.com/', required: false },
+    { cmd: 'jq', name: 'jq', url: 'https://jqlang.github.io/jq/download/', required: false },
+  ];
+
+  const missing = [];
+  const optional = [];
+
+  for (const prereq of prerequisites) {
+    if (!checkCommand(prereq.cmd)) {
+      if (prereq.required) {
+        missing.push(prereq);
+      } else {
+        optional.push(prereq);
+      }
+    }
+  }
+
+  return { missing, optional };
+}
+
+/**
  * Extract zip file cross-platform
  */
 function extractZip(zipPath, destDir) {
@@ -488,6 +527,7 @@ User says: \`/switch-role\` or "switch to frontend" or "I need backend help now"
 `;
 
   const commandsDir = path.join(projectDir, '.claude', 'commands');
+  fs.mkdirSync(commandsDir, { recursive: true });
   fs.writeFileSync(path.join(commandsDir, 'switch-role.md'), content);
   return true;
 }
@@ -596,11 +636,26 @@ User says: \`/add-role\` or "add security specialist" or "I need to add DevOps"
 `;
 
   const commandsDir = path.join(projectDir, '.claude', 'commands');
+  fs.mkdirSync(commandsDir, { recursive: true });
   fs.writeFileSync(path.join(commandsDir, 'add-role.md'), content);
   return true;
 }
 
-function generateSettingsLocal(projectDir) {
+function deployWorkflowHook(projectDir, frameworkPath) {
+  const hooksDir = path.join(projectDir, '.claude', 'hooks');
+  fs.mkdirSync(hooksDir, { recursive: true });
+
+  const srcHook = path.join(frameworkPath, '.claude', 'hooks', 'workflow-trigger.js');
+  const destHook = path.join(hooksDir, 'workflow-trigger.js');
+
+  if (fs.existsSync(srcHook)) {
+    fs.copyFileSync(srcHook, destHook);
+    return true;
+  }
+  return false;
+}
+
+function generateSettingsLocal(projectDir, enableGitHubWorkflow) {
   const settingsPath = path.join(projectDir, '.claude', 'settings.local.json');
 
   // Skip if exists - preserve user permissions
@@ -626,6 +681,23 @@ function generateSettingsLocal(projectDir) {
       ask: [],
     },
   };
+
+  // Add hooks configuration if GitHub workflow is enabled
+  if (enableGitHubWorkflow) {
+    settings.hooks = {
+      UserPromptSubmit: [
+        {
+          hooks: [
+            {
+              type: "command",
+              command: "node .claude/hooks/workflow-trigger.js",
+              timeout: 5,
+            },
+          ],
+        },
+      ],
+    };
+  }
 
   fs.mkdirSync(path.join(projectDir, '.claude'), { recursive: true });
   fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
@@ -670,8 +742,27 @@ See \`Templates/Testing-Approach-Selection-Guide.md\` for guidance on:
 // ======================================
 
 async function main() {
-  // Dynamic import of prompts (ESM-compatible)
-  const prompts = require('prompts');
+  // Load prompts module, auto-install if missing
+  let prompts;
+  try {
+    prompts = require('prompts');
+  } catch (err) {
+    if (err.code === 'MODULE_NOT_FOUND') {
+      console.log(colors.yellow('Installing required dependency: prompts...'));
+      try {
+        execSync('npm install prompts', { stdio: 'inherit' });
+        prompts = require('prompts');
+        console.log(colors.green('✓ Dependency installed successfully'));
+        console.log();
+      } catch (installErr) {
+        console.log(colors.red('Failed to install prompts module.'));
+        console.log(colors.red('Please run: npm install prompts'));
+        process.exit(1);
+      }
+    } else {
+      throw err;
+    }
+  }
 
   // Handle Ctrl+C gracefully
   const onCancel = () => {
@@ -689,6 +780,29 @@ async function main() {
     logCyan('║      IDPF Framework Installer        ║');
     logCyan('╚══════════════════════════════════════╝');
     log();
+
+    // Check prerequisites
+    const { missing, optional } = checkPrerequisites();
+
+    if (missing.length > 0) {
+      logError('Missing required prerequisites:');
+      log();
+      for (const prereq of missing) {
+        log(`  ${colors.red('✗')} ${prereq.name}`);
+        log(`    Install: ${colors.cyan(prereq.url)}`);
+      }
+      log();
+      logError('Please install the required tools and run the installer again.');
+      process.exit(1);
+    }
+
+    if (optional.length > 0) {
+      logWarning('Optional tools not found (GitHub workflow features may be limited):');
+      for (const prereq of optional) {
+        log(`  ${colors.yellow('⚠')} ${prereq.name}: ${colors.cyan(prereq.url)}`);
+      }
+      log();
+    }
 
     // Determine framework path and project directory
     let frameworkPath = process.cwd();
@@ -792,6 +906,27 @@ async function main() {
     log(`  Target:    ${colors.cyan(projectDir)}`);
     divider();
     log();
+
+    // Check for git repository in target directory
+    const gitDir = path.join(projectDir, '.git');
+    if (!fs.existsSync(gitDir)) {
+      const { initGit } = await prompts({
+        type: 'confirm',
+        name: 'initGit',
+        message: 'No git repository found in target directory. Initialize one?',
+        initial: true,
+      }, { onCancel });
+
+      if (initGit) {
+        try {
+          execSync('git init', { cwd: projectDir, stdio: 'pipe' });
+          logSuccess('Initialized git repository');
+        } catch (err) {
+          logWarning('Failed to initialize git repository - continuing anyway');
+        }
+      }
+      log();
+    }
 
     // Check for existing installation
     const { lockedFramework, existingDomains, projectInstructions } = parseExistingInstallation(projectDir);
@@ -912,6 +1047,32 @@ async function main() {
     }
 
     // ======================================
+    //  GitHub Workflow Integration
+    // ======================================
+
+    let enableGitHubWorkflow = false;
+
+    const { wantGitHub } = await prompts({
+      type: 'confirm',
+      name: 'wantGitHub',
+      message: 'Enable GitHub workflow integration? (automatic issue creation, project board tracking)',
+      initial: true,
+    }, { onCancel });
+
+    if (wantGitHub) {
+      enableGitHubWorkflow = true;
+      log();
+      logSuccess('GitHub workflow integration enabled');
+      log(colors.dim('  Workflow triggers: bug:, enhancement:, finding:, idea:, proposal:'));
+      log(colors.dim('  Requires: gh CLI + gh-pmu extension (setup instructions at end)'));
+    } else {
+      log();
+      logWarning('GitHub workflow integration skipped');
+      log(colors.dim('  You can enable it later by running the installer again.'));
+    }
+    log();
+
+    // ======================================
     //  Generate Files
     // ======================================
 
@@ -1026,9 +1187,18 @@ async function main() {
       }
     }
 
+    // GitHub workflow hook (deploy before settings.local.json)
+    if (enableGitHubWorkflow) {
+      if (deployWorkflowHook(projectDir, frameworkPath)) {
+        logSuccess('  ✓ .claude/hooks/workflow-trigger.js');
+      } else {
+        logWarning('  ⚠ .claude/hooks/workflow-trigger.js (source not found)');
+      }
+    }
+
     // settings.local.json
-    if (generateSettingsLocal(projectDir)) {
-      logSuccess('  ✓ .claude/settings.local.json');
+    if (generateSettingsLocal(projectDir, enableGitHubWorkflow)) {
+      logSuccess('  ✓ .claude/settings.local.json' + (enableGitHubWorkflow ? ' (with hooks)' : ''));
     } else {
       logWarning('  ⊘ .claude/settings.local.json (preserved existing)');
     }
@@ -1055,13 +1225,41 @@ async function main() {
     if (deployedSkills.length > 0) {
       log(`  ${colors.dim('Skills Deployed:')}    ${colors.green(deployedSkills.join(', '))}`);
     }
+    log(`  ${colors.dim('GitHub Workflow:')}    ${enableGitHubWorkflow ? colors.green('Enabled') : colors.dim('Disabled')}`);
     log();
+
+    if (enableGitHubWorkflow) {
+      logCyan('  GitHub Workflow Setup:');
+      log();
+      log('    Prerequisites (one-time setup):');
+      log(`      1. Install GitHub CLI: ${colors.cyan('https://cli.github.com/')}`);
+      log(`      2. Authenticate: ${colors.cyan('gh auth login')}`);
+      log(`      3. Install gh-pmu extension: ${colors.cyan('gh extension install scooter-indie/gh-pmu')}`);
+      log();
+      log('    Project setup (in your target directory):');
+      log(`      4. Create GitHub repo if needed: ${colors.cyan('gh repo create')}`);
+      log(`      5. Create GitHub project board: ${colors.cyan('https://github.com/users/YOUR_USERNAME/projects')}`);
+      log(`      6. Initialize gh-pmu: ${colors.cyan('gh pmu init')}`);
+      log();
+      log('    Workflow triggers (prefix your messages):');
+      log(`      ${colors.cyan('bug:')} - Create bug issue`);
+      log(`      ${colors.cyan('enhancement:')} - Create enhancement issue`);
+      log(`      ${colors.cyan('finding:')} - Create finding (bug synonym)`);
+      log(`      ${colors.cyan('idea:')} - Create lightweight proposal`);
+      log(`      ${colors.cyan('proposal:')} - Create full proposal`);
+      log();
+    }
+
     logCyan('  Next steps:');
     log(`    1. Navigate to: ${colors.cyan(projectDir)}`);
     log('    2. Review the generated CLAUDE.md');
     log('    3. Add project-specific instructions if needed');
-    log('    4. Start Claude Code CLI in that directory');
-    log('    5. Configure GitHub integration on first startup');
+    if (enableGitHubWorkflow) {
+      log('    4. Complete GitHub workflow setup (see above)');
+      log('    5. Start Claude Code CLI in that directory');
+    } else {
+      log('    4. Start Claude Code CLI in that directory');
+    }
     log();
 
   } catch (err) {
