@@ -1,0 +1,38 @@
+{
+  "name": "IDPF Framework",
+  "version": "2.6.0",
+  "description": "Iterative Development Process Frameworks for AI-assisted software development",
+  "created": "2025-11-30",
+  "frameworks": [
+    "IDPF-Structured",
+    "IDPF-Agile",
+    "IDPF-Vibe",
+    "IDPF-LTS"
+  ],
+  "domainSpecialists": [
+    "Full-Stack-Developer",
+    "Backend-Specialist",
+    "Frontend-Specialist",
+    "DevOps-Engineer",
+    "Database-Engineer",
+    "API-Integration-Specialist",
+    "Security-Engineer",
+    "Platform-Engineer",
+    "Mobile-Specialist",
+    "Data-Engineer",
+    "QA-Test-Engineer",
+    "Cloud-Solutions-Architect",
+    "SRE-Specialist",
+    "Embedded-Systems-Engineer",
+    "ML-Engineer",
+    "Performance-Engineer",
+    "PRD-Analyst",
+    "Accessibility-Specialist"
+  ],
+  "requiredDirectories": [
+    "Overview",
+    "Assistant",
+    "System-Instructions",
+    "Skills"
+  ]
+}
