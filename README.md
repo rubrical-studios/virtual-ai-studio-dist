@@ -1,7 +1,7 @@
 # Process Docs - AI-Assisted Development Framework Ecosystem
 
-**Last Updated:** 2025-12-04
-**Current Version:** 2.6.0
+**Last Updated:** 2025-12-07
+**Current Version:** 2.6.2
 
 This repository contains a comprehensive ecosystem for AI-assisted software development, including development frameworks, system instructions, skills, and quality guidelines.
 

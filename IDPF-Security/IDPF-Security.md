@@ -28,11 +28,15 @@ Framework for SAST, DAST, penetration testing, vulnerability management, and sec
 | # | Vulnerability | Approach | Tools |
 |---|---------------|----------|-------|
 | A01 | Broken Access Control | DAST, Manual | ZAP, Burp |
-| A02 | Cryptographic Failures | SAST | SonarQube |
+| A02 | Cryptographic Failures | SAST, Manual | SonarQube, Semgrep |
 | A03 | Injection | SAST, DAST | All |
-| A05 | Security Misconfiguration | DAST | ZAP |
-| A06 | Vulnerable Components | SCA | Snyk |
-| A07 | Auth Failures | DAST | ZAP, Burp |
+| A04 | Insecure Design | Manual Review | Threat Modeling |
+| A05 | Security Misconfiguration | DAST, Config Scan | ZAP, ScoutSuite |
+| A06 | Vulnerable Components | SCA | Snyk, Dependabot |
+| A07 | Auth Failures | DAST, Manual | ZAP, Burp |
+| A08 | Data Integrity Failures | SAST, DAST | SonarQube, ZAP |
+| A09 | Logging Failures | SAST, Manual | Code review |
+| A10 | SSRF | DAST, Manual | ZAP, Burp |
 
 ## Severity & SLA
 | Severity | CVSS | SLA |
@@ -52,6 +56,15 @@ Discovery → Triage → Assignment → Remediation → Verification → Closure
 | Commit | Secret Scan | No secrets |
 | PR | SCA | No critical |
 | Pre-Deploy | DAST | No critical |
+
+## Compliance Frameworks
+| Framework | Focus | Testing Requirements |
+|-----------|-------|----------------------|
+| SOC 2 | Security, availability | Vulnerability scanning, penetration testing |
+| PCI-DSS | Payment card data | Quarterly scans, annual pentest |
+| HIPAA | Healthcare data | Risk assessments, access controls testing |
+| GDPR | Personal data | Data protection testing, privacy controls |
+| ISO 27001 | Information security | Regular security testing, vulnerability mgmt |
 
 ## Directory Structure
 ```

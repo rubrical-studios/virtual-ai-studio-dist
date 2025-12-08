@@ -6,6 +6,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [2.6.2] - 2025-12-07
+
+### Added
+- **Two-pass minimization** (#124) - Quality gate ensuring Medium-High and High impact reductions are reversed
+  - Pass 1: Aggressive minimization applying all removal rules
+  - Pass 2: Impact assessment with automatic reversal for truncated checklists
+
+### Fixed
+- **IDPF-Security** (#124) - Restored complete OWASP Top 10 (was 6 items, now 10) and Compliance Frameworks table
+- **IDPF-Chaos** (#124) - Restored Application faults (5 items) and State faults (3 items) categories
+- **IDPF-Accessibility** (#123) - Restored complete WCAG criteria (was 10 items, now 26)
+
+### Changed
+- **MINIMIZE_FILES.md** - Expanded "Must Preserve" rules with specific checklist categories
+- **Distribution repo** (#123) - Renamed from `virtual-studio-dist` to `virtual-ai-studio-dist`
+
+---
+
 ## [2.6.0] - 2025-12-04
 
 ### Added
