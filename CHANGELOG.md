@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [2.9.9] - 2025-12-11
+
+### Changed
+- **Reopen Workflow status** (#191) - Reopened issues now set to "Ready" instead of "In Progress"
+
+### Fixed
+- **list-commands config property** (#188) - Fixed reading `projectType.processFramework` instead of non-existent `framework` property
+- **Deployed rules naming** (#190) - Rules deployed to projects now use numbered prefixes (01-, 02-, 03-) matching framework source
+
+---
+
 ## [2.9.8] - 2025-12-11
 
 ### Added

@@ -69,7 +69,7 @@ Same flow as Bug, use `--label "enhancement"`
 
 ### 6. Reopen Workflow
 **Triggers:** "reopen issue #[N]"
-`gh issue reopen [N]` → `gh pmu move --status in_progress`
+`gh issue reopen [N]` → `gh pmu move --status ready`
 
 ### 7. Idea Workflow
 **Triggers:** "I have an idea...", "What if...", "New idea:"

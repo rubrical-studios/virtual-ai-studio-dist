@@ -442,9 +442,9 @@ function generateClaudeMd(projectDir, frameworkPath, processFramework, domainLis
 ## Rules Auto-Loading
 
 Rules are automatically loaded from \`.claude/rules/\`:
-- \`anti-hallucination.md\` - Software development quality rules
-- \`github-workflow.md\` - GitHub issue management integration (if enabled)
-- \`startup.md\` - Session initialization and specialist loading
+- \`01-anti-hallucination.md\` - Software development quality rules
+- \`02-github-workflow.md\` - GitHub issue management integration (if enabled)
+- \`03-startup.md\` - Session initialization and specialist loading
 
 **No manual file reading required at startup.**
 
@@ -783,7 +783,7 @@ function deployRules(projectDir, frameworkPath, processFramework, domainListStr,
 
   // Copy anti-hallucination rules (always)
   const ahSrc = path.join(frameworkPath, 'Assistant', 'Anti-Hallucination-Rules-for-Software-Development.md');
-  const ahDest = path.join(rulesDir, 'anti-hallucination.md');
+  const ahDest = path.join(rulesDir, '01-anti-hallucination.md');
   if (fs.existsSync(ahSrc)) {
     // Read source and add version header
     const ahContent = fs.readFileSync(ahSrc, 'utf8');
@@ -802,7 +802,7 @@ ${ahContent.replace(/^# Anti-Hallucination Rules for Software Development\s*\n*/
   // Copy GitHub workflow (if enabled)
   if (enableGitHubWorkflow) {
     const ghSrc = path.join(frameworkPath, 'Reference', 'GitHub-Workflow.md');
-    const ghDest = path.join(rulesDir, 'github-workflow.md');
+    const ghDest = path.join(rulesDir, '02-github-workflow.md');
     if (fs.existsSync(ghSrc)) {
       // Read source and add version header
       const ghContent = fs.readFileSync(ghSrc, 'utf8');
@@ -821,7 +821,7 @@ ${ghContent.replace(/^# GitHub Workflow Integration\s*\n*/, '')}`;
 
   // Generate startup rules
   const startupContent = generateStartupRules(frameworkPath, processFramework, domainListStr, primarySpecialist);
-  fs.writeFileSync(path.join(rulesDir, 'startup.md'), startupContent);
+  fs.writeFileSync(path.join(rulesDir, '03-startup.md'), startupContent);
   results.startup = true;
 
   return results;
@@ -877,13 +877,13 @@ const MIGRATIONS = [
       );
 
       if (rulesResult.ah) {
-        logSuccess('  ✓ Created .claude/rules/anti-hallucination.md');
+        logSuccess('  ✓ Created .claude/rules/01-anti-hallucination.md');
       }
       if (rulesResult.gh) {
-        logSuccess('  ✓ Created .claude/rules/github-workflow.md');
+        logSuccess('  ✓ Created .claude/rules/02-github-workflow.md');
       }
       if (rulesResult.startup) {
-        logSuccess('  ✓ Created .claude/rules/startup.md');
+        logSuccess('  ✓ Created .claude/rules/03-startup.md');
       }
 
       // Regenerate simplified CLAUDE.md (preserves project instructions)
@@ -1621,13 +1621,13 @@ async function main() {
     // Deploy rules to .claude/rules/
     const rulesResult = deployRules(projectDir, frameworkPath, processFramework, domainListStr, primarySpecialist, enableGitHubWorkflow);
     if (rulesResult.ah) {
-      logSuccess('  ✓ .claude/rules/anti-hallucination.md');
+      logSuccess('  ✓ .claude/rules/01-anti-hallucination.md');
     }
     if (rulesResult.gh) {
-      logSuccess('  ✓ .claude/rules/github-workflow.md');
+      logSuccess('  ✓ .claude/rules/02-github-workflow.md');
     }
     if (rulesResult.startup) {
-      logSuccess('  ✓ .claude/rules/startup.md');
+      logSuccess('  ✓ .claude/rules/03-startup.md');
     }
 
     // switch-role command (only if domain specialists selected)

@@ -167,7 +167,8 @@ function getFrameworkCommands() {
     try {
         if (fs.existsSync(configPath)) {
             const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-            activeFramework = config.framework;
+            // Support both old (config.framework) and new (config.projectType.processFramework) formats
+            activeFramework = config.projectType?.processFramework || config.framework;
         }
     } catch (e) {}
 
@@ -220,7 +221,8 @@ function generateDetailedCommands() {
     try {
         if (fs.existsSync(configPath)) {
             const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-            activeFramework = config.framework;
+            // Support both old (config.framework) and new (config.projectType.processFramework) formats
+            activeFramework = config.projectType?.processFramework || config.framework;
         }
     } catch (e) {}
 
