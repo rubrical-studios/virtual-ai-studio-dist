@@ -747,6 +747,91 @@ const MIGRATIONS = [
       logSuccess('  ✓ Updated CLAUDE.md (simplified)');
     }
   },
+  {
+    version: '2.9.2',
+    description: 'Fix settings.local.json hooks configuration',
+    migrate: (projectDir, frameworkPath, config) => {
+      // Check if workflow hook exists but settings not configured
+      const hasHook = fs.existsSync(path.join(projectDir, '.claude', 'hooks', 'workflow-trigger.js'));
+      if (!hasHook) {
+        logSuccess('  ⊘ No workflow hook installed, skipping settings fix');
+        return;
+      }
+
+      const settingsPath = path.join(projectDir, '.claude', 'settings.local.json');
+      if (!fs.existsSync(settingsPath)) {
+        // Create new settings with hooks
+        const settings = {
+          permissions: {
+            allow: [],
+            deny: [
+              "Bash(rm -rf /:*)",
+              "Bash(rm -rf /*:*)",
+              "Bash(sudo:*)",
+              "Bash(git push --force:*)",
+              "Bash(git push -f:*)",
+              "Bash(git reset --hard:*)",
+              "Bash(git clean -fd:*)",
+              "Bash(git filter-branch:*)",
+              "Bash(git rebase -i:*)",
+              "Bash(git add -i:*)",
+            ],
+            ask: [],
+          },
+          hooks: {
+            UserPromptSubmit: [
+              {
+                hooks: [
+                  {
+                    type: "command",
+                    command: "node .claude/hooks/workflow-trigger.js",
+                    timeout: 5,
+                  },
+                ],
+              },
+            ],
+          },
+        };
+        fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
+        logSuccess('  ✓ Created .claude/settings.local.json (with hooks)');
+        return;
+      }
+
+      // Merge hooks into existing settings
+      try {
+        const existing = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
+
+        // Check if hooks already configured
+        if (existing.hooks?.UserPromptSubmit) {
+          const hasWorkflowHook = existing.hooks.UserPromptSubmit.some(h =>
+            h.hooks?.some(hh => hh.command?.includes('workflow-trigger.js'))
+          );
+          if (hasWorkflowHook) {
+            logSuccess('  ⊘ Hooks already configured in settings.local.json');
+            return;
+          }
+        }
+
+        // Add hooks configuration
+        existing.hooks = existing.hooks || {};
+        existing.hooks.UserPromptSubmit = [
+          {
+            hooks: [
+              {
+                type: "command",
+                command: "node .claude/hooks/workflow-trigger.js",
+                timeout: 5,
+              },
+            ],
+          },
+        ];
+        fs.writeFileSync(settingsPath, JSON.stringify(existing, null, 2));
+        logSuccess('  ✓ Added hooks to .claude/settings.local.json');
+      } catch (e) {
+        logWarning('  ⚠ Could not update settings.local.json: ' + e.message);
+      }
+    }
+  },
   // Future migrations added here
 ];
 
@@ -799,11 +884,51 @@ function runMigrations(projectDir, frameworkPath) {
 function generateSettingsLocal(projectDir, enableGitHubWorkflow) {
   const settingsPath = path.join(projectDir, '.claude', 'settings.local.json');
 
-  // Skip if exists - preserve user permissions
+  const hooksConfig = {
+    UserPromptSubmit: [
+      {
+        hooks: [
+          {
+            type: "command",
+            command: "node .claude/hooks/workflow-trigger.js",
+            timeout: 5,
+          },
+        ],
+      },
+    ],
+  };
+
+  // If file exists, merge hooks config if needed
   if (fs.existsSync(settingsPath)) {
-    return false;
+    if (!enableGitHubWorkflow) {
+      return false; // No changes needed
+    }
+
+    try {
+      const existing = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
+
+      // Check if hooks already configured
+      if (existing.hooks?.UserPromptSubmit) {
+        const hasWorkflowHook = existing.hooks.UserPromptSubmit.some(h =>
+          h.hooks?.some(hh => hh.command?.includes('workflow-trigger.js'))
+        );
+        if (hasWorkflowHook) {
+          return false; // Already configured
+        }
+      }
+
+      // Merge hooks into existing settings
+      existing.hooks = existing.hooks || {};
+      existing.hooks.UserPromptSubmit = hooksConfig.UserPromptSubmit;
+      fs.writeFileSync(settingsPath, JSON.stringify(existing, null, 2));
+      return 'merged';
+    } catch (e) {
+      // If we can't parse, leave it alone
+      return false;
+    }
   }
 
+  // Create new settings file
   const settings = {
     permissions: {
       allow: [],
@@ -825,19 +950,7 @@ function generateSettingsLocal(projectDir, enableGitHubWorkflow) {
 
   // Add hooks configuration if GitHub workflow is enabled
   if (enableGitHubWorkflow) {
-    settings.hooks = {
-      UserPromptSubmit: [
-        {
-          hooks: [
-            {
-              type: "command",
-              command: "node .claude/hooks/workflow-trigger.js",
-              timeout: 5,
-            },
-          ],
-        },
-      ],
-    };
+    settings.hooks = hooksConfig;
   }
 
   fs.mkdirSync(path.join(projectDir, '.claude'), { recursive: true });
@@ -1383,7 +1496,10 @@ async function main() {
     }
 
     // settings.local.json
-    if (generateSettingsLocal(projectDir, enableGitHubWorkflow)) {
+    const settingsResult = generateSettingsLocal(projectDir, enableGitHubWorkflow);
+    if (settingsResult === 'merged') {
+      logSuccess('  ✓ .claude/settings.local.json (added hooks to existing)');
+    } else if (settingsResult) {
       logSuccess('  ✓ .claude/settings.local.json' + (enableGitHubWorkflow ? ' (with hooks)' : ''));
     } else {
       logWarning('  ⊘ .claude/settings.local.json (preserved existing)');

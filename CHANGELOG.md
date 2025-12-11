@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [2.9.2] - 2025-12-10
+
+### Fixed
+- **Workflow hooks not configured in existing projects** (#178) - `settings.local.json` now merges hooks config instead of skipping when file exists
+- Added migration to fix `settings.local.json` hooks for projects upgrading from pre-2.9.2
+
+---
+
 ## [2.9.1] - 2025-12-10
 
 ### Fixed
