@@ -108,6 +108,157 @@ function divider() {
   log(colors.cyan('───────────────────────────────────────'));
 }
 
+// ======================================
+//  Project Tracking
+// ======================================
+
+/**
+ * Read installed-projects.json from framework directory
+ */
+function readInstalledProjects(frameworkPath) {
+  const trackingPath = path.join(frameworkPath, 'installed-projects.json');
+  if (!fs.existsSync(trackingPath)) {
+    return { projects: [] };
+  }
+  try {
+    return JSON.parse(fs.readFileSync(trackingPath, 'utf8'));
+  } catch {
+    return { projects: [] };
+  }
+}
+
+/**
+ * Write installed-projects.json to framework directory
+ */
+function writeInstalledProjects(frameworkPath, data) {
+  const trackingPath = path.join(frameworkPath, 'installed-projects.json');
+  fs.writeFileSync(trackingPath, JSON.stringify(data, null, 2));
+}
+
+/**
+ * Add or update a project in the tracking file
+ */
+function trackProject(frameworkPath, projectDir, version) {
+  const data = readInstalledProjects(frameworkPath);
+  const existingIdx = data.projects.findIndex(p => p.path === projectDir);
+
+  const projectEntry = {
+    path: projectDir,
+    installedVersion: version,
+    installedDate: new Date().toISOString().split('T')[0],
+  };
+
+  if (existingIdx >= 0) {
+    data.projects[existingIdx] = projectEntry;
+  } else {
+    data.projects.push(projectEntry);
+  }
+
+  writeInstalledProjects(frameworkPath, data);
+}
+
+/**
+ * Remove a project from tracking (e.g., if directory no longer exists)
+ */
+function untrackProject(frameworkPath, projectDir) {
+  const data = readInstalledProjects(frameworkPath);
+  data.projects = data.projects.filter(p => p.path !== projectDir);
+  writeInstalledProjects(frameworkPath, data);
+}
+
+/**
+ * Update/migrate all tracked projects
+ * Returns: { updated: number, current: number, removed: number, failed: number }
+ */
+function updateTrackedProjects(frameworkPath) {
+  const data = readInstalledProjects(frameworkPath);
+  const currentVersion = readFrameworkVersion(frameworkPath);
+  const results = { updated: 0, current: 0, removed: 0, failed: 0 };
+
+  if (data.projects.length === 0) {
+    return results;
+  }
+
+  log();
+  logCyan('Checking installed projects...');
+  log();
+
+  for (const project of data.projects) {
+    const projectPath = project.path;
+
+    // Check if project still exists
+    if (!fs.existsSync(projectPath)) {
+      log(`  ${colors.red('✗')} ${projectPath}`);
+      log(`    ${colors.dim('Directory not found - removing from tracking')}`);
+      untrackProject(frameworkPath, projectPath);
+      results.removed++;
+      continue;
+    }
+
+    // Check if framework-config.json exists
+    const configPath = path.join(projectPath, 'framework-config.json');
+    if (!fs.existsSync(configPath)) {
+      log(`  ${colors.yellow('⚠')} ${projectPath}`);
+      log(`    ${colors.dim('No framework-config.json - skipping')}`);
+      results.failed++;
+      continue;
+    }
+
+    // Read current installed version
+    let projectConfig;
+    try {
+      projectConfig = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+    } catch {
+      log(`  ${colors.yellow('⚠')} ${projectPath}`);
+      log(`    ${colors.dim('Could not read framework-config.json - skipping')}`);
+      results.failed++;
+      continue;
+    }
+
+    const installedVersion = projectConfig.installedVersion || '0.0.0';
+
+    // Compare versions
+    if (compareVersions(installedVersion, currentVersion) >= 0) {
+      log(`  ${colors.green('✓')} ${projectPath}`);
+      log(`    ${colors.dim(`Already at ${installedVersion}`)}`);
+      results.current++;
+      continue;
+    }
+
+    // Needs update - run migrations
+    log(`  ${colors.cyan('→')} ${projectPath}`);
+    log(`    ${colors.dim(`Updating ${installedVersion} → ${currentVersion}`)}`);
+
+    try {
+      // Run migrations
+      const applicableMigrations = MIGRATIONS.filter(m =>
+        compareVersions(installedVersion, m.version) < 0
+      );
+
+      for (const migration of applicableMigrations) {
+        log(`    ${colors.dim(`  Running: ${migration.description}`)}`);
+        migration.migrate(projectPath, frameworkPath, projectConfig);
+      }
+
+      // Update version in config
+      projectConfig.installedVersion = currentVersion;
+      projectConfig.installedDate = new Date().toISOString().split('T')[0];
+      fs.writeFileSync(configPath, JSON.stringify(projectConfig, null, 2));
+
+      // Update tracking
+      trackProject(frameworkPath, projectPath, currentVersion);
+
+      log(`    ${colors.green('✓ Updated successfully')}`);
+      results.updated++;
+    } catch (err) {
+      log(`    ${colors.red(`✗ Failed: ${err.message}`)}`);
+      results.failed++;
+    }
+  }
+
+  return results;
+}
+
 /**
  * Check if a command is available in PATH
  */
@@ -1033,19 +1184,38 @@ async function main() {
     // Clear screen
     console.clear();
 
-    // Migration mode
+    // Migration mode (deprecated - now handled automatically)
     if (migrateMode) {
       logCyan('╔══════════════════════════════════════╗');
       logCyan('║    IDPF Framework Migration Tool     ║');
       logCyan('╚══════════════════════════════════════╝');
       log();
 
-      const projectDir = process.cwd();
-      const configPath = path.join(projectDir, 'framework-config.json');
+      const cwd = process.cwd();
+      const manifestPath = path.join(cwd, 'framework-manifest.json');
+      const configPath = path.join(cwd, 'framework-config.json');
 
+      // If running from framework directory, do bulk update
+      if (fs.existsSync(manifestPath)) {
+        log(colors.dim('Note: --migrate flag is no longer needed.'));
+        log(colors.dim('Just run: node install.js'));
+        log();
+
+        const results = updateTrackedProjects(cwd);
+        log();
+        divider();
+        log(`  Updated: ${colors.green(results.updated)}  Current: ${colors.cyan(results.current)}  Removed: ${colors.yellow(results.removed)}  Failed: ${colors.red(results.failed)}`);
+        divider();
+        return;
+      }
+
+      // If running from project directory
       if (!fs.existsSync(configPath)) {
         logError('No framework-config.json found in current directory.');
-        logError('Run the installer without --migrate first.');
+        logError('');
+        logError('To update all projects, run from the framework directory:');
+        logError('  cd [framework-path]');
+        logError('  node install.js');
         process.exit(1);
       }
 
@@ -1058,11 +1228,14 @@ async function main() {
         process.exit(1);
       }
 
-      log(`Project: ${projectDir}`);
+      log(`Project: ${cwd}`);
       log(`Framework: ${frameworkPath}`);
       log();
 
-      runMigrations(projectDir, frameworkPath);
+      runMigrations(cwd, frameworkPath);
+
+      // Update tracking
+      trackProject(frameworkPath, cwd, readFrameworkVersion(frameworkPath));
       return;
     }
 
@@ -1103,25 +1276,41 @@ async function main() {
     const inFrameworkDir = fs.existsSync(manifestPath);
 
     if (inFrameworkDir) {
-      logWarning('Detected: Running from framework directory');
+      const version = readFrameworkVersion(frameworkPath);
+      log(`  Framework: ${colors.cyan(frameworkPath)}`);
+      log(`  Version:   ${colors.green(version)}`);
       log();
-      log(`Framework path: ${colors.cyan(frameworkPath)}`);
 
-      const { confirmFw } = await prompts({
+      // Step 1: Update/migrate all tracked projects
+      const trackedData = readInstalledProjects(frameworkPath);
+      if (trackedData.projects.length > 0) {
+        const results = updateTrackedProjects(frameworkPath);
+        log();
+        divider();
+        log(`  Updated: ${colors.green(results.updated)}  Current: ${colors.cyan(results.current)}  Removed: ${colors.yellow(results.removed)}  Failed: ${colors.red(results.failed)}`);
+        divider();
+        log();
+      }
+
+      // Step 2: Ask if user wants to install to another project
+      const { installNew } = await prompts({
         type: 'confirm',
-        name: 'confirmFw',
-        message: 'Is this the correct framework path?',
+        name: 'installNew',
+        message: trackedData.projects.length > 0
+          ? 'Install to another project?'
+          : 'Install to a project?',
         initial: true,
       }, { onCancel });
 
-      if (!confirmFw) {
-        const { newPath } = await prompts({
-          type: 'text',
-          name: 'newPath',
-          message: 'Enter the correct framework path:',
-        }, { onCancel });
-        frameworkPath = path.resolve(newPath);
+      if (!installNew) {
+        if (trackedData.projects.length > 0) {
+          logSuccess('All projects updated!');
+        } else {
+          log('No projects installed.');
+        }
+        process.exit(0);
       }
+
       log();
 
       // Ask for target project directory
@@ -1505,6 +1694,9 @@ async function main() {
       logWarning('  ⊘ .claude/settings.local.json (preserved existing)');
     }
 
+    // Track the installation
+    trackProject(frameworkPath, projectDir, version);
+
     // ======================================
     //  Installation Complete
     // ======================================
@@ -1563,6 +1755,21 @@ async function main() {
       log('    4. Start Claude Code CLI in that directory');
     }
     log();
+
+    // If running from framework directory, ask about additional deployments
+    if (inFrameworkDir) {
+      const { installAnother } = await prompts({
+        type: 'confirm',
+        name: 'installAnother',
+        message: 'Install to another project?',
+        initial: false,
+      }, { onCancel });
+
+      if (installAnother) {
+        // Recursive call - will restart the whole flow
+        return main();
+      }
+    }
 
   } catch (err) {
     logError(`Error: ${err.message}`);

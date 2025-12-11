@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [2.9.6] - 2025-12-10
+
+### Added
+- **Project tracking** (#183) - `installed-projects.json` tracks all installed projects
+- **Bulk update/migrate** (#183) - Running `install.js` from framework directory updates all tracked projects
+- **Additional deployments prompt** (#183) - After installation, prompts to install to additional projects
+
+---
+
 ## [2.9.5] - 2025-12-10
 
 ### Fixed
