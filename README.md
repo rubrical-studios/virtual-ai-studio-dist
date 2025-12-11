@@ -1,6 +1,6 @@
 # IDPF Framework - AI-Assisted Development
 
-**Current Version:** 2.9.0
+**Current Version:** 2.9.1
 
 A comprehensive ecosystem for AI-assisted software development with Claude.
 
@@ -66,7 +66,7 @@ node [frameworkPath]/fetch-updates.js
 
 ---
 
-## Rules Auto-Loading (v2.19+)
+## Rules Auto-Loading (v2.9+)
 
 Rules in `.claude/rules/` load automatically at session start:
 - No explicit file reads required

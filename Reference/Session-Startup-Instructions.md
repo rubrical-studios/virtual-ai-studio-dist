@@ -1,7 +1,7 @@
 # Session Startup Instructions
 **Version:** 2.7
 
-## Rules Auto-Loading (v2.19+)
+## Rules Auto-Loading (v2.9+)
 Essential rules auto-load from `.claude/rules/`:
 | Rule File | Content | Source |
 |-----------|---------|--------|
