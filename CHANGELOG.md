@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [2.9.3] - 2025-12-10
+
+### Fixed
+- **fetch-updates.js not deployed to dist** (#179) - Added to deploy workflow
+
+---
+
 ## [2.9.2] - 2025-12-10
 
 ### Fixed
