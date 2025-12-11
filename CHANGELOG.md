@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [2.9.4] - 2025-12-10
+
+### Changed
+- **fetch-updates.js self-update mode** (#180) - Can now run from framework directory for self-update
+
+---
+
 ## [2.9.3] - 2025-12-10
 
 ### Fixed

@@ -4,12 +4,12 @@
  *
  * Updates the framework installation from the distribution repository.
  *
- * Usage: node fetch-updates.js
+ * Usage:
+ *   node fetch-updates.js              # From project or framework directory
  *
- * This script:
- * 1. Reads framework-config.json to find the framework path
- * 2. Fetches the latest version from the dist repo
- * 3. Updates framework files while preserving project-specific files
+ * Modes:
+ *   1. Self-update: Run from framework directory (has framework-manifest.json)
+ *   2. Project update: Run from project directory (has framework-config.json)
  */
 
 const fs = require('fs');
@@ -45,7 +45,7 @@ function logError(msg) { console.log(colors.red(msg)); }
 // ======================================
 
 /**
- * Read framework-config.json
+ * Read framework-config.json from project directory
  */
 function readConfig() {
   const configPath = path.join(process.cwd(), 'framework-config.json');
@@ -57,6 +57,14 @@ function readConfig() {
   } catch {
     return null;
   }
+}
+
+/**
+ * Check if running from framework directory (has framework-manifest.json)
+ */
+function isFrameworkDirectory() {
+  const manifestPath = path.join(process.cwd(), 'framework-manifest.json');
+  return fs.existsSync(manifestPath);
 }
 
 /**
@@ -129,6 +137,33 @@ function copyDir(src, dest) {
   }
 }
 
+/**
+ * Update framework files from temp directory
+ */
+function updateFrameworkFiles(frameworkPath) {
+  // Clear framework directory (except git if present)
+  log(colors.dim('Updating framework files...'));
+  const entries = fs.readdirSync(frameworkPath);
+  for (const entry of entries) {
+    if (entry === '.git') continue;
+    const entryPath = path.join(frameworkPath, entry);
+    fs.rmSync(entryPath, { recursive: true, force: true });
+  }
+
+  // Copy from temp to framework path
+  const tempEntries = fs.readdirSync(TEMP_DIR);
+  for (const entry of tempEntries) {
+    if (entry === '.git') continue;
+    const srcPath = path.join(TEMP_DIR, entry);
+    const destPath = path.join(frameworkPath, entry);
+    if (fs.statSync(srcPath).isDirectory()) {
+      copyDir(srcPath, destPath);
+    } else {
+      fs.copyFileSync(srcPath, destPath);
+    }
+  }
+}
+
 // ======================================
 //  Main Update Process
 // ======================================
@@ -140,17 +175,31 @@ async function main() {
   log(colors.cyan('╚══════════════════════════════════════╝'));
   log();
 
-  // Read config
-  const config = readConfig();
-  if (!config) {
-    logError('ERROR: framework-config.json not found');
-    logError('Run this script from your project directory');
-    process.exit(1);
-  }
+  // Determine mode: self-update or project update
+  const isSelfUpdate = isFrameworkDirectory();
+  const config = isSelfUpdate ? null : readConfig();
 
-  const frameworkPath = config.frameworkPath;
-  if (!frameworkPath || !fs.existsSync(frameworkPath)) {
-    logError(`ERROR: Framework path not found: ${frameworkPath}`);
+  let frameworkPath;
+  let updateConfigFile = false;
+
+  if (isSelfUpdate) {
+    // Self-update mode: updating the framework directory itself
+    frameworkPath = process.cwd();
+    log(colors.yellow('  Mode: Self-update (framework directory)'));
+  } else if (config) {
+    // Project update mode: updating framework from project directory
+    frameworkPath = config.frameworkPath;
+    updateConfigFile = true;
+    log(colors.yellow('  Mode: Project update'));
+    if (!frameworkPath || !fs.existsSync(frameworkPath)) {
+      logError(`ERROR: Framework path not found: ${frameworkPath}`);
+      process.exit(1);
+    }
+  } else {
+    logError('ERROR: Neither framework-manifest.json nor framework-config.json found');
+    logError('Run this script from either:');
+    logError('  - Framework directory (for self-update)');
+    logError('  - Project directory (for project update)');
     process.exit(1);
   }
 
@@ -192,43 +241,25 @@ async function main() {
     process.exit(1);
   }
 
-  // Clear framework directory (except git if present)
-  log(colors.dim('Updating framework files...'));
-  const entries = fs.readdirSync(frameworkPath);
-  for (const entry of entries) {
-    if (entry === '.git') continue;
-    const entryPath = path.join(frameworkPath, entry);
-    fs.rmSync(entryPath, { recursive: true, force: true });
-  }
-
-  // Copy from temp to framework path
-  const tempEntries = fs.readdirSync(TEMP_DIR);
-  for (const entry of tempEntries) {
-    if (entry === '.git') continue;
-    const srcPath = path.join(TEMP_DIR, entry);
-    const destPath = path.join(frameworkPath, entry);
-    if (fs.statSync(srcPath).isDirectory()) {
-      copyDir(srcPath, destPath);
-    } else {
-      fs.copyFileSync(srcPath, destPath);
-    }
-  }
+  // Update framework files
+  updateFrameworkFiles(frameworkPath);
 
   // Cleanup
   removeDir(TEMP_DIR);
 
-  // Update config version
-  config.installedVersion = latestVersion.slice(1);
-  config.installedDate = new Date().toISOString().split('T')[0];
-  fs.writeFileSync(
-    path.join(process.cwd(), 'framework-config.json'),
-    JSON.stringify(config, null, 2)
-  );
+  // Update config version (only for project update mode)
+  if (updateConfigFile && config) {
+    config.installedVersion = latestVersion.slice(1);
+    config.installedDate = new Date().toISOString().split('T')[0];
+    fs.writeFileSync(
+      path.join(process.cwd(), 'framework-config.json'),
+      JSON.stringify(config, null, 2)
+    );
+    log(colors.dim('Updated framework-config.json with new version.'));
+  }
 
   log();
   logSuccess(`Updated to version ${latestVersion.slice(1)}`);
-  log();
-  log(colors.dim('Updated framework-config.json with new version.'));
   log();
 }
 
