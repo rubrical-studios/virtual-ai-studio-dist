@@ -39,7 +39,7 @@
 | tdd-failure-recovery | 1.0.0 | TDD |
 | test-writing-patterns | 1.0.0 | TDD |
 | bdd-writing | 1.0.0 | BDD |
-| extract-prd | 1.1.0 | PRD |
+| extract-prd | 1.2.0 | PRD |
 | anti-pattern-analysis | 1.0.0 | Code Quality |
 | uml-generation | 1.0.0 | Code Quality |
 | flask-setup | 1.0.0 | Beginner Setup |

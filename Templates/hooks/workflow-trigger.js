@@ -154,7 +154,8 @@ function getSlashCommands() {
 }
 
 /**
- * Detect active IDPF framework and return relevant commands
+ * Detect active IDPF framework and return relevant commands.
+ * Returns full detailed commands (same as List-Commands) for consistency.
  */
 function getFrameworkCommands() {
     const cwd = process.cwd();
@@ -183,32 +184,25 @@ function getFrameworkCommands() {
 
     if (!activeFramework) return null;
 
-    // Return framework-specific commands
+    // Return framework-specific detailed commands (same as List-Commands)
     if (activeFramework === 'IDPF-Agile' || activeFramework === 'agile') {
-        return `
-**IDPF-Agile Commands**:
-_Backlog:_ \`Create-Backlog\`, \`Show-Backlog\`, \`Add-Story\`, \`Refine-Story [ID]\`, \`Prioritize-Backlog\`
-_Sprint:_ \`Plan-Sprint\`, \`Show-Sprint\`, \`Start-Story [ID]\`, \`Story-Complete [ID]\`, \`Sprint-Progress\`, \`End-Sprint\`
-_Project:_ \`Project-Status\`, \`Velocity-Report\`, \`Create-Issues\`
-_Help:_ \`List-Commands\` (full list with descriptions)
-`;
+        return '\n' + getAgileDetailedCommands();
     }
 
     if (activeFramework === 'IDPF-Structured' || activeFramework === 'structured') {
-        return `
-**IDPF-Structured Commands**:
-_TDD:_ \`Done-Next-Step\`, \`Rollback-Previous-Step\`, \`Run-Tests\`, \`Show-Coverage\`
-_Phase:_ \`tdd-red-phase\`, \`tdd-green-phase\`, \`tdd-refactor-phase\`, \`tdd-failure-recovery\`
-_Project:_ \`Create-Issues\`, \`Push-Changes\`, \`Project-Complete\`
-`;
+        return '\n' + getStructuredDetailedCommands();
     }
 
-    if (activeFramework === 'IDPF-Vibe' || activeFramework.startsWith('vibe')) {
-        return `
-**IDPF-Vibe Commands**:
-_Development:_ Follow conversational development flow
-_Transition:_ \`Formalize\` (when ready for structured development)
-`;
+    if (activeFramework === 'IDPF-Vibe' || (activeFramework && activeFramework.startsWith('vibe'))) {
+        return '\n' + getVibeDetailedCommands();
+    }
+
+    if (activeFramework === 'IDPF-PRD' || activeFramework === 'prd') {
+        return '\n' + getPRDDetailedCommands();
+    }
+
+    if (activeFramework === 'IDPF-LTS' || activeFramework === 'lts') {
+        return '\n' + getLTSDetailedCommands();
     }
 
     return null;

@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [2.9.8] - 2025-12-11
+
+### Added
+- **Workflow hook in repository** (#187) - Added `workflow-trigger.js` to `.claude/hooks/` for framework development sessions
+
+### Fixed
+- **list-commands framework detection** (#186) - Fixed `commands` trigger to show full framework-specific commands
+- **GitHub workflow made mandatory** (#185) - GitHub workflow integration now required during installation
+
+---
+
 ## [2.9.7] - 2025-12-10
 
 ### Fixed

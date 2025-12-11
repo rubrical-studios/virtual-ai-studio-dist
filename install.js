@@ -1528,29 +1528,13 @@ async function main() {
     }
 
     // ======================================
-    //  GitHub Workflow Integration
+    //  GitHub Workflow Integration (always enabled)
     // ======================================
 
-    let enableGitHubWorkflow = false;
-
-    const { wantGitHub } = await prompts({
-      type: 'confirm',
-      name: 'wantGitHub',
-      message: 'Enable GitHub workflow integration? (automatic issue creation, project board tracking)',
-      initial: true,
-    }, { onCancel });
-
-    if (wantGitHub) {
-      enableGitHubWorkflow = true;
-      log();
-      logSuccess('GitHub workflow integration enabled');
-      log(colors.dim('  Workflow triggers: bug:, enhancement:, finding:, idea:, proposal:'));
-      log(colors.dim('  Requires: gh CLI + gh-pmu extension (setup instructions at end)'));
-    } else {
-      log();
-      logWarning('GitHub workflow integration skipped');
-      log(colors.dim('  You can enable it later by running the installer again.'));
-    }
+    const enableGitHubWorkflow = true;
+    logSuccess('GitHub workflow integration enabled');
+    log(colors.dim('  Workflow triggers: bug:, enhancement:, finding:, idea:, proposal:, prd:'));
+    log(colors.dim('  Requires: gh CLI + gh-pmu extension (setup instructions at end)'));
     log();
 
     // ======================================
@@ -1720,7 +1704,7 @@ async function main() {
     if (deployedSkills.length > 0) {
       log(`  ${colors.dim('Skills Deployed:')}    ${colors.green(deployedSkills.join(', '))}`);
     }
-    log(`  ${colors.dim('GitHub Workflow:')}    ${enableGitHubWorkflow ? colors.green('Enabled') : colors.dim('Disabled')}`);
+    log(`  ${colors.dim('GitHub Workflow:')}    ${colors.green('Enabled')}`);
     log();
 
     if (enableGitHubWorkflow) {
@@ -1749,12 +1733,8 @@ async function main() {
     log(`    1. Navigate to: ${colors.cyan(projectDir)}`);
     log('    2. Review the generated CLAUDE.md');
     log('    3. Add project-specific instructions if needed');
-    if (enableGitHubWorkflow) {
-      log('    4. Complete GitHub workflow setup (see above)');
-      log('    5. Start Claude Code CLI in that directory');
-    } else {
-      log('    4. Start Claude Code CLI in that directory');
-    }
+    log('    4. Complete GitHub workflow setup (see above)');
+    log('    5. Start Claude Code CLI in that directory');
     log();
 
     // If running from framework directory, ask about additional deployments
