@@ -276,33 +276,26 @@ function generateClaudeMd(projectDir, frameworkPath, processFramework, domainLis
   const instructionsContent = projectInstructions ||
     '<!-- Add your project-specific instructions below this line -->\n<!-- These will be preserved during framework updates -->';
 
-  // Generate primary specialist step if domain specialists are available
   const hasDomainSpecialists = domainListStr && domainListStr !== 'None';
-  const primarySpecialistStep = hasDomainSpecialists ? `
-
-### Step 4: Load Primary Domain Specialist
-
-Read \`framework-config.json\` to get the \`primarySpecialist\` value.
-
-If a primary specialist is configured (not null):
-1. Read the specialist file: \`${frameworkPath}/System-Instructions/Domain/[primarySpecialist].md\`
-2. Note the active role for your ready message
-
-If no primary specialist is configured, skip this step.
-` : '';
-
-  const githubStepNumber = hasDomainSpecialists ? '5' : '4';
-  const confirmStepNumber = hasDomainSpecialists ? '6' : '5';
   const switchRoleRow = hasDomainSpecialists ? `| \`/switch-role\` | Switch active domain specialist mid-session |\n` : '';
   const addRoleRow = `| \`/add-role\` | Add a new domain specialist to your project |\n`;
-  const ghWorkflowPath = `${frameworkPath}/Reference/GitHub-Workflow.md`;
 
   const content = `# Claude Code - Project Instructions
 
-**Purpose:** Automatic initialization with IDPF Framework integration
 **Process Framework:** ${processFramework}
 **Domain Specialists:** ${domainListStr || 'None'}
 **Primary Specialist:** ${primarySpecialist || 'None'}
+
+---
+
+## Rules Auto-Loading
+
+Rules are automatically loaded from \`.claude/rules/\`:
+- \`anti-hallucination.md\` - Software development quality rules
+- \`github-workflow.md\` - GitHub issue management integration (if enabled)
+- \`startup.md\` - Session initialization and specialist loading
+
+**No manual file reading required at startup.**
 
 ---
 
@@ -310,74 +303,27 @@ If no primary specialist is configured, skip this step.
 
 This project uses the IDPF Framework ecosystem.
 **Configuration:** See \`framework-config.json\` for framework location and project type.
+**Framework Path:** \`${frameworkPath}\`
 
 ---
 
-## Startup Procedure
+## On-Demand Documentation
 
-When starting a new session in this repository, **IMMEDIATELY** perform these steps:
+Load detailed documentation when needed:
 
-### Step 1: Confirm Date
-
-State the date from your environment information and ask the user to confirm it is correct. **Wait for the user to respond before proceeding to Step 2.**
-
-\`\`\`
-"According to my environment information, today's date is YYYY-MM-DD. Is this correct?"
-\`\`\`
-
-If the user responds "no", prompt for the correct date in YYYY-MM-DD format.
-
-This ensures accurate timestamps in commits and documentation.
-
-### Step 2: Load Configuration
-
-Read \`framework-config.json\` to get the \`frameworkPath\`.
-
-### Step 3: Load Startup Instructions and Framework Core
-
-Read these files in order:
-1. \`STARTUP.md\` - Condensed essential rules and guidelines
-2. \`${frameworkPath}/${processFramework}/${getCoreFrameworkFileName(processFramework)}\` - Core framework workflow
-${primarySpecialistStep}
-### Step ${githubStepNumber}: Read GitHub Workflow Integration (MUST READ)
-
-Read the GitHub Workflow file to activate issue management:
-
-\`\`\`
-${ghWorkflowPath}
-\`\`\`
-
-If \`.gh-pmu.yml\` does not exist, ask user if they have a GitHub repo and project.
-If yes, run \`gh pmu init\`. If no, skip GitHub integration.
-
-### Step ${confirmStepNumber}: Confirm Ready
-
-Confirm initialization is complete and ask the user what they would like to work on.
-${hasDomainSpecialists ? `If a primary specialist was loaded, include it in your ready message: "Active Role: [specialist-name]"` : ''}
-
-**Do NOT proceed with any other work until the startup sequence is complete.**
+| When Working On | Load File |
+|-----------------|-----------|
+| Framework workflow | \`${frameworkPath}/${processFramework}/${getCoreFrameworkFileName(processFramework)}\` |
+| Domain specialist | \`${frameworkPath}/System-Instructions/Domain/{specialist}.md\` |
+| Testing patterns | \`.claude/skills/test-writing-patterns/SKILL.md\` |
 
 ---
 
 ## Available Commands
 
-After completing the startup procedure, display available commands:
-
 | Command | Purpose |
 |---------|---------|
 ${switchRoleRow}${addRoleRow}
-
----
-
-## Post-Compact Procedure
-
-**MUST REREAD AFTER COMPACTION:** After any compact operation (manual or automatic), immediately re-read:
-
-\`\`\`
-${ghWorkflowPath}
-\`\`\`
-
-This ensures GitHub workflow rules persist across context resets.
 
 ---
 
@@ -391,35 +337,6 @@ ${instructionsContent}
 `;
 
   fs.writeFileSync(path.join(projectDir, 'CLAUDE.md'), content);
-}
-
-function generateStartupMd(projectDir, frameworkPath, processFramework, domainListStr) {
-  const content = `# Startup Instructions
-
-**Framework:** ${processFramework}
-**Specialists:** ${domainListStr || 'None'}
-
----
-
-## Required Reading
-
-**MUST READ** the Anti-Hallucination Rules for Software Development:
-
-\`\`\`
-${frameworkPath}/Assistant/Anti-Hallucination-Rules-for-Software-Development.md
-\`\`\`
-
-These rules are critical for maintaining code quality and accuracy.
-
----
-
-## Quick Reference
-
-**Framework Documentation:** \`${frameworkPath}/${processFramework}/\`
-**Domain Specialists:** \`${frameworkPath}/System-Instructions/Domain/\`
-`;
-
-  fs.writeFileSync(path.join(projectDir, 'STARTUP.md'), content);
 }
 
 function getCoreFrameworkFileName(processFramework) {
@@ -655,6 +572,230 @@ function deployWorkflowHook(projectDir, frameworkPath) {
   return false;
 }
 
+// ======================================
+//  Rules Deployment Functions
+// ======================================
+
+/**
+ * Generate startup rules content for user projects
+ */
+function generateStartupRules(frameworkPath, processFramework, domainListStr, primarySpecialist) {
+  const hasPrimary = primarySpecialist && primarySpecialist !== 'None';
+  const specialistStep = hasPrimary
+    ? `2. **Load Primary Specialist**: Read \`${frameworkPath}/System-Instructions/Domain/${primarySpecialist}.md\`
+3. **Report Ready**: Confirm initialization complete with "Active Role: ${primarySpecialist}"
+4. **Ask**: What would you like to work on?`
+    : `2. **Report Ready**: Confirm initialization complete
+3. **Ask**: What would you like to work on?`;
+
+  return `# Session Startup
+
+**Version:** 1.0
+**Framework:** ${processFramework}
+**Specialists:** ${domainListStr || 'None'}
+**Primary Specialist:** ${primarySpecialist || 'None'}
+
+---
+
+## Startup Sequence
+
+When starting a new session:
+
+1. **Confirm Date**: State the date from environment info
+${specialistStep}
+
+---
+
+## On-Demand Loading
+
+| When Needed | Load From |
+|-------------|-----------|
+| Framework workflow | \`${frameworkPath}/${processFramework}/\` |
+| Domain specialist | \`${frameworkPath}/System-Instructions/Domain/{specialist}.md\` |
+| Skill usage | \`.claude/skills/{skill-name}/SKILL.md\` |
+
+---
+
+**End of Session Startup**
+`;
+}
+
+/**
+ * Deploy rules to .claude/rules/ directory
+ */
+function deployRules(projectDir, frameworkPath, processFramework, domainListStr, primarySpecialist, enableGitHubWorkflow) {
+  const rulesDir = path.join(projectDir, '.claude', 'rules');
+  fs.mkdirSync(rulesDir, { recursive: true });
+
+  const results = { ah: false, gh: false, startup: false };
+
+  // Copy anti-hallucination rules (always)
+  const ahSrc = path.join(frameworkPath, 'Assistant', 'Anti-Hallucination-Rules-for-Software-Development.md');
+  const ahDest = path.join(rulesDir, 'anti-hallucination.md');
+  if (fs.existsSync(ahSrc)) {
+    // Read source and add version header
+    const ahContent = fs.readFileSync(ahSrc, 'utf8');
+    const ahWithHeader = `# Anti-Hallucination Rules for Software Development
+
+**Version:** 1.0
+**Source:** Assistant/Anti-Hallucination-Rules-for-Software-Development.md
+
+---
+
+${ahContent.replace(/^# Anti-Hallucination Rules for Software Development\s*\n*/, '')}`;
+    fs.writeFileSync(ahDest, ahWithHeader);
+    results.ah = true;
+  }
+
+  // Copy GitHub workflow (if enabled)
+  if (enableGitHubWorkflow) {
+    const ghSrc = path.join(frameworkPath, 'Reference', 'GitHub-Workflow.md');
+    const ghDest = path.join(rulesDir, 'github-workflow.md');
+    if (fs.existsSync(ghSrc)) {
+      // Read source and add version header
+      const ghContent = fs.readFileSync(ghSrc, 'utf8');
+      const ghWithHeader = `# GitHub Workflow Integration
+
+**Version:** 1.0
+**Source:** Reference/GitHub-Workflow.md
+
+---
+
+${ghContent.replace(/^# GitHub Workflow Integration\s*\n*/, '')}`;
+      fs.writeFileSync(ghDest, ghWithHeader);
+      results.gh = true;
+    }
+  }
+
+  // Generate startup rules
+  const startupContent = generateStartupRules(frameworkPath, processFramework, domainListStr, primarySpecialist);
+  fs.writeFileSync(path.join(rulesDir, 'startup.md'), startupContent);
+  results.startup = true;
+
+  return results;
+}
+
+// ======================================
+//  Migration Functions
+// ======================================
+
+/**
+ * Compare semantic versions
+ * Returns: -1 if a < b, 0 if a == b, 1 if a > b
+ */
+function compareVersions(a, b) {
+  const partsA = a.split('.').map(Number);
+  const partsB = b.split('.').map(Number);
+  for (let i = 0; i < 3; i++) {
+    const pA = partsA[i] || 0;
+    const pB = partsB[i] || 0;
+    if (pA < pB) return -1;
+    if (pA > pB) return 1;
+  }
+  return 0;
+}
+
+/**
+ * Migration definitions
+ * Each migration has a version threshold and a migrate function
+ */
+const MIGRATIONS = [
+  {
+    version: '2.9.0',
+    description: 'Migrate to .claude/rules/ auto-loading',
+    migrate: (projectDir, frameworkPath, config) => {
+      // Remove old STARTUP.md
+      const startupPath = path.join(projectDir, 'STARTUP.md');
+      if (fs.existsSync(startupPath)) {
+        fs.unlinkSync(startupPath);
+        logSuccess('  ✓ Removed STARTUP.md (no longer needed)');
+      }
+
+      // Determine if GitHub workflow was enabled (check for hook file)
+      const hasGitHubWorkflow = fs.existsSync(path.join(projectDir, '.claude', 'hooks', 'workflow-trigger.js'));
+
+      // Create .claude/rules/ with new structure
+      const rulesResult = deployRules(
+        projectDir,
+        frameworkPath,
+        config.projectType.processFramework,
+        config.projectType.domainSpecialists.join(', '),
+        config.projectType.primarySpecialist,
+        hasGitHubWorkflow
+      );
+
+      if (rulesResult.ah) {
+        logSuccess('  ✓ Created .claude/rules/anti-hallucination.md');
+      }
+      if (rulesResult.gh) {
+        logSuccess('  ✓ Created .claude/rules/github-workflow.md');
+      }
+      if (rulesResult.startup) {
+        logSuccess('  ✓ Created .claude/rules/startup.md');
+      }
+
+      // Regenerate simplified CLAUDE.md (preserves project instructions)
+      const { projectInstructions } = parseExistingInstallation(projectDir);
+      generateClaudeMd(
+        projectDir,
+        frameworkPath,
+        config.projectType.processFramework,
+        config.projectType.domainSpecialists.join(', '),
+        config.projectType.primarySpecialist,
+        projectInstructions
+      );
+      logSuccess('  ✓ Updated CLAUDE.md (simplified)');
+    }
+  },
+  // Future migrations added here
+];
+
+/**
+ * Run migrations for existing installations
+ */
+function runMigrations(projectDir, frameworkPath) {
+  const configPath = path.join(projectDir, 'framework-config.json');
+  if (!fs.existsSync(configPath)) {
+    logError('No framework-config.json found. Run install.js without --migrate first.');
+    process.exit(1);
+  }
+
+  const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+  const installedVersion = config.installedVersion || '0.0.0';
+  const currentVersion = readFrameworkVersion(frameworkPath);
+
+  log(`Installed version: ${installedVersion}`);
+  log(`Framework version: ${currentVersion}`);
+  log();
+
+  const applicableMigrations = MIGRATIONS.filter(m =>
+    compareVersions(installedVersion, m.version) < 0
+  );
+
+  if (applicableMigrations.length === 0) {
+    logSuccess('No migrations needed. Project is up to date.');
+    return;
+  }
+
+  log(`Applying ${applicableMigrations.length} migration(s)...`);
+  log();
+
+  for (const migration of applicableMigrations) {
+    divider();
+    log(`Migration: ${migration.version} - ${migration.description}`);
+    divider();
+    migration.migrate(projectDir, frameworkPath, config);
+    log();
+  }
+
+  // Update installed version
+  config.installedVersion = currentVersion;
+  config.migratedDate = getCurrentDate();
+  fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+
+  logSuccess(`Migration complete. Updated to version ${currentVersion}`);
+}
+
 function generateSettingsLocal(projectDir, enableGitHubWorkflow) {
   const settingsPath = path.join(projectDir, '.claude', 'settings.local.json');
 
@@ -742,6 +883,10 @@ See \`Templates/Testing-Approach-Selection-Guide.md\` for guidance on:
 // ======================================
 
 async function main() {
+  // Check for --migrate flag
+  const args = process.argv.slice(2);
+  const migrateMode = args.includes('--migrate');
+
   // Load prompts module, auto-install if missing
   let prompts;
   try {
@@ -775,7 +920,40 @@ async function main() {
     // Clear screen
     console.clear();
 
-    // Banner
+    // Migration mode
+    if (migrateMode) {
+      logCyan('╔══════════════════════════════════════╗');
+      logCyan('║    IDPF Framework Migration Tool     ║');
+      logCyan('╚══════════════════════════════════════╝');
+      log();
+
+      const projectDir = process.cwd();
+      const configPath = path.join(projectDir, 'framework-config.json');
+
+      if (!fs.existsSync(configPath)) {
+        logError('No framework-config.json found in current directory.');
+        logError('Run the installer without --migrate first.');
+        process.exit(1);
+      }
+
+      const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+      const frameworkPath = config.frameworkPath;
+
+      if (!fs.existsSync(path.join(frameworkPath, 'framework-manifest.json'))) {
+        logError(`Framework not found at: ${frameworkPath}`);
+        logError('Please update frameworkPath in framework-config.json');
+        process.exit(1);
+      }
+
+      log(`Project: ${projectDir}`);
+      log(`Framework: ${frameworkPath}`);
+      log();
+
+      runMigrations(projectDir, frameworkPath);
+      return;
+    }
+
+    // Banner (normal install mode)
     logCyan('╔══════════════════════════════════════╗');
     logCyan('║      IDPF Framework Installer        ║');
     logCyan('╚══════════════════════════════════════╝');
@@ -1153,9 +1331,17 @@ async function main() {
     generateClaudeMd(projectDir, frameworkPath, processFramework, domainListStr, primarySpecialist, projectInstructions);
     logSuccess('  ✓ CLAUDE.md');
 
-    // STARTUP.md
-    generateStartupMd(projectDir, frameworkPath, processFramework, domainListStr);
-    logSuccess('  ✓ STARTUP.md');
+    // Deploy rules to .claude/rules/
+    const rulesResult = deployRules(projectDir, frameworkPath, processFramework, domainListStr, primarySpecialist, enableGitHubWorkflow);
+    if (rulesResult.ah) {
+      logSuccess('  ✓ .claude/rules/anti-hallucination.md');
+    }
+    if (rulesResult.gh) {
+      logSuccess('  ✓ .claude/rules/github-workflow.md');
+    }
+    if (rulesResult.startup) {
+      logSuccess('  ✓ .claude/rules/startup.md');
+    }
 
     // switch-role command (only if domain specialists selected)
     if (generateSwitchRole(projectDir, frameworkPath, selectedDomains, primarySpecialist)) {

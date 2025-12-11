@@ -6,6 +6,50 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [2.9.0] - 2025-12-10
+
+### Added
+
+#### Rules Auto-Loading (#147, #154-157)
+- **`.claude/rules/` directory** - Rules auto-load at session start without explicit file reads
+  - `01-anti-hallucination.md` - Framework development quality rules
+  - `02-github-workflow.md` - GitHub issue management integration
+  - `03-session-startup.md` - Startup procedure and on-demand loading
+- **Migration support** - `install.js --migrate` flag for existing projects
+- **Release Phase 2d** - Rules directory build in /prepare-release
+- **Release Phase 2e** - Migration validation in /prepare-release
+
+#### Workflow Triggers (#150, #152, #153)
+- **PRD workflow trigger** (#153) - `prd:` prefix converts proposals to PRDs using IDPF-PRD framework
+- **Commands trigger** (#150, #152) - `commands` keyword lists available workflow triggers
+- **Lightning bolt indicator** (#150) - Visual ⚡ indicator when workflow triggers are detected
+
+### Changed
+- **CLAUDE.md** - Simplified to reference auto-loading rules instead of procedural startup
+- **Session-Startup-Instructions.md** - Updated to v2.7 documenting rules auto-loading
+- **Framework-Overview.md** - Added Rules Auto-Loading section
+- **README-DIST.md** - Added rules auto-loading and migration documentation
+- **install.js** - Added `deployRules()`, `generateStartupRules()`, `runMigrations()` functions
+- **/prepare-release** - Added Phase 2d (Rules Build) and Phase 2e (Migration Validation)
+- **/minimize-files** - Documented `.claude/rules/` exclusion
+
+### Removed
+- **_chg.md files** (#149) - Removed change history files and related CLAUDE.md rules (82 files)
+- **Simplified date presentation** (#148) - Removed verbose date confirmation in session startup
+
+### Migration
+For existing projects using framework v2.8.x or earlier:
+```bash
+node [frameworkPath]/install.js --migrate
+```
+
+This will:
+1. Remove old `STARTUP.md` file
+2. Create `.claude/rules/` directory with auto-loading rules
+3. Regenerate simplified `CLAUDE.md`
+
+---
+
 ## [2.8.0] - 2025-12-09
 
 ### Added

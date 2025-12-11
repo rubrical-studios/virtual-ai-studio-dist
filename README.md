@@ -1,6 +1,6 @@
 # IDPF Framework - AI-Assisted Development
 
-**Current Version:** 2.6.3
+**Current Version:** 2.9.0
 
 A comprehensive ecosystem for AI-assisted software development with Claude.
 
@@ -17,6 +17,7 @@ The installer will:
 - Detect your project type
 - Copy required framework files
 - Configure Claude Code integration
+- Deploy rules to `.claude/rules/` for auto-loading
 
 ---
 
@@ -61,6 +62,21 @@ Full-Stack-Developer, Backend-Specialist, Frontend-Specialist, DevOps-Engineer, 
 ```bash
 # From your project directory (where framework-config.json is)
 node [frameworkPath]/fetch-updates.js
+```
+
+---
+
+## Rules Auto-Loading (v2.19+)
+
+Rules in `.claude/rules/` load automatically at session start:
+- No explicit file reads required
+- Rules persist after context compaction
+- ~47% token reduction at startup
+
+### Migration for Existing Projects
+
+```bash
+node [frameworkPath]/install.js --migrate
 ```
 
 ---

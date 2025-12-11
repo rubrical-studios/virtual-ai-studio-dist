@@ -1,43 +1,40 @@
 # Session Startup Instructions
-**Version:** 2.2
+**Version:** 2.7
+
+## Rules Auto-Loading (v2.19+)
+Essential rules auto-load from `.claude/rules/`:
+| Rule File | Content | Source |
+|-----------|---------|--------|
+| 01-anti-hallucination.md | Framework quality rules | Assistant/ |
+| 02-github-workflow.md | GitHub integration | Reference/ |
+| 03-session-startup.md | Startup procedure | Generated |
+**Benefits:** No explicit reads, compact-resilient, ~47% token reduction
+
 ## Startup Sequence
-### 1. Confirm Date
-State date from environment, ask user to confirm. If wrong, get correct date (YYYY-MM-DD).
+### 1. Acknowledge Date
+State date from environment and proceed.
 
 ### 2. Read Framework Summary
 ```
-E:\Projects\process-docs\Overview\Framework-Summary.md
+Overview/Framework-Summary.md
 ```
-~150 lines - Quick reference for versions, counts, selection matrix, skills registry.
+Provides: versions, counts, selection matrix, skills registry, on-demand references.
 
-### 3. Read Anti-Hallucination Rules
-```
-E:\Projects\process-docs\Assistant\Anti-Hallucination-Rules-for-Framework-Development.md
-```
-Core: Accuracy over speed, verification over assumption, cross-reference validation.
-**On-Demand:** Anti-Hallucination-Rules-for-Skill-Creation.md, Anti-Hallucination-Rules-for-PRD-Work.md
+### 3. Confirm Initialization
+Report: Date, Framework version, Skill count, Specialists count, GitHub Workflow status.
+Ask user what to work on.
 
-### 4. Read GitHub Workflow Integration
-```
-E:\Projects\process-docs\Reference\GitHub-Workflow.md
-```
-Enables: Issue creation, project board via `gh pmu`, sub-issue linking, proposal workflow.
-
-## Post-Compact Procedure
-**MUST REREAD:** `Reference\GitHub-Workflow.md` after any compact operation.
+## Post-Compact Behavior
+**No re-reading required.** Rules auto-reload after compaction.
 
 ## On-Demand Documentation
 | When Working On | Load File |
 |-----------------|-----------|
-| IDPF frameworks | Framework-Development.md |
-| Testing frameworks | Framework-Testing.md |
-| System Instructions | Framework-System-Instructions.md |
-| Skills | Framework-Skills.md |
-| Framework transitions | Framework-Transitions.md |
-| Complete reference | Framework-Overview.md |
-
-## After Initialization
-1. Confirm complete
-2. Report: Date, Framework version, Skill count, Specialists count
-3. Ask user what to work on
-4. Load detailed docs on-demand
+| IDPF frameworks | Overview/Framework-Development.md |
+| Testing frameworks | Overview/Framework-Testing.md |
+| System Instructions | Overview/Framework-System-Instructions.md |
+| Skills | Overview/Framework-Skills.md |
+| Framework transitions | Overview/Framework-Transitions.md |
+| Complete reference | Overview/Framework-Overview.md |
+| Skill creation rules | Assistant/Anti-Hallucination-Rules-for-Skill-Creation.md |
+| PRD work | Assistant/Anti-Hallucination-Rules-for-PRD-Work.md |

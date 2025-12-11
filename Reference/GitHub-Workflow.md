@@ -78,10 +78,14 @@ Same flow as Bug, use `--label "enhancement"`
 **Step 3:** Wait for "convert to PRD"
 
 ### 8. Proposal-to-PRD Workflow
-**Triggers:** "convert to PRD", "ready for PRD", "make PRD"
+**Triggers:** "convert to PRD", "ready for PRD", "make PRD", `prd: [name]`, `prd: for #N`
 **Step 1:** Read proposal, load IDPF-PRD, load anti-hallucination rules
 **Step 2:** Run phases (Discovery → Elicitation → Specification → Generation)
 **Step 3:** Generate `PRD/PRD-[Name].md`, update proposal status, `--remove-label "idea" --add-label "prd"`
+
+## Trigger Words
+`bug:`, `enhancement:`, `finding:`, `idea:`, `proposal:`, `prd:`
+Create issue first (except `prd:` → Proposal-to-PRD workflow directly)
 
 ## Session Behavior Summary
 - Auto-detect bugs/enhancements/proposals/ideas

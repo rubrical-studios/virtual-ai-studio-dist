@@ -1,5 +1,5 @@
 # Framework Overview
-**Version:** 2.8.0
+**Version:** 2.9.0
 **Purpose:** Comprehensive reference for AI assistants and framework development
 
 ## Framework Purpose
@@ -69,6 +69,15 @@ IDPF-Testing-Core (foundation)
 **Anti-Hallucination Rules:** Accuracy over helpfulness, uncertainty over invention, verification over assumption.
 **Never Invent:** API methods, class names, config syntax, command flags, file paths
 **Always:** Read files before editing, verify paths, auto-trigger web search for current/latest
+
+## Rules Auto-Loading (v2.9+)
+**Location:** `.claude/rules/` - auto-loads at session start
+| File | Content | Source |
+|------|---------|--------|
+| 01-anti-hallucination.md | Framework quality rules | Assistant/ |
+| 02-github-workflow.md | GitHub integration | Reference/ |
+| 03-session-startup.md | Startup procedure | Generated |
+**Benefits:** No explicit reads, compact-resilient, ~47% token reduction
 
 ## Framework Transitions
 ```
