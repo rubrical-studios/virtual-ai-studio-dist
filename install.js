@@ -662,20 +662,16 @@ function createGitHubRepo(projectDir, repoName, visibility) {
  */
 function copyProjectBoard(templateNumber, projectTitle, targetOwner) {
   try {
-    // Copy project from rubrical-studios
+    // Copy project from rubrical-studios with JSON output for reliable parsing
     const result = execSync(
-      `gh project copy ${templateNumber} --source-owner rubrical-studios --target-owner ${targetOwner} --title "${projectTitle}"`,
+      `gh project copy ${templateNumber} --source-owner rubrical-studios --target-owner ${targetOwner} --title "${projectTitle}" --format json`,
       { stdio: 'pipe' }
     ).toString();
 
-    // Extract project number from output
-    const numberMatch = result.match(/Project #?(\d+)/i) || result.match(/(\d+)/);
-    const projectNumber = numberMatch ? parseInt(numberMatch[1], 10) : null;
-
-    // Construct project URL
-    const projectUrl = projectNumber
-      ? `https://github.com/users/${targetOwner}/projects/${projectNumber}`
-      : null;
+    // Parse JSON output to extract project number and URL
+    const projectData = JSON.parse(result);
+    const projectNumber = projectData.number || null;
+    const projectUrl = projectData.url || null;
 
     return { success: true, projectNumber, projectUrl };
   } catch (err) {
