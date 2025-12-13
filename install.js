@@ -690,7 +690,7 @@ function copyProjectBoard(templateNumber, projectTitle, targetOwner) {
 function linkProjectBoard(projectNumber, owner, repoName) {
   try {
     execSync(
-      `gh project link ${projectNumber} --owner ${owner} --repo ${owner}/${repoName}`,
+      `gh project link ${projectNumber} --owner ${owner} --repo ${repoName}`,
       { stdio: 'pipe' }
     );
     return { success: true };

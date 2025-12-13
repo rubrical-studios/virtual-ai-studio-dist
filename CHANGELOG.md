@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [2.11.2] - 2025-12-13
+
+### Fixed
+- **Project board linking** (#398) - Fixed `gh project link` command using incorrect `--repo` flag format (was `owner/repo`, should be just `repo`)
+
+---
+
 ## [2.11.1] - 2025-12-13
 
 ### Fixed
