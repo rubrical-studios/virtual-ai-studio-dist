@@ -144,6 +144,24 @@ const TESTING_FRAMEWORKS = [
   { value: 'IDPF-Contract-Testing', title: 'IDPF-Contract-Testing', description: 'Contract testing framework' },
 ];
 
+/**
+ * Valid framework transitions per Framework-Transitions.md
+ * Key: source framework, Value: array of valid target frameworks
+ *
+ * Rules:
+ * - Vibe can transition to Structured or Agile (exploration complete)
+ * - Structured and Agile can transition between each other
+ * - Structured and Agile can transition to LTS (production ready)
+ * - Cannot transition TO Vibe from Structured/Agile (quality standards never decrease)
+ * - LTS is terminal (no transitions allowed)
+ */
+const VALID_TRANSITIONS = {
+  'IDPF-Vibe': ['IDPF-Structured', 'IDPF-Agile'],
+  'IDPF-Structured': ['IDPF-Agile', 'IDPF-LTS'],
+  'IDPF-Agile': ['IDPF-Structured', 'IDPF-LTS'],
+  'IDPF-LTS': [], // Terminal state - no transitions allowed
+};
+
 const ALL_SKILLS = [
   'anti-pattern-analysis',
   'api-versioning',
@@ -194,6 +212,48 @@ function logCyan(msg) {
 
 function divider() {
   log(colors.cyan('───────────────────────────────────────'));
+}
+
+/**
+ * Check if a framework transition is valid
+ * @param {string} from - Source framework (e.g., 'IDPF-Structured')
+ * @param {string} to - Target framework (e.g., 'IDPF-Agile')
+ * @returns {boolean} True if transition is valid
+ */
+function isValidTransition(from, to) {
+  if (!VALID_TRANSITIONS[from]) {
+    return false;
+  }
+  return VALID_TRANSITIONS[from].includes(to);
+}
+
+/**
+ * Get valid transition targets for a framework
+ * @param {string} from - Source framework
+ * @returns {Array<{value: string, title: string, description: string}>} Valid target frameworks
+ */
+function getValidTransitionTargets(from) {
+  const validTargets = VALID_TRANSITIONS[from] || [];
+  return PROCESS_FRAMEWORKS.filter(f => validTargets.includes(f.value));
+}
+
+/**
+ * Get reason why a transition is invalid
+ * @param {string} from - Source framework
+ * @param {string} to - Target framework
+ * @returns {string} Explanation of why transition is invalid
+ */
+function getTransitionBlockReason(from, to) {
+  if (from === 'IDPF-LTS') {
+    return 'LTS is a terminal state. No transitions are allowed from LTS. For new development, start a new project with a different framework.';
+  }
+  if (to === 'IDPF-Vibe' && (from === 'IDPF-Structured' || from === 'IDPF-Agile')) {
+    return 'Transition to Vibe from Structured/Agile is not allowed. Quality standards should never decrease.';
+  }
+  if (from === to) {
+    return 'Already using this framework.';
+  }
+  return 'This transition is not supported.';
 }
 
 /**
@@ -628,6 +688,37 @@ function checkGhCliPrerequisites() {
       message: 'Could not verify authentication scopes',
       remediation: 'Run: gh auth refresh -s repo,project',
     });
+  }
+
+  // AC-5: Check and auto-install gh-pmu extension
+  try {
+    const extensions = execSync('gh extension list', { stdio: 'pipe' }).toString();
+    if (!extensions.includes('gh-pmu')) {
+      log(colors.cyan('  Installing gh-pmu extension...'));
+      try {
+        execSync('gh extension install rubrical-studios/gh-pmu', { stdio: 'pipe' });
+        logSuccess('  ✓ Installed gh-pmu extension');
+      } catch (installErr) {
+        issues.push({
+          type: 'gh_pmu_install_failed',
+          message: 'Failed to install gh-pmu extension',
+          remediation: 'Run manually: gh extension install rubrical-studios/gh-pmu',
+        });
+      }
+    }
+  } catch {
+    // If we can't check extensions, try to install anyway
+    log(colors.cyan('  Installing gh-pmu extension...'));
+    try {
+      execSync('gh extension install rubrical-studios/gh-pmu', { stdio: 'pipe' });
+      logSuccess('  ✓ Installed gh-pmu extension');
+    } catch {
+      issues.push({
+        type: 'gh_pmu_install_failed',
+        message: 'Failed to install gh-pmu extension',
+        remediation: 'Run manually: gh extension install rubrical-studios/gh-pmu',
+      });
+    }
   }
 
   return { ready: issues.length === 0, issues };
@@ -1902,7 +1993,7 @@ async function main() {
 
     if (lockedFramework) {
       logWarning('Detected existing installation');
-      logCyan(`  Locked framework: ${lockedFramework}`);
+      logCyan(`  Current framework: ${lockedFramework}`);
       if (existingDomains.length > 0) {
         logCyan(`  Existing specialists: ${existingDomains.join(', ')}`);
       }
@@ -1911,10 +2002,66 @@ async function main() {
       }
       log();
 
-      processFramework = lockedFramework;
+      // Check if transitions are available from this framework
+      const validTargets = getValidTransitionTargets(lockedFramework);
 
-      log(colors.dim('(To change framework, delete CLAUDE.md and re-run installer)'));
-      log();
+      if (validTargets.length === 0) {
+        // LTS or other terminal state
+        logWarning(getTransitionBlockReason(lockedFramework, null));
+        log();
+        processFramework = lockedFramework;
+      } else {
+        // Ask if user wants to change framework (Question 1)
+        const { wantChange } = await prompts({
+          type: 'confirm',
+          name: 'wantChange',
+          message: `Would you like to change the framework? (Currently: ${lockedFramework})`,
+          initial: false,
+        }, { onCancel });
+
+        if (!wantChange) {
+          processFramework = lockedFramework;
+          log();
+          logSuccess(`Keeping current framework: ${processFramework}`);
+          log();
+        } else {
+          // Show only valid transition targets (Question 2)
+          log();
+          log(colors.dim('Valid transitions from ' + lockedFramework + ':'));
+          for (const target of validTargets) {
+            log(colors.dim(`  • ${target.title} - ${target.description}`));
+          }
+          log();
+
+          const { newFramework } = await prompts({
+            type: 'select',
+            name: 'newFramework',
+            message: 'Select new framework',
+            choices: validTargets,
+          }, { onCancel });
+
+          // Confirm the transition (Question 3)
+          log();
+          const { confirmTransition } = await prompts({
+            type: 'confirm',
+            name: 'confirmTransition',
+            message: `Transition from ${lockedFramework} to ${newFramework}?`,
+            initial: true,
+          }, { onCancel });
+
+          if (!confirmTransition) {
+            processFramework = lockedFramework;
+            log();
+            logWarning('Transition cancelled. Keeping current framework.');
+            log();
+          } else {
+            processFramework = newFramework;
+            log();
+            logSuccess(`Framework transition: ${lockedFramework} → ${newFramework}`);
+            log();
+          }
+        }
+      }
     } else {
       // Framework selection
       const { framework } = await prompts({

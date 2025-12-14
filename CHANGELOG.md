@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [2.12.0] - 2025-12-13
+
+### Added
+- **Framework transition support** (#402) - install.js now allows changing frameworks on existing installations with valid transition validation (Vibe→Structured/Agile, Structured↔Agile, Structured/Agile→LTS)
+- **Auto-install gh-pmu extension** (#143) - GitHub CLI extension automatically installed during GitHub setup if not present
+- **New slash commands** (#355, #356) - Added `/audit-hallucination` and `/gap-analysis` commands for quality assurance
+
+### Changed
+- **GitHub Workflow gh-pmu integration** (#400) - Updated workflows to leverage existing gh-pmu features for unified issue and project management
+- **GitHub-Workflow.md consolidation** (#401) - Refactored to remove redundancy and improve maintainability
+
+---
+
 ## [2.11.3] - 2025-12-13
 
 ### Fixed

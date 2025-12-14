@@ -1,5 +1,5 @@
 # Framework Overview
-**Version:** 2.11.3
+**Version:** 2.12.0
 **Purpose:** Comprehensive reference for AI assistants and framework development
 
 ## Framework Purpose
@@ -57,7 +57,7 @@ IDPF-Testing-Core (foundation)
 - Legacy: Senior_Full_Stack_Developer.md (backward compatibility)
 - Vibe Agent: Core + 6 platform-specific
 
-## Skills (14 total)
+## Skills (21 total)
 **TDD:** tdd-red-phase, tdd-green-phase, tdd-refactor-phase, tdd-failure-recovery, test-writing-patterns
 **BDD:** bdd-writing
 **PRD:** extract-prd
