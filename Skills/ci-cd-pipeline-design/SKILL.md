@@ -1,6 +1,6 @@
 ---
 name: ci-cd-pipeline-design
-version: 1.0.0
+version: 1.1.0
 description: Guide developers through CI/CD pipeline design including architecture patterns, stage design, and security considerations
 license: Complete terms in LICENSE.txt
 ---
@@ -434,6 +434,29 @@ container:
 - Infrastructure as code
 - Consistent deployment process
 - Test in production-like environments
+## GitHub API Best Practices
+When pipelines interact with GitHub, avoid rate limits and abuse detection:
+**Authentication:**
+- Use fine-scoped PATs or GitHub Apps (not interactive logins)
+- Reuse tokens across runs - don't re-authenticate per step
+- Store tokens in CI/CD secrets
+**Rate Limiting:**
+- Add exponential backoff with jitter to retries
+- Stagger concurrent API/workflow calls
+- Monitor `X-RateLimit-Remaining` headers
+**Workflow Triggers:**
+- Review triggers to prevent recursive cascades
+- Use `concurrency` to limit parallel runs:
+```yaml
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+```
+**Abuse Detection Patterns to Avoid:**
+- High volume auth attempts
+- Rapid workflow/token creation/deletion
+- Excessive API calls without throttling
+**Testing:** Mock GitHub API in unit tests; limit live calls to E2E only.
 ## Resources
 See `resources/` directory for:
 - `architecture-patterns.md` - Pipeline architecture patterns

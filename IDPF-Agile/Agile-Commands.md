@@ -64,7 +64,6 @@ Sprint tracking deferred - use GitHub project board.
 ## Project
 | Command | Description |
 |---------|-------------|
-| `Project-Status` | Deferred - use GitHub board |
 | `Velocity-Report` | Deferred - use GitHub board |
 | `Push-Changes` | Commit and push |
 | `Create-Release` | Tag release |

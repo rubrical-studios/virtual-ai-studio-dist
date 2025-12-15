@@ -60,7 +60,7 @@ Story Points: [estimate] | Priority: [H/M/L] | Status: [state]
 **Backlog:** Create-Backlog, Show-Backlog, Add-Story, Refine-Story, Estimate-Story, Prioritize-Backlog, Split-Story, Create-Issues-Agile
 **Sprint:** Plan-Sprint, Show-Sprint, Start-Story, Story-Complete, Sprint-Progress, Sprint-Review, Sprint-Retro, End-Sprint
 **Development:** Done-Next-Step, Rollback-Previous-Step, Run-Tests, Show-Coverage, Refactor-Now
-**Project:** Project-Status, Velocity-Report, Push-Changes, Create-Release, Project-Complete
+**Project:** Velocity-Report, Push-Changes, Create-Release, Project-Complete
 ### When to Use
 - Evolving requirements
 - Iterative delivery with feedback

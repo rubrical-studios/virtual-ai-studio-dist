@@ -6,6 +6,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [2.14.0] - 2025-12-14
+
+### Added
+- **Optional audit arguments for /prepare-release** (#432) - Added `audit:minimization`, `audit:hallucination`, and `audit:all` arguments to enable quality audits during release preparation
+- **Release Field Support documentation** (#431) - Comprehensive documentation for release and patch workflow field support
+- **GitHub API rate limit guidance** (#430) - Added rate limit best practices, authentication strategies, and exponential backoff patterns to ci-cd-pipeline-design skill
+- **Single source of truth for minimization exclusions** (#422) - Created `minimize-config.json` for centralized configuration of minimization behavior
+- **Content validation in /audit-hallucination** (#418) - Implemented validation for version consistency, counts, file paths, cross-references, domain specialists, and skill content
+
+### Changed
+- **Updated /prepare-release command** - Enhanced with argument-hint frontmatter for better discoverability
+
+### Fixed
+- **Argument-hint frontmatter in /prepare-release** (#433) - Added missing frontmatter to enable argument hints in slash command
+
+---
+
 ## [2.13.0] - 2025-12-13
 
 ### Added

@@ -327,7 +327,6 @@ function getAgileDetailedCommands() {
 
 | Command | Description |
 |---------|-------------|
-| \`Project-Status\` | Overall project health dashboard |
 | \`Velocity-Report\` | Show velocity trends across sprints |
 | \`Push-Changes\` | Commit and push current work |
 | \`Create-Release\` | Tag a release version |
@@ -407,7 +406,6 @@ function getStructuredDetailedCommands() {
 
 | Command | Description |
 |---------|-------------|
-| \`Project-Status\` | Overall project health dashboard |
 | \`Push-Changes\` | Commit and push current work |
 | \`Create-Release\` | Tag a release version |
 | \`Project-Complete\` | Finalize project and create final PR |

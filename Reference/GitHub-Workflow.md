@@ -197,6 +197,10 @@ gh pmu intake --apply "status:backlog,priority:p2"
 **Heredocs with backticks fail.** Use `--body-file` with temp file instead.
 **Command substitution fails.** Run commands separately, use literal values.
 
+## CI/CD Rate Limiting
+See **ci-cd-pipeline-design** skill for GitHub API best practices: rate limits, auth strategies (PATs, GitHub Apps), exponential backoff, workflow cascade prevention.
+Reference: `Skills/ci-cd-pipeline-design/SKILL.md` → "GitHub API Best Practices"
+
 ## Manual Overrides
 - "don't create an issue" → Skip issue creation
 - "label this as [label]" → Use specified label
