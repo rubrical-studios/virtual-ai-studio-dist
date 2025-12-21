@@ -6,6 +6,29 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [2.15.0] - 2025-12-21
+
+### Added
+- **Release and Sprint Workflow commands** (#442) - 7 new slash commands: `/plan-sprint`, `/sprint-status`, `/sprint-retro`, `/end-sprint`, `/assign-release`, `/switch-context`, `/transfer-issue`
+- **Release validation hook** (#442) - `validate-release.js` blocks `work #N` on issues without release assignment
+- **Sprint-release binding** (#442) - Sprints scoped to exactly one release with branch enforcement
+- **PR-only main merge rules** (#442) - GitHub Workflow enforces all work through PRs to main
+- **UML activity diagram for release workflow** (#442)
+
+### Changed
+- **GitHub Workflow updated to v1.6** - Added sprint-release binding, PR-only rules, temp file cleanup guidance
+- **Session Startup updated to v1.1** - Now checks for open releases at startup
+- **IDPF-Agile sprint commands implemented** - Changed from deferred stubs to working commands backed by `gh pmu microsprint`
+- **IDPF-Structured release assignment** - Now optional at issue creation (can assign later via `/assign-release`)
+- **Unified release commands** (#442) - Replaced separate `gh pmu patch` with `--patch/--hotfix` flags on `gh pmu release`
+- **Optimized workflow-trigger.js** (#444, #445) - Simplified issue commands and improved cache validation
+
+### Removed
+- **Show-Backlog command** (#443) - Removed in favor of `gh pmu board` and `gh pmu list`
+- **Separate gh pmu patch commands** (#442) - Unified into `gh pmu release` with flags
+
+---
+
 ## [2.14.1] - 2025-12-14
 
 ### Fixed

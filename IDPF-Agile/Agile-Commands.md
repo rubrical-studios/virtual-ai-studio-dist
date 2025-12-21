@@ -45,10 +45,15 @@ If completing "Update PRD status to Complete" story:
 3. `git mv PRD/PRD-[Name].md PRD/Implemented/PRD-[Name].md`
 4. Report: "PRD complete and archived to PRD/Implemented/"
 
-## Sprint Commands (Deferred)
-Sprint tracking deferred - use GitHub project board.
-
-| `Plan-Sprint`, `Show-Sprint`, `Sprint-Progress`, `Sprint-Review`, `Sprint-Retro`, `End-Sprint` | "Sprint tracking deferred" |
+## Sprint Commands
+Planning and managing scope-bounded work batches.
+| Command | Slash Command |
+|---------|---------------|
+| `Plan-Sprint` | `/plan-sprint` |
+| `Sprint-Status` | `/sprint-status` |
+| `Sprint-Retro` | `/sprint-retro` |
+| `End-Sprint` | `/end-sprint` |
+**Requires:** Active release context, gh pmu microsprint
 
 ## Development
 | Command | Description |

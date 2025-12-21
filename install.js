@@ -524,9 +524,19 @@ async function updateTrackedProjects(frameworkPath) {
               let existingProjectInstructions = null;
               if (fs.existsSync(claudeMdPath)) {
                 const claudeMd = fs.readFileSync(claudeMdPath, 'utf8');
-                const match = claudeMd.match(/## Project-Specific Instructions[\s\S]*$/);
-                if (match) {
-                  existingProjectInstructions = match[0];
+                const match = claudeMd.match(/## Project-Specific Instructions\s*\n([\s\S]*?)(?=\n---|\n\*\*End of Claude Code Instructions\*\*|$)/);
+                if (match && match[1]) {
+                  // Clean up any embedded section markers from previous buggy runs
+                  let content = match[1]
+                    .replace(/## Project-Specific Instructions\s*\n?/g, '')
+                    .replace(/\*\*End of Claude Code Instructions\*\*\s*\n?/g, '')
+                    .replace(/\n---\s*\n?/g, '\n')
+                    .trim();
+                  // Don't preserve if it's ONLY the default placeholder
+                  const withoutPlaceholders = content.replace(/<!--.*?-->/gs, '').trim();
+                  if (withoutPlaceholders) {
+                    existingProjectInstructions = content;
+                  }
                 }
               }
               generateClaudeMd(projectPath, frameworkPath, newFramework, domainListStr, primarySpecialist, existingProjectInstructions);
@@ -604,9 +614,19 @@ async function updateTrackedProjects(frameworkPath) {
               let existingProjectInstructions = null;
               if (fs.existsSync(claudeMdPath)) {
                 const claudeMd = fs.readFileSync(claudeMdPath, 'utf8');
-                const match = claudeMd.match(/## Project-Specific Instructions[\s\S]*$/);
-                if (match) {
-                  existingProjectInstructions = match[0];
+                const match = claudeMd.match(/## Project-Specific Instructions\s*\n([\s\S]*?)(?=\n---|\n\*\*End of Claude Code Instructions\*\*|$)/);
+                if (match && match[1]) {
+                  // Clean up any embedded section markers from previous buggy runs
+                  let content = match[1]
+                    .replace(/## Project-Specific Instructions\s*\n?/g, '')
+                    .replace(/\*\*End of Claude Code Instructions\*\*\s*\n?/g, '')
+                    .replace(/\n---\s*\n?/g, '\n')
+                    .trim();
+                  // Don't preserve if it's ONLY the default placeholder
+                  const withoutPlaceholders = content.replace(/<!--.*?-->/gs, '').trim();
+                  if (withoutPlaceholders) {
+                    existingProjectInstructions = content;
+                  }
                 }
               }
               generateClaudeMd(projectPath, frameworkPath, newFramework, domainListStr, primarySpecialist, existingProjectInstructions);
@@ -1070,7 +1090,12 @@ function parseExistingInstallation(projectDir) {
   let projectInstructions = null;
   const instructionsMatch = content.match(/## Project-Specific Instructions\s*\n([\s\S]*?)(?=\n---|\n\*\*End of Claude Code Instructions\*\*|$)/);
   if (instructionsMatch) {
-    projectInstructions = instructionsMatch[1].trim();
+    // Clean up any embedded section markers from previous buggy runs
+    projectInstructions = instructionsMatch[1]
+      .replace(/## Project-Specific Instructions\s*\n?/g, '')
+      .replace(/\*\*End of Claude Code Instructions\*\*\s*\n?/g, '')
+      .replace(/\n---\s*\n?/g, '\n')
+      .trim();
     // Don't preserve if it's ONLY the default placeholder (no custom content)
     // Remove placeholder comments and check if anything else remains
     const withoutPlaceholders = projectInstructions
@@ -2440,6 +2465,14 @@ async function main() {
       logSuccess('  ✓ .claude/commands/add-role.md');
     }
 
+    // prepare-release command (copy from template)
+    const commandsDir = path.join(projectDir, '.claude', 'commands');
+    const prepareReleaseSrc = path.join(frameworkPath, 'Templates', 'commands', 'prepare-release.md');
+    const prepareReleaseDest = path.join(commandsDir, 'prepare-release.md');
+    if (copyFile(prepareReleaseSrc, prepareReleaseDest)) {
+      logSuccess('  ✓ .claude/commands/prepare-release.md');
+    }
+
     // Copy run scripts
     const templatesDir = path.join(frameworkPath, 'Templates');
     if (process.platform === 'win32') {
@@ -2728,8 +2761,8 @@ async function main() {
     log(`      ${colors.cyan('bug:')} - Create bug issue`);
     log(`      ${colors.cyan('enhancement:')} - Create enhancement issue`);
     log(`      ${colors.cyan('finding:')} - Create finding (bug synonym)`);
-    log(`      ${colors.cyan('idea:')} - Create lightweight proposal`);
-    log(`      ${colors.cyan('proposal:')} - Create full proposal`);
+    log(`      ${colors.cyan('idea:')} - Create proposal (alias for proposal:)`);
+    log(`      ${colors.cyan('proposal:')} - Create proposal document`);
     log();
 
     logCyan('  Next steps:');
