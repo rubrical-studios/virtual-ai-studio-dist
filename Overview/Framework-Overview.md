@@ -1,5 +1,5 @@
 # Framework Overview
-**Version:** 2.15.0
+**Version:** 2.15.1
 **Purpose:** Comprehensive reference for AI assistants and framework development
 
 ## Framework Purpose

@@ -5,8 +5,10 @@
  * UserPromptSubmit hook that:
  * 1. Detects workflow trigger prefixes and injects reminders
  * 2. Responds to 'commands' with available triggers and slash commands
+ * 3. Validates release assignment for 'work #N' commands (merged from validate-release.js)
  *
  * Trigger prefixes: bug:, enhancement:, finding:, idea:, proposal:, prd:
+ * Work command: work #N (validates release assignment, provides branch context)
  *
  * Performance optimizations:
  * - Early exit for non-matching prompts (no I/O)
@@ -16,6 +18,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { execSync } = require('child_process');
 
 // Cache file location
 const CACHE_FILE = path.join(process.cwd(), '.claude', 'hooks', '.command-cache.json');
@@ -35,8 +38,9 @@ process.stdin.on('end', () => {
         const basePrompt = promptLower.replace(/\s*--refresh\s*/gi, '').trim();
         const isCommandRequest = ['commands', 'list-commands', 'list-cmds'].includes(basePrompt);
         const triggerMatch = prompt.match(/^(bug|enhancement|finding|idea|proposal|prd):/i);
+        const workMatch = prompt.match(/^work\s+#?(\d+)/i);
 
-        if (!isCommandRequest && !triggerMatch) {
+        if (!isCommandRequest && !triggerMatch && !workMatch) {
             process.exit(0);
         }
 
@@ -66,6 +70,71 @@ process.stdin.on('end', () => {
             };
             console.log(JSON.stringify(output));
             process.exit(0);
+        }
+
+        // Handle 'work #N' command - validate release assignment
+        if (workMatch) {
+            const issueNumber = workMatch[1];
+
+            try {
+                // Query issue's Release and Sprint fields via gh pmu view
+                const result = execSync(
+                    `gh pmu view ${issueNumber} --json`,
+                    { encoding: 'utf-8', timeout: 10000 }
+                );
+
+                const issueData = JSON.parse(result);
+                const release = issueData.fieldValues?.Release;
+                const sprint = issueData.fieldValues?.Microsprint || issueData.fieldValues?.Sprint;
+
+                if (!release || release === '' || release === 'null') {
+                    // No release assigned - block with actionable message
+                    const output = {
+                        decision: 'block',
+                        reason: `Issue #${issueNumber} has no release assignment.\n\nUse: /assign-release #${issueNumber} release/vX.Y.Z\n\nOr use: gh pmu move ${issueNumber} --release "release/vX.Y.Z"`
+                    };
+                    console.log(JSON.stringify(output));
+                    process.exit(0);
+                }
+
+                // Release assigned - allow and provide branch context
+                const branchName = release.startsWith('release/') || release.startsWith('patch/')
+                    ? release
+                    : `release/${release}`;
+
+                let contextMessage = `[BRANCH-AWARE WORK]\n`;
+                contextMessage += `Issue #${issueNumber} is assigned to release: ${release}\n`;
+                contextMessage += `\nBEFORE working on this issue:\n`;
+                contextMessage += `1. Check current branch: git branch --show-current\n`;
+                contextMessage += `2. If not on '${branchName}', switch to it: git checkout ${branchName}\n`;
+                contextMessage += `3. NEVER commit directly to main branch\n`;
+
+                if (sprint) {
+                    contextMessage += `\nSprint context: ${sprint}\n`;
+                }
+
+                const output = {
+                    systemMessage: `Success`,
+                    hookSpecificOutput: {
+                        hookEventName: 'UserPromptSubmit',
+                        additionalContext: contextMessage
+                    }
+                };
+                console.log(JSON.stringify(output));
+                process.exit(0);
+
+            } catch (error) {
+                // Error checking - allow and let downstream handle (fail-open)
+                const output = {
+                    systemMessage: `Success`,
+                    hookSpecificOutput: {
+                        hookEventName: 'UserPromptSubmit',
+                        additionalContext: `[WORK COMMAND] Could not verify release assignment for #${issueNumber} (fail-open). Proceeding with work.`
+                    }
+                };
+                console.log(JSON.stringify(output));
+                process.exit(0);
+            }
         }
 
         // Handle workflow triggers

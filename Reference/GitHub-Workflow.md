@@ -1,5 +1,5 @@
 # GitHub Workflow Integration
-**Version:** 1.6
+**Version:** 1.7
 **Source:** Reference/GitHub-Workflow.md
 **MUST READ:** At session startup and after compaction.
 
@@ -52,8 +52,8 @@ gh extension install rubrical-studios/gh-pmu
 - `gh pmu intake --apply` - Add untracked issues
 
 **Microsprint:** `start`, `current`, `add [#]`, `remove [#]`, `close`, `list`, `resolve`
-**Release:** `start --version X.Y.Z`, `current`, `add [#]`, `remove [#]`, `close [--tag]`, `list`
-**Patch:** `start --version X.Y.Z`, `current`, `add [#]`, `remove [#]`, `close [--tag]`, `list`
+**Release:** `start --branch release/vX.Y.Z`, `current`, `move [#] --release current` (recommended), `remove [#]`, `close [--tag]`, `list`
+**Patch Releases:** Use `gh pmu release` with `patch/` branch naming (e.g., `--branch patch/v1.1.5`)
 
 **Auto-Close:** Default Kanban template auto-closes issues when moved to `done`. `gh issue close` only needed for close reason or comment.
 
@@ -135,11 +135,12 @@ Create issue → Report number → **Wait for "work"**
 
 ## BLOCKING: Status Change Prerequisites
 **Before `--status in_review`:**
-1. `gh issue view [#] --json body -q '.body' > /tmp/issue-[#].md`
+1. `gh issue view [#] --json body -q '.body' > .tmp-issue-[#].md`
 2. Review checkboxes, change `[ ]` to `[x]` for completed
-3. `gh issue edit [#] --body-file /tmp/issue-[#].md`
-4. Verify: `gh issue view [#] --json body | grep -c "\[x\]"`
-5. Now: `gh pmu move [#] --status in_review`
+3. `gh issue edit [#] --body-file .tmp-issue-[#].md`
+4. `rm .tmp-issue-[#].md`
+5. Verify: `gh issue view [#] --json body | grep -c "\[x\]"`
+6. Now: `gh pmu move [#] --status in_review`
 
 **Before `--status done`:**
 1. `gh issue view [#] --json body | grep "\[ \]"`
@@ -207,15 +208,16 @@ If yes: `gh issue edit [parent] --add-label "epic"`, add "story" to sub-issues
 **Stale detection:** >24h old prompts Close/Abandon/Resume
 
 ### 10. Release Workflow
-**Start:** `gh pmu release start --version "1.2.0" [--name "Phoenix"]`
-**Add:** `gh pmu release add [#]`
+**Start:** `gh pmu release start --branch "release/v1.2.0"`
+**Add:** `gh pmu move [#] --release current` (recommended over `release add`)
 **Close:** `gh pmu release close [--tag]`
 **Artifacts:** `Releases/v1.2.0/release-notes.md`, `changelog.md`
 
 ### 11. Patch Workflow
-**Start:** `gh pmu patch start --version "1.1.5"`
-**Add:** `gh pmu patch add [#]` (warns if not bug/hotfix, errors if breaking-change)
-**Close:** `gh pmu patch close [--tag]`
+**Note:** Uses `gh pmu release` with `patch/` branch naming.
+**Start:** `gh pmu release start --branch "patch/v1.1.5"`
+**Add:** `gh pmu move [#] --release current`
+**Close:** `gh pmu release close [--tag]`
 **Artifacts:** `Patches/v1.1.5/patch-notes.md`
 
 ### 12. PR-Only Main Merges

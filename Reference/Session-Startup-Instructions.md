@@ -1,5 +1,5 @@
 # Session Startup Instructions
-**Version:** 2.9
+**Version:** 2.11
 
 ## Rules Auto-Loading (v2.9+)
 Essential rules auto-load from `.claude/rules/`:
@@ -23,6 +23,12 @@ Provides: versions, counts, selection matrix, skills registry, on-demand referen
 ### 3. Confirm Initialization
 Report: Date, Framework version, Skill count, Specialists count, GitHub Workflow status.
 Ask user what to work on.
+
+### 4. Check Open Releases
+```bash
+gh pmu release list
+```
+Display releases or prompt to create one if none exist.
 
 ## Post-Compact Behavior
 **No re-reading required.** Rules auto-reload after compaction.

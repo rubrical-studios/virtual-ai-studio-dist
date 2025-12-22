@@ -107,6 +107,28 @@ const INSTALLED_FILES_MANIFEST = {
     files: [
       (config) => config?.domainSpecialists?.length > 0 ? 'switch-role.md' : null,
       'add-role.md',
+      // Workflow commands (when GitHub workflow enabled)
+      (config) => config?.enableGitHubWorkflow ? 'assign-release.md' : null,
+      (config) => config?.enableGitHubWorkflow ? 'switch-release.md' : null,
+      (config) => config?.enableGitHubWorkflow ? 'transfer-issue.md' : null,
+      (config) => config?.enableGitHubWorkflow ? 'plan-sprint.md' : null,
+      (config) => config?.enableGitHubWorkflow ? 'sprint-status.md' : null,
+      (config) => config?.enableGitHubWorkflow ? 'sprint-retro.md' : null,
+      (config) => config?.enableGitHubWorkflow ? 'end-sprint.md' : null,
+    ],
+  },
+  // .claude/scripts/ directory
+  scripts: {
+    dir: '.claude/scripts',
+    files: [
+      // Workflow scripts (when GitHub workflow enabled)
+      (config) => config?.enableGitHubWorkflow ? 'assign-release.js' : null,
+      (config) => config?.enableGitHubWorkflow ? 'switch-release.js' : null,
+      (config) => config?.enableGitHubWorkflow ? 'transfer-issue.js' : null,
+      (config) => config?.enableGitHubWorkflow ? 'plan-sprint.js' : null,
+      (config) => config?.enableGitHubWorkflow ? 'sprint-status.js' : null,
+      (config) => config?.enableGitHubWorkflow ? 'sprint-retro.js' : null,
+      (config) => config?.enableGitHubWorkflow ? 'end-sprint.js' : null,
     ],
   },
   // .claude/hooks/ directory
@@ -1456,6 +1478,49 @@ function deployWorkflowHook(projectDir, frameworkPath) {
   return false;
 }
 
+/**
+ * Deploy workflow commands and scripts for GitHub workflow integration
+ * Copies from Templates/commands/ and Templates/scripts/ to project .claude/
+ */
+function deployWorkflowCommands(projectDir, frameworkPath) {
+  const commandsDir = path.join(projectDir, '.claude', 'commands');
+  const scriptsDir = path.join(projectDir, '.claude', 'scripts');
+  fs.mkdirSync(commandsDir, { recursive: true });
+  fs.mkdirSync(scriptsDir, { recursive: true });
+
+  const workflowCommands = [
+    'assign-release',
+    'switch-release',
+    'transfer-issue',
+    'plan-sprint',
+    'sprint-status',
+    'sprint-retro',
+    'end-sprint'
+  ];
+
+  const deployed = { commands: [], scripts: [] };
+
+  for (const cmd of workflowCommands) {
+    // Deploy command (.md file)
+    const srcCmd = path.join(frameworkPath, 'Templates', 'commands', `${cmd}.md`);
+    const destCmd = path.join(commandsDir, `${cmd}.md`);
+    if (fs.existsSync(srcCmd)) {
+      fs.copyFileSync(srcCmd, destCmd);
+      deployed.commands.push(cmd);
+    }
+
+    // Deploy script (.js file)
+    const srcScript = path.join(frameworkPath, 'Templates', 'scripts', `${cmd}.js`);
+    const destScript = path.join(scriptsDir, `${cmd}.js`);
+    if (fs.existsSync(srcScript)) {
+      fs.copyFileSync(srcScript, destScript);
+      deployed.scripts.push(cmd);
+    }
+  }
+
+  return deployed;
+}
+
 // ======================================
 //  Rules Deployment Functions
 // ======================================
@@ -2499,6 +2564,19 @@ async function main() {
         logSuccess('  ✓ .claude/hooks/workflow-trigger.js');
       } else {
         logWarning('  ⚠ .claude/hooks/workflow-trigger.js (source not found)');
+      }
+
+      // Deploy workflow commands and scripts
+      const workflowDeployed = deployWorkflowCommands(projectDir, frameworkPath);
+      if (workflowDeployed.commands.length > 0) {
+        for (const cmd of workflowDeployed.commands) {
+          logSuccess(`  ✓ .claude/commands/${cmd}.md`);
+        }
+      }
+      if (workflowDeployed.scripts.length > 0) {
+        for (const script of workflowDeployed.scripts) {
+          logSuccess(`  ✓ .claude/scripts/${script}.js`);
+        }
       }
     }
 

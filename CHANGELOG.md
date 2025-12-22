@@ -6,10 +6,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [2.15.1] - 2025-12-22
+
+### Added
+- **Deployment awareness documentation** (#490) - Dev-only rule documenting the process-docs → virtual-ai-studio-dist deployment chain
+- **Proposal: Pattern Library with SQLite Storage** (#480) - Pattern storage and retrieval proposal
+- **Proposal: Release Cancellation Workflow** (#479) - Workflow for cancelling releases
+
+### Fixed
+- **Session startup and GitHub Workflow documentation bugs** - Fixed documentation issues in startup and workflow files
+- **Workflow command issues** - Fixed workflow trigger issues and added distribution support
+- **5 missing specialists in minimization** (#472) - Added Desktop-Application-Developer, Game-Developer, Graphics-Engineer, Systems-Programmer, Technical-Writer to minimize config
+
+---
+
 ## [2.15.0] - 2025-12-21
 
 ### Added
-- **Release and Sprint Workflow commands** (#442) - 7 new slash commands: `/plan-sprint`, `/sprint-status`, `/sprint-retro`, `/end-sprint`, `/assign-release`, `/switch-context`, `/transfer-issue`
+- **Release and Sprint Workflow commands** (#442) - 7 new slash commands: `/plan-sprint`, `/sprint-status`, `/sprint-retro`, `/end-sprint`, `/assign-release`, `/switch-release`, `/transfer-issue`
 - **Release validation hook** (#442) - `validate-release.js` blocks `work #N` on issues without release assignment
 - **Sprint-release binding** (#442) - Sprints scoped to exactly one release with branch enforcement
 - **PR-only main merge rules** (#442) - GitHub Workflow enforces all work through PRs to main
