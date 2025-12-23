@@ -1,5 +1,5 @@
-// **Version:** 2.15.3
 #!/usr/bin/env node
+// **Version:** 2.15.3
 /**
  * IDPF Framework Installer
  * Unified cross-platform installer for Windows, macOS, and Linux
@@ -1494,6 +1494,49 @@ function deployWorkflowHook(projectDir, frameworkPath) {
 }
 
 /**
+ * Deploy Git pre-push hook to prevent unauthorized tag pushes
+ * Copies from Templates/hooks/pre-push to .git/hooks/pre-push
+ */
+function deployGitPrePushHook(projectDir, frameworkPath) {
+  const gitHooksDir = path.join(projectDir, '.git', 'hooks');
+
+  // Check if .git directory exists (project must be a git repo)
+  if (!fs.existsSync(path.join(projectDir, '.git'))) {
+    return { success: false, reason: 'not-git-repo' };
+  }
+
+  // Create hooks directory if it doesn't exist
+  fs.mkdirSync(gitHooksDir, { recursive: true });
+
+  const srcHook = path.join(frameworkPath, 'Templates', 'hooks', 'pre-push');
+  const destHook = path.join(gitHooksDir, 'pre-push');
+
+  if (!fs.existsSync(srcHook)) {
+    return { success: false, reason: 'source-not-found' };
+  }
+
+  // Check if hook already exists
+  if (fs.existsSync(destHook)) {
+    // Read existing hook to check if it's ours
+    const existing = fs.readFileSync(destHook, 'utf8');
+    if (existing.includes('Pre-push hook: Prevents unauthorized version tag pushes')) {
+      // Our hook already installed - update it
+      fs.copyFileSync(srcHook, destHook);
+      try { fs.chmodSync(destHook, 0o755); } catch (e) { /* Windows may not support chmod */ }
+      return { success: true, action: 'updated' };
+    } else {
+      // Different hook exists - don't overwrite
+      return { success: false, reason: 'hook-exists' };
+    }
+  }
+
+  // Install hook
+  fs.copyFileSync(srcHook, destHook);
+  try { fs.chmodSync(destHook, 0o755); } catch (e) { /* Windows may not support chmod */ }
+  return { success: true, action: 'installed' };
+}
+
+/**
  * Deploy workflow commands and scripts for GitHub workflow integration
  * Copies from Templates/commands/ and Templates/scripts/ to project .claude/
  */
@@ -2592,6 +2635,22 @@ async function main() {
         for (const script of workflowDeployed.scripts) {
           logSuccess(`  ✓ .claude/scripts/${script}.js`);
         }
+      }
+
+      // Deploy Git pre-push hook (prevents unauthorized tag pushes)
+      const prePushResult = deployGitPrePushHook(projectDir, frameworkPath);
+      if (prePushResult.success) {
+        if (prePushResult.action === 'updated') {
+          logSuccess('  ✓ .git/hooks/pre-push (updated)');
+        } else {
+          logSuccess('  ✓ .git/hooks/pre-push (release protection)');
+        }
+      } else if (prePushResult.reason === 'not-git-repo') {
+        logWarning('  ⊘ .git/hooks/pre-push (not a git repository)');
+      } else if (prePushResult.reason === 'hook-exists') {
+        logWarning('  ⊘ .git/hooks/pre-push (existing hook preserved)');
+      } else {
+        logWarning('  ⚠ .git/hooks/pre-push (source not found)');
       }
     }
 

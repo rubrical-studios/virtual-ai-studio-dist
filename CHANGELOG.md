@@ -9,7 +9,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [2.15.3] - 2025-12-23
 
 ### Fixed
-- **Hook error from shebang displacement** (#500) - Fixed version-header-fix.js inserting version comment before shebang in workflow-trigger.js, causing UserPromptSubmit hook failures.
+- **Shebang displacement in 10 JS files** (#500, #506) - Fixed version-header-fix.js inserting version comment before shebang, breaking executable scripts:
+  - `.claude/hooks/workflow-trigger.js`, `Templates/hooks/workflow-trigger.js`
+  - `install.js`, `fetch-updates.js`
+  - `Templates/scripts/end-sprint.js`, `plan-sprint.js`, `sprint-retro.js`, `sprint-status.js`, `switch-release.js`, `transfer-issue.js`
 
 ---
 
