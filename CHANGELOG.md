@@ -4,24 +4,11 @@ All notable changes to the IDPF Framework will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
----
-
-## [2.16.1] - 2025-12-24
-
-### Changed
-- **Installer modular architecture** - Refactored install.js into modular architecture for improved maintainability
-- **Anti-hallucination rules enhanced** - Added command/URL verification to prevent hallucinated commands and URLs
-- **`/assign-release` improvements** - Improved argument handling and single-release optimization
-- **Release commands deployed** - Added open-release and close-release to deployed user commands
-- **`/prepare-release` safety** - Added STOP checkpoint to prevent automatic close-release execution
-
-### Fixed
-- **README-DIST.md version** - Fixed hardcoded version and updated skill count to use dynamic values
-- **Skill tags** - Fixed duplicate (project) tag and added argument hints to /assign-release
+**Note:** Version numbers were reset to semantic versioning on 2025-12-24. See issue #525 for details. The v0.x.x series indicates pre-production status; v1.0.0 will mark production readiness.
 
 ---
 
-## [2.16.0] - 2025-12-23
+## [0.15.0] - 2025-12-24
 
 ### Added
 - **Release lifecycle commands** (#513) - Complete release lifecycle trilogy implementing trunk-based development:
@@ -29,680 +16,246 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   - `/close-release` - Generates release notes, creates GitHub Release, deletes branch
   - Both dev and user versions created (`.claude/commands/` and `Templates/commands/`)
 - **Trunk-based development workflow** (#513) - Tags now created on `main` after PR merge, not on release branches
-- **Release Lifecycle Commands section** in IDPF-Agile - Documents `Open-Release`, `Prepare-Release`, `Close-Release` command equivalence
 
 ### Changed
+- **Installer modular architecture** - Refactored install.js into modular architecture for improved maintainability
+- **Anti-hallucination rules enhanced** - Added command/URL verification to prevent hallucinated commands and URLs
 - **`/prepare-release` updated for trunk-based flow** (#513) - Phase 3 now: PR to main → merge → checkout main → tag main → push tag
-- **Renamed `Create-Release` to `Open-Release`** (#513) - Aligns with lifecycle terminology
-- **Updated `workflow-trigger.js`** - Command tables reflect new release lifecycle commands
-
----
-
-## [2.15.3] - 2025-12-23
 
 ### Fixed
-- **Shebang displacement in 10 JS files** (#500, #506) - Fixed version-header-fix.js inserting version comment before shebang, breaking executable scripts:
-  - `.claude/hooks/workflow-trigger.js`, `Templates/hooks/workflow-trigger.js`
-  - `install.js`, `fetch-updates.js`
-  - `Templates/scripts/end-sprint.js`, `plan-sprint.js`, `sprint-retro.js`, `sprint-status.js`, `switch-release.js`, `transfer-issue.js`
+- **README-DIST.md version** - Fixed hardcoded version and updated skill count to use dynamic values
+- **Shebang displacement in 10 JS files** (#500, #506) - Fixed version-header-fix.js inserting version comment before shebang
 
 ---
 
-## [2.15.2] - 2025-12-23
-
-### Changed
-- **Simplified /assign-release script** (#498) - Removed redundant script-level caching layer since gh-pmu CLI now handles caching internally. Simpler architecture with single source of truth for cache.
-
-### Fixed
-- **Windows temp file path documentation** (#497) - Added relative path warning to Shell Limitations section in GitHub Workflow rules. Windows absolute paths with backslashes get stripped by shell escaping.
-- **Standardized version headers with v2.16.1 token** (#495) - Ensures deployed files receive correct version injection.
-
----
-
-## [2.15.1] - 2025-12-22
-
-### Added
-- **Deployment awareness documentation** (#490) - Dev-only rule documenting the process-docs → virtual-ai-studio-dist deployment chain
-- **Proposal: Pattern Library with SQLite Storage** (#480) - Pattern storage and retrieval proposal
-- **Proposal: Release Cancellation Workflow** (#479) - Workflow for cancelling releases
-
-### Fixed
-- **Session startup and GitHub Workflow documentation bugs** - Fixed documentation issues in startup and workflow files
-- **Workflow command issues** - Fixed workflow trigger issues and added distribution support
-- **5 missing specialists in minimization** (#472) - Added Desktop-Application-Developer, Game-Developer, Graphics-Engineer, Systems-Programmer, Technical-Writer to minimize config
-
----
-
-## [2.15.0] - 2025-12-21
+## [0.14.0] - 2025-12-21
 
 ### Added
 - **Release and Sprint Workflow commands** (#442) - 7 new slash commands: `/plan-sprint`, `/sprint-status`, `/sprint-retro`, `/end-sprint`, `/assign-release`, `/switch-release`, `/transfer-issue`
 - **Release validation hook** (#442) - `validate-release.js` blocks `work #N` on issues without release assignment
 - **Sprint-release binding** (#442) - Sprints scoped to exactly one release with branch enforcement
 - **PR-only main merge rules** (#442) - GitHub Workflow enforces all work through PRs to main
-- **UML activity diagram for release workflow** (#442)
+- **Deployment awareness documentation** (#490) - Dev-only rule documenting the process-docs → virtual-ai-studio-dist deployment chain
 
 ### Changed
 - **GitHub Workflow updated to v1.6** - Added sprint-release binding, PR-only rules, temp file cleanup guidance
 - **Session Startup updated to v1.1** - Now checks for open releases at startup
 - **IDPF-Agile sprint commands implemented** - Changed from deferred stubs to working commands backed by `gh pmu microsprint`
-- **IDPF-Structured release assignment** - Now optional at issue creation (can assign later via `/assign-release`)
 - **Unified release commands** (#442) - Replaced separate `gh pmu patch` with `--patch/--hotfix` flags on `gh pmu release`
-- **Optimized workflow-trigger.js** (#444, #445) - Simplified issue commands and improved cache validation
 
 ### Removed
 - **Show-Backlog command** (#443) - Removed in favor of `gh pmu board` and `gh pmu list`
-- **Separate gh pmu patch commands** (#442) - Unified into `gh pmu release` with flags
 
 ---
 
-## [2.14.1] - 2025-12-14
-
-### Fixed
-- **install.js not updating .claude/rules/ or skills in existing deployments** (#434) - Update path now always redeploys rules and skills to ensure projects receive latest content
-
----
-
-## [2.14.0] - 2025-12-14
+## [0.13.0] - 2025-12-14
 
 ### Added
-- **Optional audit arguments for /prepare-release** (#432) - Added `audit:minimization`, `audit:hallucination`, and `audit:all` arguments to enable quality audits during release preparation
+- **Optional audit arguments for /prepare-release** (#432) - Added `audit:minimization`, `audit:hallucination`, and `audit:all` arguments
 - **Release Field Support documentation** (#431) - Comprehensive documentation for release and patch workflow field support
-- **GitHub API rate limit guidance** (#430) - Added rate limit best practices, authentication strategies, and exponential backoff patterns to ci-cd-pipeline-design skill
-- **Single source of truth for minimization exclusions** (#422) - Created `minimize-config.json` for centralized configuration of minimization behavior
-- **Content validation in /audit-hallucination** (#418) - Implemented validation for version consistency, counts, file paths, cross-references, domain specialists, and skill content
+- **GitHub API rate limit guidance** (#430) - Added rate limit best practices to ci-cd-pipeline-design skill
+- **Single source of truth for minimization exclusions** (#422) - Created `minimize-config.json` for centralized configuration
+- **Content validation in /audit-hallucination** (#418) - Implemented validation for version consistency, counts, file paths
 
 ### Changed
-- **Updated /prepare-release command** - Enhanced with argument-hint frontmatter for better discoverability
-
-### Fixed
-- **Argument-hint frontmatter in /prepare-release** (#433) - Added missing frontmatter to enable argument hints in slash command
-
----
-
-## [2.13.0] - 2025-12-13
-
-### Added
 - **Automatic rules sync in /minimize-files** (#417) - Rules directory now automatically synchronized when minimization runs
 - **Minimized GitHub Workflow for framework development** (#417) - Framework development sessions now use token-optimized workflow documentation
-- **Microsprint documentation** (#405-#416) - Complete PRD and implementation for microsprint workflow documentation
-- **Post-release issue closure reminder** (#403) - Added reminder that releasing code does not auto-close issues
 
 ### Fixed
 - **Framework transition in bulk updates** (#404) - Fixed framework transition not being offered during bulk project updates
-- **Framework transition when version current** (#404) - Fixed transition not offered when project version matches framework version
-- **Prompts module scope** (#404) - Made prompts module-level for updateTrackedProjects function
+- **install.js not updating .claude/rules/ or skills** (#434) - Update path now always redeploys rules and skills
 
 ---
 
-## [2.12.0] - 2025-12-13
-
-### Added
-- **Framework transition support** (#402) - install.js now allows changing frameworks on existing installations with valid transition validation (Vibe→Structured/Agile, Structured↔Agile, Structured/Agile→LTS)
-- **Auto-install gh-pmu extension** (#143) - GitHub CLI extension automatically installed during GitHub setup if not present
-- **New slash commands** (#355, #356) - Added `/audit-hallucination` and `/gap-analysis` commands for quality assurance
-
-### Changed
-- **GitHub Workflow gh-pmu integration** (#400) - Updated workflows to leverage existing gh-pmu features for unified issue and project management
-- **GitHub-Workflow.md consolidation** (#401) - Refactored to remove redundancy and improve maintainability
-
----
-
-## [2.11.3] - 2025-12-13
-
-### Fixed
-- **Project board linking** (#398) - Use JSON output from `gh project copy` for reliable project number extraction (regex parsing was failing)
-
----
-
-## [2.11.2] - 2025-12-13
-
-### Fixed
-- **Project board linking** (#398) - Fixed `gh project link` command using incorrect `--repo` flag format (was `owner/repo`, should be just `repo`)
-
----
-
-## [2.11.1] - 2025-12-13
-
-### Fixed
-- **Installer version detection** (#397) - Changed `readFrameworkVersion()` to read from `framework-manifest.json` instead of `Overview/Framework-Overview.md`, fixing version mismatch in distribution deployments
-
----
-
-## [2.11.0] - 2025-12-12
+## [0.12.0] - 2025-12-12
 
 ### Added
 - **GitHub repo and project board setup** (#353) - Automated GitHub repository creation, project board copy, and `.gh-pmu.yml` generation in `install.js`
 - **5 new Domain Specialists** (#214, #221, #229, #238, #247) - Desktop-Application-Developer, Game-Developer, Graphics-Engineer-Specialist, Systems-Programmer-Specialist, Technical-Writer-Specialist
-- **Vibe Platform completion** (#389) - Unified 7 Vibe variants (Core, Newbie, Web, Desktop, Mobile, Game, Embedded) with merged framework files
+- **Vibe Platform completion** (#389) - Unified 7 Vibe variants (Core, Newbie, Web, Desktop, Mobile, Game, Embedded)
 - **IDPF-Vibe-Embedded framework** (#381) - Embedded systems variant with specialized constraints
-- **Testing framework guides** (#313, #319, #326, #331, #332, #333, #334) - Complete guides for Testing-Core, QA-Automation, Performance, Security, Accessibility, Chaos, Contract-Testing
-- **Requirement management commands** (#354) - Added to IDPF-Structured for requirement tracking
-- **Epic workflow** (#264) - GitHub workflow integration for epic/sub-issue management with proper status transitions
-- **PRD completion workflow** (#213) - Automated moving of completed PRDs to `PRD/Implemented/`
-- **Specialist relationships documentation** (#287, #288, #289, #290) - Cross-referencing between domain specialists
-- **Getting Started User Guide** - New user onboarding documentation
-- **Skill resource files** (#266, #270, #273, #276, #279) - Complete resource directories for TDD and common-errors skills
+- **Testing framework guides** (#313, #319, #326, #331, #332, #333, #334) - Complete guides for all 7 testing frameworks
+- **Epic workflow** (#264) - GitHub workflow integration for epic/sub-issue management
 
 ### Changed
-- **install.js component synchronization** (#353) - Updated to 23 domain specialists, added TESTING_FRAMEWORKS and ALL_SKILLS constants
-- **GitHub Workflow routing** (#265) - Epic detection routing with proper workflow selection
+- **Framework transition support** (#402) - install.js now allows changing frameworks on existing installations
+- **Auto-install gh-pmu extension** (#143) - GitHub CLI extension automatically installed during GitHub setup
+- **New slash commands** (#355, #356) - Added `/audit-hallucination` and `/gap-analysis` commands
 
 ### Fixed
-- **Deferred sprint commands** - Fixed in user guide documentation
-- **GitHub workflow epic detection** (#265) - Proper routing for epic vs non-epic issues
+- **Project board linking** (#398) - Use JSON output from `gh project copy` for reliable project number extraction
 
 ---
 
-## [2.10.0] - 2025-12-11
+## [0.11.0] - 2025-12-10
 
 ### Added
-- **/audit-minimization slash command** (#212) - Audit minimized files for removed Medium+ requirements, integrated with release quality gates
-
-### Changed
-- **IDPF-Agile GitHub-native backlog** (#208) - Updated documentation for GitHub-native issue management with `Create-Backlog` command
-- **Create-Backlog command** (#197) - Now creates GitHub issues directly instead of markdown backlog, with Epic/Story hierarchy
-- **Checkbox enforcement for status transitions** (#211) - Issue status cannot move to "In Review" or "Done" until all acceptance criteria checkboxes are checked
-
-### Fixed
-- **Installer cleanup scope** (#209) - Only cleanup installer-generated commands and hooks, preserving user-created files
-- **fetch-updates.js data preservation** (#195) - Preserve `installed-projects.json` during framework updates
-
----
-
-## [2.9.10] - 2025-12-11
-
-### Added
-- **Manifest-based file cleanup** (#194) - `install.js` now maintains a manifest of expected files and removes orphaned files during updates/migrations
-- **Prompt before bulk updates** (#192) - Installer now shows tracked projects and prompts for confirmation before updating them
-
----
-
-## [2.9.9] - 2025-12-11
-
-### Changed
-- **Reopen Workflow status** (#191) - Reopened issues now set to "Ready" instead of "In Progress"
-
-### Fixed
-- **list-commands config property** (#188) - Fixed reading `projectType.processFramework` instead of non-existent `framework` property
-- **Deployed rules naming** (#190) - Rules deployed to projects now use numbered prefixes (01-, 02-, 03-) matching framework source
-
----
-
-## [2.9.8] - 2025-12-11
-
-### Added
-- **Workflow hook in repository** (#187) - Added `workflow-trigger.js` to `.claude/hooks/` for framework development sessions
-
-### Fixed
-- **list-commands framework detection** (#186) - Fixed `commands` trigger to show full framework-specific commands
-- **GitHub workflow made mandatory** (#185) - GitHub workflow integration now required during installation
-
----
-
-## [2.9.7] - 2025-12-10
-
-### Fixed
-- **install.js hook source path** (#184) - Moved `workflow-trigger.js` from `.claude/hooks/` to `Templates/hooks/` for proper distribution bundling
-
----
-
-## [2.9.6] - 2025-12-10
-
-### Added
-- **Project tracking** (#183) - `installed-projects.json` tracks all installed projects
-- **Bulk update/migrate** (#183) - Running `install.js` from framework directory updates all tracked projects
-- **Additional deployments prompt** (#183) - After installation, prompts to install to additional projects
-
----
-
-## [2.9.5] - 2025-12-10
-
-### Fixed
-- **fetch-updates.js ENOENT error** (#181) - Use system temp directory instead of relative path
-
----
-
-## [2.9.4] - 2025-12-10
-
-### Changed
-- **fetch-updates.js self-update mode** (#180) - Can now run from framework directory for self-update
-
----
-
-## [2.9.3] - 2025-12-10
-
-### Fixed
-- **fetch-updates.js not deployed to dist** (#179) - Added to deploy workflow
-
----
-
-## [2.9.2] - 2025-12-10
-
-### Fixed
-- **Workflow hooks not configured in existing projects** (#178) - `settings.local.json` now merges hooks config instead of skipping when file exists
-- Added migration to fix `settings.local.json` hooks for projects upgrading from pre-2.9.2
-
----
-
-## [2.9.1] - 2025-12-10
-
-### Fixed
-- Version references corrected from v2.19 to v2.9 in documentation
-
----
-
-## [2.9.0] - 2025-12-10
-
-### Added
-
-#### Rules Auto-Loading (#147, #154-157)
-- **`.claude/rules/` directory** - Rules auto-load at session start without explicit file reads
+- **Rules Auto-Loading** (#147, #154-157) - `.claude/rules/` directory with auto-loading at session start:
   - `01-anti-hallucination.md` - Framework development quality rules
   - `02-github-workflow.md` - GitHub issue management integration
   - `03-session-startup.md` - Startup procedure and on-demand loading
-- **Migration support** - `install.js --migrate` flag for existing projects
-- **Release Phase 2d** - Rules directory build in /prepare-release
-- **Release Phase 2e** - Migration validation in /prepare-release
-
-#### Workflow Triggers (#150, #152, #153)
-- **PRD workflow trigger** (#153) - `prd:` prefix converts proposals to PRDs using IDPF-PRD framework
-- **Commands trigger** (#150, #152) - `commands` keyword lists available workflow triggers
-- **Lightning bolt indicator** (#150) - Visual ⚡ indicator when workflow triggers are detected
+- **/audit-minimization slash command** (#212) - Audit minimized files for removed Medium+ requirements
 
 ### Changed
-- **CLAUDE.md** - Simplified to reference auto-loading rules instead of procedural startup
-- **Session-Startup-Instructions.md** - Updated to v2.7 documenting rules auto-loading
-- **Framework-Overview.md** - Added Rules Auto-Loading section
-- **README-DIST.md** - Added rules auto-loading and migration documentation
-- **install.js** - Added `deployRules()`, `generateStartupRules()`, `runMigrations()` functions
-- **/prepare-release** - Added Phase 2d (Rules Build) and Phase 2e (Migration Validation)
-- **/minimize-files** - Documented `.claude/rules/` exclusion
+- **IDPF-Agile GitHub-native backlog** (#208) - Updated documentation for GitHub-native issue management
+- **Create-Backlog command** (#197) - Now creates GitHub issues directly with Epic/Story hierarchy
+- **Checkbox enforcement for status transitions** (#211) - Issue status cannot change until acceptance criteria checked
+- **Manifest-based file cleanup** (#194) - `install.js` maintains manifest of expected files
 
 ### Removed
-- **_chg.md files** (#149) - Removed change history files and related CLAUDE.md rules (82 files)
-- **Simplified date presentation** (#148) - Removed verbose date confirmation in session startup
-
-### Migration
-For existing projects using framework v2.8.x or earlier:
-```bash
-node [frameworkPath]/install.js --migrate
-```
-
-This will:
-1. Remove old `STARTUP.md` file
-2. Create `.claude/rules/` directory with auto-loading rules
-3. Regenerate simplified `CLAUDE.md`
+- **_chg.md files** (#149) - Removed 82 change history files and related CLAUDE.md rules
 
 ---
 
-## [2.8.0] - 2025-12-09
+## [0.10.0] - 2025-12-08
 
 ### Added
-
-#### PRD Templates (8 New)
-- **Framework Gap Analysis PRDs** (#144) - 8 comprehensive PRDs for identified framework gaps:
-  - PRD-Framework-Gap-Analysis-Logging-Observability.md
-  - PRD-Framework-Gap-Analysis-Documentation-Maintenance.md
-  - PRD-Framework-Gap-Analysis-Error-Recovery.md
-  - PRD-Framework-Gap-Analysis-File-Organization.md
-  - PRD-Framework-Gap-Analysis-Multi-Agent.md
-  - PRD-Framework-Gap-Analysis-Performance-Optimization.md
-  - PRD-Framework-Gap-Analysis-State-Persistence.md
-  - PRD-Framework-Gap-Analysis-Team-Collaboration.md
-
-#### Release Process
-- **Slash commands for release preparation** (#146) - Converted release documentation to executable slash commands:
-  - `/prepare-release` - Full release preparation workflow
-  - `/skill-validate` - Skill validation process
-  - `/minimize-files` - Token optimization process
+- **GitHub workflow integration in installer** (#136) - Deploys workflow-trigger.js hook and configures settings.local.json
+- **Prerequisite detection** (#141) - Installer checks for git (required), gh and jq (optional)
+- **UserPromptSubmit hook** (#134) - workflow-trigger.js detects trigger prefixes (bug:, enhancement:, finding:, idea:, proposal:)
+- **8 PRD Templates** (#144) - Framework Gap Analysis PRDs for identified framework gaps
+- **Slash commands for release preparation** (#146) - `/prepare-release`, `/skill-validate`, `/minimize-files`
 
 ### Changed
 - **LICENSE** - Updated copyright to Rubrical Studios
-- **Repository references** (#145) - Updated all references from previous owner to rubrical-studios
+- **Repository references** (#145) - Updated all references to rubrical-studios
 
 ---
 
-## [2.7.0] - 2025-12-08
+## [0.9.0] - 2025-12-07
 
 ### Added
-
-#### Installer Enhancements
-- **GitHub workflow integration** (#136) - Installer now deploys workflow-trigger.js hook and configures settings.local.json with UserPromptSubmit hook for automatic issue creation
-- **Prerequisite detection** (#141) - Installer checks for git (required), gh and jq (optional) before installation with helpful installation links
-- **Git repository initialization** (#141) - Prompts to initialize git repo if .git directory not found in target
-- **Auto-install prompts module** (#142) - Installer automatically runs `npm install prompts` if module is missing
-
-#### Workflow Hooks
-- **UserPromptSubmit hook** (#134) - New workflow-trigger.js detects trigger prefixes (bug:, enhancement:, finding:, idea:, proposal:) and injects context reminder
-- **Visual indication** (#138) - Hook displays "⚡ Workflow trigger detected" message when firing
-
-#### Change History Tracking
-- **_chg.md validation script** (#132) - validate-chg-sync.js ensures all rule-set files have synchronized change history files
-- **82 _chg.md files created** (#129) - Complete coverage for all rule-set files
-- **_chg.md handling rules** (#133) - Added to CLAUDE.md for consistent change tracking
-
-### Fixed
-- **Installer .claude/commands directory** (#140) - generateSwitchRole() and generateAddRole() now create directory before writing files
-- **UserPromptSubmit hook error** (#135) - Fixed JSON output format for proper context injection
-- **Shell construct limitations** - Documented heredoc and command substitution workarounds in GitHub-Workflow.md
-
-### Changed
-- **CLAUDE.md** - Added _chg.md handling section and improved with standard header
-
----
-
-## [2.6.3] - 2025-12-07
-
-### Added
-- **Trigger Words section** (#126) - GitHub-Workflow.md now explicitly lists trigger words (bug:, enhancement:, finding:, idea:, proposal:) requiring issue creation before work
-
-### Fixed
-- **Dist repo README** (#127) - Created README-DIST.md for end-users; deploy workflow now uses this instead of development README.md
-- **PREPARE_RELEASE.md Phase 4** (#125) - Updated to reflect automated distribution via GitHub Action
-
----
-
-## [2.6.2] - 2025-12-07
-
-### Added
-- **Two-pass minimization** (#124) - Quality gate ensuring Medium-High and High impact reductions are reversed
-  - Pass 1: Aggressive minimization applying all removal rules
-  - Pass 2: Impact assessment with automatic reversal for truncated checklists
-
-### Fixed
-- **IDPF-Security** (#124) - Restored complete OWASP Top 10 (was 6 items, now 10) and Compliance Frameworks table
-- **IDPF-Chaos** (#124) - Restored Application faults (5 items) and State faults (3 items) categories
-- **IDPF-Accessibility** (#123) - Restored complete WCAG criteria (was 10 items, now 26)
-
-### Changed
-- **MINIMIZE_FILES.md** - Expanded "Must Preserve" rules with specific checklist categories
-- **Distribution repo** (#123) - Renamed from `virtual-studio-dist` to `virtual-ai-studio-dist`
-
----
-
-## [2.6.0] - 2025-12-04
-
-### Added
-
-#### Minimization System
 - **Token-optimized files** (#116-#121) - 84.6% reduction in token consumption
   - `.min-mirror/` directory contains minimized versions of all framework files
   - Automated minimization via `MINIMIZE_FILES.md`
-  - Distribution uses minimized files automatically
-
-#### Distribution Automation
 - **Automated deployment** (#122) - GitHub Action deploys to `virtual-ai-studio-dist` on release tags
 - **fetch-updates.js** - End-user script to update framework installation from dist repo
+- **Two-pass minimization** (#124) - Quality gate ensuring Medium-High reductions are reversed
+- **Trigger Words section** (#126) - GitHub-Workflow.md explicitly lists trigger words
 
 ### Changed
-
-#### Installation
-- **STARTUP.md** - Now requires reading Anti-Hallucination Rules (previously optional via /expand-rules)
-- **Removed /expand-rules** - Rules now loaded automatically at startup
-- **Removed /expand-domain** - Use /switch-role to change specialists
-
-#### Documentation
-- **Guides/** directory - Moved non-functional documentation from Reference/
+- **Distribution repo** (#123) - Renamed to `virtual-ai-studio-dist`
+- **Guides/ directory** - Moved non-functional documentation from Reference/
 
 ### Fixed
-- Framework-Summary.md path in startup instructions (#115)
-- Run script /gh-workflow instruction removed (#114)
+- **IDPF-Security** (#124) - Restored complete OWASP Top 10 (was 6 items, now 10)
+- **IDPF-Accessibility** (#123) - Restored complete WCAG criteria (was 10 items, now 26)
 
 ---
 
-## [2.5.0] - 2025-12-04
+## [0.8.0] - 2025-12-04
 
 ### Added
-
-#### Domain Specialists (1 New)
-- **Full-Stack-Developer** (#109) - Generalist specialist covering frontend, backend, and infrastructure
-  - Now the default specialist when no domain is selected during installation
-
-#### Commands (2 New)
-- **/add-role** (#105) - Add domain specialists post-installation without re-running installer
-- **/switch-role** (#97) - Switch between installed domain specialists mid-session with persistence
-
-#### Workflows (2 New)
+- **Full-Stack-Developer specialist** (#109) - Generalist specialist covering frontend, backend, and infrastructure (now default)
+- **/add-role command** (#105) - Add domain specialists post-installation
+- **/switch-role command** (#97) - Switch between installed domain specialists mid-session with persistence
 - **Idea Workflow** (#85) - Lightweight proposal creation for early-stage concepts
 - **Proposal-to-PRD Workflow** (#85) - Convert proposals to formal PRDs using IDPF-PRD
 
 ### Changed
-
-#### Installation
 - **Unified installer** (#93) - `install.js` replaces `install.sh` and `install.cmd`
-- **Framework lock** (#92) - Re-installation preserves framework selection and project instructions
-- **Primary specialist** (#96) - Installation now prompts for primary (auto-loaded) specialist
-- **Default domain** (#110) - Full-Stack-Developer auto-selected when no specialist chosen
-- **Role persistence** (#104) - /switch-role updates framework-config.json for session persistence
-
-#### GitHub Integration
 - **gh-pmu integration** (#103) - Replaced gh-pm and gh-sub-issue with unified gh-pmu extension
-- **GitHub-Workflow.md** (#112) - Moved from slash command to Reference/ directory (MUST READ at startup)
-- **STOP checkpoints** (#100) - Added explicit checkpoints before issue closure
-
-### Fixed
-- Date confirmation now waits for user response before proceeding (#86)
-- Install.cmd markdown parsing strips ** prefix correctly (#94)
-- Updated .gh-pm.yml references to .gh-pmu.yml (#107, #108)
+- **GitHub-Workflow.md** (#112) - Moved from slash command to Reference/ directory
 
 ### Removed
-- **install.sh** (#113) - Legacy bash installer removed
-- **install.cmd** (#113) - Legacy Windows batch installer removed
-- **/gh-workflow slash command** (#112) - Replaced by Reference/GitHub-Workflow.md
+- **install.sh and install.cmd** (#113) - Legacy installers removed
 
 ---
 
-## [2.4.0] - 2025-12-02
+## [0.7.0] - 2025-12-02
 
 ### Added
-
-#### Anti-Hallucination Rulesets (2 New)
 - **Anti-Hallucination Rules for Framework Development** (#78)
   - Version management: Always analyze commits before versioning
   - Cross-reference validation: Verify counts, versions, registries
   - CHANGELOG discipline: Document ALL changes since last release
-  - Registry synchronization: Skills, specialists, install scripts
-  - Now the ONLY active ruleset for the dev repo (process-docs)
-
 - **Anti-Hallucination Rules for PRD Work** (#79)
   - Stakeholder truth over helpful invention
   - Source attribution for every requirement
-  - Scope boundary discipline (in-scope/out-of-scope)
-  - Priority assignment only with stakeholder input
-  - NFR rules for elicitation and extraction
-  - Integrated with IDPF-PRD, PRD-Analyst, and extract-prd
-
-#### Release Process Improvements
-- **Phase 0 Commit Analysis** - PREPARE_RELEASE.md now requires commit review before version determination
-  - Commands to identify last release and list all commits
-  - Categorization table for change types
-  - Decision criteria for PATCH/MINOR/MAJOR
-  - Documentation checklist with justification
+  - Scope boundary discipline
 
 ### Changed
-- **Session-Startup-Instructions.md** (v2.1) - Now loads Framework Development rules instead of Software Development rules
+- **Session-Startup-Instructions.md** (v2.1) - Now loads Framework Development rules
 - **IDPF-PRD** (Rev 4) - Loads Anti-Hallucination Rules for PRD Work at session initialization
-- **PRD-Analyst** (Rev 1.2) - Added PRD Work rules to "Load with" header
-- **extract-prd** (v1.2.0) - Added PRD Work rules reference and critical guidance
-
-### Configuration
-- **Dev repo (process-docs)**: Uses Anti-Hallucination Rules for Framework Development
-- **User project deployments**: Continue using Anti-Hallucination Rules for Software Development
+- **Phase 0 Commit Analysis** - PREPARE_RELEASE.md now requires commit review before version determination
 
 ---
 
-## [2.3.1] - 2025-12-02
+## [0.6.0] - 2025-12-02
 
 ### Added
-
-#### Testing Frameworks (7 New)
-- **IDPF-Testing-Core** (#50) - Foundation framework for all testing approaches
-- **IDPF-QA-Automation** (#51) - Quality Assurance and Test Automation
-- **IDPF-Performance** (#52) - Performance Testing framework
-- **IDPF-Accessibility** (#54) - Accessibility Testing framework
-- **IDPF-Chaos** (#55) - Chaos Engineering framework
-- **IDPF-Contract-Testing** (#56) - Contract Testing framework
-- **IDPF-Security** (#53) - Security Testing framework
-
-#### Development Frameworks
+- **7 Testing Frameworks**
+  - IDPF-Testing-Core (#50) - Foundation framework for all testing approaches
+  - IDPF-QA-Automation (#51) - Quality Assurance and Test Automation
+  - IDPF-Performance (#52) - Performance Testing framework
+  - IDPF-Security (#53) - Security Testing framework
+  - IDPF-Accessibility (#54) - Accessibility Testing framework
+  - IDPF-Chaos (#55) - Chaos Engineering framework
+  - IDPF-Contract-Testing (#56) - Contract Testing framework
 - **IDPF-PRD Framework** (#57) - Requirements Engineering with PRD templates
-  - PRD directory structure with Templates and Specs subdirectories
-  - Support for ATDD/BDD/TDD integration
-  - Three PRD template variants (Comprehensive, Moderate, Lightweight)
-
-#### Domain Specialists (2 New)
-- **PRD-Analyst** (#59) - Requirements engineering and PRD authoring
-- **Accessibility-Specialist** (#60) - WCAG compliance and accessibility expertise
-
-#### Skills (4 New)
-- **uml-generation** (#63) - Generate PlantUML diagrams from code
-  - Class, sequence, and component diagram support
-  - Language-specific patterns for Python and JavaScript
-- **anti-pattern-analysis** (#4) - Detect code smells and anti-patterns
-  - General, architecture, testing, and database anti-patterns
-  - Language-specific patterns for JavaScript and Python
-- **bdd-writing** (#58) - BDD specification and Gherkin syntax
-  - Feature file templates and step definition patterns
-  - Tool comparison guide (Cucumber, Behave, RSpec)
-- **extract-prd** (#12) - Extract PRD from existing code
-  - Test parsing guide for requirement extraction
-  - NFR detection guide
-
-#### GitHub Workflow Enhancements
+- **Domain Specialists** - PRD-Analyst (#59), Accessibility-Specialist (#60)
+- **Skills** - uml-generation (#63), anti-pattern-analysis (#4), bdd-writing (#58), extract-prd (#12)
 - **Create-Issues commands** (#75) - Generate GitHub issues from PRD
-  - `Create-Issues-Agile` - Epic/Story hierarchy
-  - `Create-Issues-Structured` - Requirement/Implementation hierarchy
-  - Framework-aware detection from PRD file naming
-- **'finding' as bug synonym** (#73) - Trigger bug workflow with "finding:" prefix
-- **Reopen workflow** - Reopen closed issues and set to in_progress
-
-#### Reference Documentation
-- **Git Worktree Patterns** (#40) - Multi-worktree development strategies
-  - Windows-specific guidance for path handling
-- **Platform Capabilities Reference** (#39) - OS-specific tool availability
-- **Framework Transition Diagrams** (#13) - Visual workflow for framework transitions
-
-#### Installer Improvements
-- **Date confirmation** (#71) - Startup confirms date with user
-- **run_claude scripts** (#68) - `run_claude.sh`/`run_claude.cmd` for easy startup
-- **runp_claude scripts** (#68) - Plan mode startup scripts
-- **Expansion command guidance** (#76) - Installer templates include expansion docs
 
 ### Changed
-- **Framework-Overview split** (#74) - Created Framework-Summary.md (~150 lines) for reduced token consumption
-  - On-demand loading of detailed documentation
-  - 77% reduction in startup token usage
-- **gh-workflow.md** (#62) - Reads configuration from `.gh-pmu.yml` instead of hardcoded values
-- **Skills consolidated** - Merged PREPARE_SKILLS.md into Skills/MAINTENANCE.md
-- **Skill packaging** (#1) - All skills packaged to Skills/Packaged/ directory
-  - Automatic deployment during installation based on framework selection
+- **Framework-Overview split** (#74) - Created Framework-Summary.md for reduced token consumption (77% reduction)
 
 ### Fixed
 - **SessionStart Hook Error** (#77) - Removed invalid `type: "prompt"` hooks from settings.local.json
-  - `SessionStart` event only supports `type: "command"` hooks, not `type: "prompt"`
-  - The `/gh-workflow` reminder is already handled via CLAUDE.md startup instructions
-  - Fixed in both `install.sh` and `install.cmd` installer templates
-- **Expansion commands** (#61) - Use absolute paths instead of relative
-- **Batch file URL parsing** (#67) - Escape dots to prevent parsing errors
-- **extract-prd PRD location** (#69) - Added file location convention
-- **PRD-Analyst PRD location** (#69) - Added file location convention
-- **Skill packaging paths** (#1) - Fixed incorrect file paths in skill packages
-
-### Documentation
-- **File operation anti-hallucination rules** (#21) - Added bulk operation checklist
-- **Skill registry** - Updated Framework-Summary.md with 14 skills
-- **17 Domain Specialists** - Updated counts in documentation
 
 ---
 
-## [2.3.0] - 2025-11-30
+## [0.5.0] - 2025-11-30
 
 ### Added
 - **Consolidated Startup System** - Reduce token consumption by ~70%
   - `STARTUP.md` generated with condensed essential rules
   - Simplified 4-step startup procedure (down from 7 steps)
-  - On-demand expansion commands for full documentation
-
-- **Expansion Commands** - Load full documentation when needed
-  - `/expand-rules` - Load complete Anti-Hallucination Rules
-  - `/expand-framework` - Load full process framework documentation
-  - `/expand-domain` - Load full Domain Specialist instructions
-
-- **Claude Code Settings** - Hooks and permissions configuration
-  - `settings.local.json` generated during installation
-  - SessionStart hooks for startup/compact reminders
-  - Deny rules for destructive git commands
-
-- **Framework Installation Script** - Enable external projects to use the IDPF Framework
-  - `install.cmd` for Windows
-  - `install.sh` for Unix/macOS/Linux
-  - Interactive process framework selection (Structured, Agile, Vibe, LTS)
-  - Multi-select domain specialist configuration (15 options)
-  - Generates `framework-config.json`, `CLAUDE.md`, `STARTUP.md`, and expansion commands
-
-- **Framework Manifest** (`framework-manifest.json`)
-  - Identifies valid IDPF Framework installations
-  - Contains framework metadata (name, version, available options)
-  - Enables smart directory detection in installation scripts
-
-- **Smart Directory Detection**
-  - Scripts detect if running from framework or project directory
-  - Auto-detects framework path when running from framework directory
-  - Prompts for target project directory with validation
-  - Creates target directory if it doesn't exist
-
+- **Expansion Commands** - `/expand-rules`, `/expand-framework`, `/expand-domain`
+- **Claude Code Settings** - Hooks and permissions configuration via `settings.local.json`
+- **Framework Installation Script** - `install.cmd` and `install.sh` for external projects
+- **Framework Manifest** (`framework-manifest.json`) - Identifies valid IDPF Framework installations
 - **GitHub Workflow Integration** (`.claude/commands/gh-workflow.md`)
-  - Parameterized GitHub configuration placeholders
-  - Automatic issue creation for findings and enhancements
-  - Project board status management via `gh pmu`
-  - Sub-issue linking via `gh pmu sub`
 
 ### Changed
 - Startup procedure reduced from 7 steps to 4 steps
 - Token consumption reduced by ~70% at session startup
-- Updated Session-Startup-Instructions.md to v1.2
-- Updated CLAUDE.md with Post-Compact Procedure section
-
-### Removed
-- `Anti-Hallucination-Rules-for-Technical-Book-Writing.md` - Removed from framework
-- `Anti-Hallucination-Rules-for-Skill-Creation.md` - No longer loaded at startup (available on-demand)
 
 ---
 
-## [2.2.0] - 2025-11-16
+## [0.4.0] - 2025-11-17
 
 ### Added
 - **IDPF-LTS Framework** - Long-Term Support maintenance mode
   - Stability-focused development for mature projects
   - Conservative change management
   - Backward compatibility requirements
-
-- **Framework Overview v2.2**
-  - Comprehensive documentation of all 4 frameworks
-  - 15 Domain Specialist profiles
-  - 10 Skills catalog
-
-### Changed
-- Framework transition documentation
-- Updated all framework cross-references
+- **Framework Overview v2.2** - Comprehensive documentation of all 4 frameworks
+- **Framework transition documentation** - Valid transition paths between frameworks
 
 ---
 
-## [2.1.0] - 2025-11-01
+## [0.3.0] - 2025-11-16
 
 ### Added
 - **IDPF-Vibe Framework** - Exploratory development with evolution paths
-- Additional Domain Specialist profiles
+  - 7 variants: Core, Newbie, Web, Desktop, Mobile, Game, Embedded
+  - Evolution to Structured or Agile when requirements stabilize
+- **5 TDD Skills** - tdd-red-phase, tdd-green-phase, tdd-refactor-phase, tdd-failure-recovery, test-writing-patterns
+- **Session Startup Instructions** - Standardized session initialization
+- **Anti-Hallucination Rules** - Three domains: Software Development, Technical Book Writing, Skill Creation
 
 ---
 
-## [2.0.0] - 2025-10-15
+## [0.2.0] - 2025-11-01
 
 ### Added
 - **IDPF-Agile Framework** - Sprint-based development with user stories
-- Domain Specialist System Instructions
-- Skills system for reusable capabilities
+  - Epic and Story hierarchy
+  - Sprint planning and retrospectives
+  - Velocity tracking
+- **Domain Specialist System Instructions** - 15 initial specialists
+- **Skills system** - Reusable capabilities for specific tasks
 
 ### Changed
 - Restructured framework documentation
@@ -710,28 +263,31 @@ This will:
 
 ---
 
-## [1.0.0] - 2025-09-01
+## [0.1.0] - 2025-09-01
 
 ### Added
 - **IDPF-Structured Framework** - Test-Driven Development with fixed requirements
-- Core Developer Instructions
-- Anti-Hallucination Rules
-- Initial Assistant Guidelines
+  - Requirements-first approach
+  - TDD methodology (Red-Green-Refactor)
+  - Traceability matrix
+- **Core Developer Instructions** - Foundation AI assistant identity
+- **Anti-Hallucination Rules** - Initial quality guardrails
+- **Assistant Guidelines** - Accuracy and verification principles
 
 ---
 
-[2.16.1]: https://github.com/rubrical-studios/process-docs/compare/v2.16.0...v2.16.1
-[2.16.0]: https://github.com/rubrical-studios/process-docs/compare/v2.15.3...v2.16.0
-[2.8.0]: https://github.com/rubrical-studios/process-docs/compare/v2.7.0...v2.8.0
-[2.7.0]: https://github.com/rubrical-studios/process-docs/compare/v2.6.3...v2.7.0
-[2.6.3]: https://github.com/rubrical-studios/process-docs/compare/v2.6.2...v2.6.3
-[2.6.2]: https://github.com/rubrical-studios/process-docs/compare/v2.6.0...v2.6.2
-[2.6.0]: https://github.com/rubrical-studios/process-docs/compare/v2.5.0...v2.6.0
-[2.5.0]: https://github.com/rubrical-studios/process-docs/compare/v2.4.0...v2.5.0
-[2.4.0]: https://github.com/rubrical-studios/process-docs/compare/v2.3.1...v2.4.0
-[2.3.1]: https://github.com/rubrical-studios/process-docs/compare/v2.3.0...v2.3.1
-[2.3.0]: https://github.com/rubrical-studios/process-docs/compare/v2.2.0...v2.3.0
-[2.2.0]: https://github.com/rubrical-studios/process-docs/releases/tag/v2.2.0
-[2.1.0]: https://github.com/rubrical-studios/process-docs/releases/tag/v2.1.0
-[2.0.0]: https://github.com/rubrical-studios/process-docs/releases/tag/v2.0.0
-[1.0.0]: https://github.com/rubrical-studios/process-docs/releases/tag/v1.0.0
+[0.15.0]: https://github.com/rubrical-studios/process-docs/compare/v0.14.0...v0.15.0
+[0.14.0]: https://github.com/rubrical-studios/process-docs/compare/v0.13.0...v0.14.0
+[0.13.0]: https://github.com/rubrical-studios/process-docs/compare/v0.12.0...v0.13.0
+[0.12.0]: https://github.com/rubrical-studios/process-docs/compare/v0.11.0...v0.12.0
+[0.11.0]: https://github.com/rubrical-studios/process-docs/compare/v0.10.0...v0.11.0
+[0.10.0]: https://github.com/rubrical-studios/process-docs/compare/v0.9.0...v0.10.0
+[0.9.0]: https://github.com/rubrical-studios/process-docs/compare/v0.8.0...v0.9.0
+[0.8.0]: https://github.com/rubrical-studios/process-docs/compare/v0.7.0...v0.8.0
+[0.7.0]: https://github.com/rubrical-studios/process-docs/compare/v0.6.0...v0.7.0
+[0.6.0]: https://github.com/rubrical-studios/process-docs/compare/v0.5.0...v0.6.0
+[0.5.0]: https://github.com/rubrical-studios/process-docs/compare/v0.4.0...v0.5.0
+[0.4.0]: https://github.com/rubrical-studios/process-docs/compare/v0.3.0...v0.4.0
+[0.3.0]: https://github.com/rubrical-studios/process-docs/compare/v0.2.0...v0.3.0
+[0.2.0]: https://github.com/rubrical-studios/process-docs/compare/v0.1.0...v0.2.0
+[0.1.0]: https://github.com/rubrical-studios/process-docs/releases/tag/v0.1.0

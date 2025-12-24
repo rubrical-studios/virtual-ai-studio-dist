@@ -1,12 +1,12 @@
 # Framework Testing Reference
-**Version:** v2.16.1
+**Version:** v0.15.0
 
 ---
 
 ## IDPF-Testing-Core Framework
 
 **Location:** `IDPF-Testing-Core/IDPF-Testing-Core.md`
-**Version:** v2.16.1
+**Version:** v0.15.0
 **Type:** Foundational Testing Framework
 
 **Core Principle:** "Test automation is software development."

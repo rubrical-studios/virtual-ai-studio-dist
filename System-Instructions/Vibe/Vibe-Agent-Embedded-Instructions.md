@@ -1,5 +1,5 @@
 # Vibe Agent System Instructions (Embedded)
-**Version:** v2.16.1
+**Version:** v0.15.0
 **Extends:** Vibe-Agent-Core-Instructions.md
 Specializes core instructions for embedded systems using simulators/emulators (no physical hardware).
 ---

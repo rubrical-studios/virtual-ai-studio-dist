@@ -1,6 +1,6 @@
 ---
 name: api-versioning
-version: v2.16.1
+version: v0.15.0
 description: URL/header versioning strategies and deprecation patterns
 ---
 
