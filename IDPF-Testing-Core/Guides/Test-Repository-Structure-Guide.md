@@ -1,5 +1,5 @@
 # Test Repository Structure Guide
-**Version:** v0.11.0
+**Version:** v0.9.0
 
 **Framework:** IDPF-Testing-Core
 

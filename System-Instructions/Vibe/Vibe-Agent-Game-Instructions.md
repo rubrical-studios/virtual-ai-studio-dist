@@ -1,5 +1,5 @@
 # Vibe Agent System Instructions (Game)
-**Version:** v0.11.0
+**Version:** v0.9.0
 **Extends:** Vibe-Agent-Core-Instructions.md
 Specializes core instructions for game development (Godot, Unity, browser games).
 ---
