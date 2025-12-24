@@ -1,5 +1,5 @@
 # Test Isolation Guide
-**Version:** v0.1.0
+**Version:** v0.2.0
 
 Patterns for ensuring tests run independently without affecting each other.
 

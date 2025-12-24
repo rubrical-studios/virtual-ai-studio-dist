@@ -1,5 +1,5 @@
 # Stage Design Guide
-**Version:** v0.1.0
+**Version:** v0.2.0
 
 Detailed guidance for designing effective CI/CD pipeline stages.
 
