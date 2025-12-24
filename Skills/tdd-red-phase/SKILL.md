@@ -1,6 +1,6 @@
 ---
 name: tdd-red-phase
-version: v0.2.0
+version: v0.7.0
 description: Guide experienced developers through RED phase of TDD cycle - writing failing tests
 ---
 
