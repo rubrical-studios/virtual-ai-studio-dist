@@ -1,5 +1,5 @@
 # Vibe-to-Structured Framework (Desktop)
-**Version:** v2.15.3
+**Version:** v2.16.0
 **Type:** Desktop Application Specialization
 **Extends:** Vibe-to-Structured-Core-Framework.md
 

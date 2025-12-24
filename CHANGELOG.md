@@ -6,6 +6,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [2.16.0] - 2025-12-23
+
+### Added
+- **Release lifecycle commands** (#513) - Complete release lifecycle trilogy implementing trunk-based development:
+  - `/open-release` - Opens release branch and creates tracker issue
+  - `/close-release` - Generates release notes, creates GitHub Release, deletes branch
+  - Both dev and user versions created (`.claude/commands/` and `Templates/commands/`)
+- **Trunk-based development workflow** (#513) - Tags now created on `main` after PR merge, not on release branches
+- **Release Lifecycle Commands section** in IDPF-Agile - Documents `Open-Release`, `Prepare-Release`, `Close-Release` command equivalence
+
+### Changed
+- **`/prepare-release` updated for trunk-based flow** (#513) - Phase 3 now: PR to main → merge → checkout main → tag main → push tag
+- **Renamed `Create-Release` to `Open-Release`** (#513) - Aligns with lifecycle terminology
+- **Updated `workflow-trigger.js`** - Command tables reflect new release lifecycle commands
+
+---
+
 ## [2.15.3] - 2025-12-23
 
 ### Fixed
@@ -23,7 +40,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 - **Windows temp file path documentation** (#497) - Added relative path warning to Shell Limitations section in GitHub Workflow rules. Windows absolute paths with backslashes get stripped by shell escaping.
-- **Standardized version headers with v2.15.3 token** (#495) - Ensures deployed files receive correct version injection.
+- **Standardized version headers with v2.16.0 token** (#495) - Ensures deployed files receive correct version injection.
 
 ---
 

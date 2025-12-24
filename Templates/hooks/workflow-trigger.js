@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// **Version:** 2.15.3
+// **Version:** 2.16.0
 /**
  * workflow-trigger.js
  *
@@ -441,8 +441,17 @@ function getAgileDetailedCommands() {
 |---------|-------------|
 | \`Velocity-Report\` | Show velocity trends across sprints |
 | \`Push-Changes\` | Commit and push current work |
-| \`Create-Release\` | Tag a release version |
 | \`Project-Complete\` | Finalize project and create final PR |
+
+---
+
+### Release Lifecycle Commands
+
+| Command | Slash Command | Description |
+|---------|---------------|-------------|
+| \`Open-Release\` | \`/open-release\` | Open release branch and tracker |
+| \`Prepare-Release\` | \`/prepare-release\` | Validate, merge to main, tag, deploy |
+| \`Close-Release\` | \`/close-release\` | Generate notes, create GitHub Release, cleanup |
 
 ---
 
@@ -519,8 +528,17 @@ function getStructuredDetailedCommands() {
 | Command | Description |
 |---------|-------------|
 | \`Push-Changes\` | Commit and push current work |
-| \`Create-Release\` | Tag a release version |
 | \`Project-Complete\` | Finalize project and create final PR |
+
+---
+
+### Release Lifecycle Commands
+
+| Command | Slash Command | Description |
+|---------|---------------|-------------|
+| \`Open-Release\` | \`/open-release\` | Open release branch and tracker |
+| \`Prepare-Release\` | \`/prepare-release\` | Validate, merge to main, tag, deploy |
+| \`Close-Release\` | \`/close-release\` | Generate notes, create GitHub Release, cleanup |
 
 ---
 

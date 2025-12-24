@@ -1,5 +1,5 @@
 # System Instructions: DevOps Engineer
-**Version:** v2.15.3
+**Version:** v2.16.0
 **Extends:** Core-Developer-Instructions.md
 Specialized in deployment pipelines, infrastructure, automation, CI/CD, bridging dev and ops.
 ---

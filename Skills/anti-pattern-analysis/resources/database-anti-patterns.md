@@ -1,5 +1,5 @@
 # Database Anti-Patterns
-**Version:** v2.15.3
+**Version:** v2.16.0
 
 SQL, ORM, and data access issues that affect performance and maintainability.
 

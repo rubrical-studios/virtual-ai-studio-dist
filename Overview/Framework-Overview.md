@@ -1,6 +1,6 @@
 # Framework Overview
 
-**Version:** v2.15.3
+**Version:** v2.16.0
 
 ---
 
@@ -10,7 +10,7 @@ System Instructions define WHO; Frameworks define WHAT process; Skills provide c
 ---
 
 ## IDPF-PRD (Pre-Development)
-**Version:** v2.15.3 | **Type:** Requirements Engineering
+**Version:** v2.16.0 | **Type:** Requirements Engineering
 
 **Forward Path:** Discovery → Elicitation → Specification → Generation
 **Reverse Path:** Analyze → Extract → Refine → Generate
@@ -22,7 +22,7 @@ System Instructions define WHO; Frameworks define WHAT process; Skills provide c
 ---
 
 ## IDPF-Structured
-**Version:** v2.15.3 | **Type:** TDD with Fixed Requirements
+**Version:** v2.16.0 | **Type:** TDD with Fixed Requirements
 
 **Workflow:** Session Init → TDD Iterations (RED-GREEN-REFACTOR) → Completion
 
@@ -35,13 +35,14 @@ System Instructions define WHO; Frameworks define WHAT process; Skills provide c
 ---
 
 ## IDPF-Agile
-**Version:** v2.15.3 | **Type:** Sprint-Based Development
+**Version:** v2.16.0 | **Type:** Sprint-Based Development
 
 **Workflow:** Backlog Creation → Sprint Planning → Story Dev (TDD) → Review → Retro
 
 **Story Format:** As a [user] I want [goal] So that [benefit] + Acceptance Criteria + Story Points
 
 **Commands:** Create-Backlog, Plan-Sprint, Start-Story, Story-Complete, Sprint-Review, End-Sprint
+**Release Lifecycle:** Open-Release, Prepare-Release, Close-Release (trunk-based)
 
 ---
 
@@ -57,7 +58,7 @@ System Instructions define WHO; Frameworks define WHAT process; Skills provide c
 ---
 
 ## IDPF-LTS
-**Version:** v2.15.3 | **Type:** Production Maintenance (Terminal)
+**Version:** v2.16.0 | **Type:** Production Maintenance (Terminal)
 
 **Allowed:** Critical bugs, security patches, doc fixes
 **Forbidden:** New features, refactoring, non-security upgrades

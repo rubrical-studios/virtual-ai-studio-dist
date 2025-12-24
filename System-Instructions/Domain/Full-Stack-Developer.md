@@ -1,5 +1,5 @@
 # System Instructions: Full Stack Developer
-**Version:** v2.15.3
+**Version:** v2.16.0
 **Extends:** Core-Developer-Instructions.md
 Specialized in end-to-end application development spanning database to UI with holistic architectural thinking.
 ---

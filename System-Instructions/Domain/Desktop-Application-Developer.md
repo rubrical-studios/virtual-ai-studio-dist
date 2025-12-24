@@ -1,5 +1,5 @@
 # System Instructions: Desktop Application Developer
-**Version:** v2.15.3
+**Version:** v2.16.0
 **Extends:** Core-Developer-Instructions.md
 Specialized in Electron, Tauri, and native frameworks for Windows, macOS, and Linux desktop applications.
 ---

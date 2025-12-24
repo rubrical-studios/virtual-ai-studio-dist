@@ -1,11 +1,11 @@
 ---
-description: Prepare and close a release
+description: Prepare release with PR, merge to main, and tag
 argument-hint: [version] (e.g., v1.2.0)
 ---
 
 # Prepare Release
 
-Execute the full release workflow including project management closure.
+Validate, create PR to main, merge, and tag for deployment.
 
 ## Pre-Checks
 
@@ -64,20 +64,15 @@ Execute the full release workflow including project management closure.
    git pull origin main
    ```
 
-## Phase 3: Tag and Release
+## Phase 3: Tag on Main
 
-1. Create tag:
+1. Create tag on main:
    ```bash
    git tag -a $VERSION -m "Release $VERSION"
    git push origin $VERSION
    ```
 
-2. Close the gh-pmu release:
-   ```bash
-   gh pmu release close --tag
-   ```
-
-3. **ASK USER:** Confirm tag pushed and release closed
+2. **ASK USER:** Confirm tag pushed (triggers deployment if CI configured)
 
 ## Phase 4: Verification
 
@@ -86,21 +81,42 @@ Execute the full release workflow including project management closure.
    git tag -l "$VERSION"
    ```
 
-2. Verify gh-pmu release closed:
-   ```bash
-   gh pmu release list --closed | head -1
-   ```
+2. Verify deployment (if applicable):
+   - Check CI/CD pipeline status
+   - Verify deployed version
 
-3. (Optional) Create GitHub Release:
-   ```bash
-   gh release create $VERSION --generate-notes
-   ```
+## Next Step
+
+After deployment is verified, run `/close-release` to:
+- Create GitHub Release page
+- Close gh-pmu tracker issue
+- Delete release branch
 
 ## Post-Release Reminder
 
 **Releasing code does NOT close related issues.**
 Issues included in this release still require explicit user approval ("Done") to close.
 Do NOT auto-close issues just because they shipped.
+
+---
+
+## Release Lifecycle
+
+```
+/open-release v1.2.0
+    └── Creates branch + tracker
+         │
+         ▼
+    [Work on release branch]
+         │
+         ▼
+/prepare-release v1.2.0     ◄── YOU ARE HERE
+    └── PR → merge → tag → deploy
+         │
+         ▼
+/close-release
+    └── GitHub Release → cleanup
+```
 
 ---
 

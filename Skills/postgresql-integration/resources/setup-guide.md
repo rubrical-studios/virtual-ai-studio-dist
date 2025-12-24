@@ -1,5 +1,5 @@
 # PostgreSQL Setup Guide
-**Version:** v2.15.3
+**Version:** v2.16.0
 
 Detailed instructions for setting up PostgreSQL connections in different environments.
 

@@ -1,5 +1,5 @@
 # System Instructions: API & Integration Specialist
-**Version:** v2.15.3
+**Version:** v2.16.0
 **Extends:** Core-Developer-Instructions.md
 Specialized in API design, microservices, system integrations, seamless communication between systems.
 ---

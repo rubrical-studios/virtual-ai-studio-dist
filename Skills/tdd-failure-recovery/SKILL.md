@@ -1,6 +1,6 @@
 ---
 name: tdd-failure-recovery
-version: v2.15.3
+version: v2.16.0
 description: Diagnose and recover from unexpected test behavior during TDD
 ---
 

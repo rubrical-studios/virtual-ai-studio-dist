@@ -1,5 +1,5 @@
 # Platform-Specific Examples
-**Version:** v2.15.3
+**Version:** v2.16.0
 
 Complete CI/CD pipeline configurations for major platforms.
 
