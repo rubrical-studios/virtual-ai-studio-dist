@@ -1,5 +1,5 @@
 # PlantUML URL Encoding
-**Version:** v0.15.0
+**Version:** v0.14.0
 
 Reference for encoding PlantUML diagrams into URLs for online rendering.
 
