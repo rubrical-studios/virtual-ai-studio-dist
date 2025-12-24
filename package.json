@@ -1,0 +1,26 @@
+{
+  "name": "idpf-framework-installer",
+  "version": "1.0.0",
+  "description": "IDPF Framework Installer - Cross-platform interactive installer",
+  "main": "install.js",
+  "scripts": {
+    "install-framework": "node install.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "keywords": [
+    "idpf",
+    "framework",
+    "installer",
+    "claude-code"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "prompts": "^2.4.2"
+  },
+  "devDependencies": {
+    "eslint": "^9.17.0",
+    "globals": "^15.14.0"
+  }
+}

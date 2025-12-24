@@ -1,5 +1,5 @@
 # Discovery Worksheet
-**Version:** v0.15.0
+**Version:** v0.15.1
 
 **Project Name:** _______________________
 **Date:** _______________________
