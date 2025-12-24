@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// **Version:** 0.12.0
+// **Version:** 0.11.0
 /**
  * switch-release.js
  *

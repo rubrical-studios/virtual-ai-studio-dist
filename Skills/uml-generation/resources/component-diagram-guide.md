@@ -1,5 +1,5 @@
 # Component Diagram Guide
-**Version:** v0.12.0
+**Version:** v0.11.0
 
 PlantUML syntax reference for generating component and architecture diagrams from source code.
 
