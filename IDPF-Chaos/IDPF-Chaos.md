@@ -1,6 +1,6 @@
 # IDPF-Chaos Framework
 
-**Version:** v0.8.0
+**Version:** v0.5.0
 **Extends:** IDPF-Testing-Core
 
 ---
