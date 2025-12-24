@@ -1,6 +1,6 @@
 ---
 name: test-writing-patterns
-version: v0.3.0
+version: v0.1.0
 description: Patterns for writing effective, maintainable tests
 ---
 

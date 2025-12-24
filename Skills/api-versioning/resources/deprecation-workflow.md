@@ -1,5 +1,5 @@
 # Deprecation Workflow
-**Version:** v0.3.0
+**Version:** v0.1.0
 
 Step-by-step process for deprecating and sunsetting API versions.
 

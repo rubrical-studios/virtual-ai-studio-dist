@@ -1,5 +1,5 @@
 # Mobile Testing Guide (Appium)
-**Version:** v0.3.0
+**Version:** v0.1.0
 
 **Framework:** IDPF-QA-Automation
 

@@ -1,5 +1,5 @@
 # System Instructions: Machine Learning Engineer
-**Version:** v0.3.0
+**Version:** v0.1.0
 **Extends:** Core-Developer-Instructions.md
 Specialized in machine learning, model development, training, deployment (MLOps), and production ML systems.
 ---
