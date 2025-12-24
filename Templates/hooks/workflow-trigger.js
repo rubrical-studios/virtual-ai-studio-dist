@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// **Version:** 0.6.0
+// **Version:** 0.4.0
 /**
  * workflow-trigger.js
  *

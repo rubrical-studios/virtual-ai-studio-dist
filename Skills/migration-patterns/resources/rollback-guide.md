@@ -1,5 +1,5 @@
 # Rollback Guide
-**Version:** v0.6.0
+**Version:** v0.4.0
 
 Comprehensive procedures for database migration rollbacks.
 

@@ -1,5 +1,5 @@
 # GitHub Workflow Integration
-**Version:** v0.6.0
+**Version:** v0.4.0
 
 ---
 

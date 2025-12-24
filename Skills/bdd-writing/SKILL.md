@@ -1,6 +1,6 @@
 ---
 name: bdd-writing
-version: v0.6.0
+version: v0.4.0
 description: Write Gherkin feature files and step definitions for BDD
 ---
 
