@@ -11,4 +11,5 @@
  */
 
 // Delegate to the modular installer
-require('./install/index.js');
+const { main } = require('./install/index.js');
+main();
