@@ -1,5 +1,5 @@
 # Generic System Instructions
-**Version:** v0.13.0
+**Version:** v0.12.0
 Identity for technical book authoring, discovery, and research tasks.
 ---
 ## Core Identity

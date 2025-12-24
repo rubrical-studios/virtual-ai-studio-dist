@@ -1,6 +1,6 @@
 ---
 name: common-beginner-coding-errors
-version: v0.13.0
+version: v0.12.0
 description: Diagnose and solve common beginner programming mistakes in Flask or Sinatra
 ---
 

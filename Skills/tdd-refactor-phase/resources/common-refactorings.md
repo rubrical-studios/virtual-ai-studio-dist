@@ -1,5 +1,5 @@
 # Common Refactorings Catalog
-**Version:** v0.13.0
+**Version:** v0.12.0
 
 Standard refactoring patterns for improving code during the TDD REFACTOR phase.
 
