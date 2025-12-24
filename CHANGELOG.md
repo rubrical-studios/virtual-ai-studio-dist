@@ -6,6 +6,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [2.16.1] - 2025-12-24
+
+### Changed
+- **Installer modular architecture** - Refactored install.js into modular architecture for improved maintainability
+- **Anti-hallucination rules enhanced** - Added command/URL verification to prevent hallucinated commands and URLs
+- **`/assign-release` improvements** - Improved argument handling and single-release optimization
+- **Release commands deployed** - Added open-release and close-release to deployed user commands
+- **`/prepare-release` safety** - Added STOP checkpoint to prevent automatic close-release execution
+
+### Fixed
+- **README-DIST.md version** - Fixed hardcoded version and updated skill count to use dynamic values
+- **Skill tags** - Fixed duplicate (project) tag and added argument hints to /assign-release
+
+---
+
 ## [2.16.0] - 2025-12-23
 
 ### Added
@@ -40,7 +55,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 - **Windows temp file path documentation** (#497) - Added relative path warning to Shell Limitations section in GitHub Workflow rules. Windows absolute paths with backslashes get stripped by shell escaping.
-- **Standardized version headers with v2.16.0 token** (#495) - Ensures deployed files receive correct version injection.
+- **Standardized version headers with v2.16.1 token** (#495) - Ensures deployed files receive correct version injection.
 
 ---
 
@@ -705,6 +720,8 @@ This will:
 
 ---
 
+[2.16.1]: https://github.com/rubrical-studios/process-docs/compare/v2.16.0...v2.16.1
+[2.16.0]: https://github.com/rubrical-studios/process-docs/compare/v2.15.3...v2.16.0
 [2.8.0]: https://github.com/rubrical-studios/process-docs/compare/v2.7.0...v2.8.0
 [2.7.0]: https://github.com/rubrical-studios/process-docs/compare/v2.6.3...v2.7.0
 [2.6.3]: https://github.com/rubrical-studios/process-docs/compare/v2.6.2...v2.6.3

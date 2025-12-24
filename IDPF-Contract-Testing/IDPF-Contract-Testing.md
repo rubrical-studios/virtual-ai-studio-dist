@@ -1,6 +1,6 @@
 # IDPF-Contract-Testing Framework
 
-**Version:** v2.16.0
+**Version:** v2.16.1
 **Extends:** IDPF-Testing-Core
 
 ---

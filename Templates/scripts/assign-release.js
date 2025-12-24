@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// **Version:** 2.16.0
+// **Version:** 2.16.1
 /**
  * assign-release.js
  *
@@ -222,10 +222,12 @@ async function getBacklogIssues() {
     return [];
 }
 
-async function assignToRelease(issueNumber, release) {
+async function assignToRelease(issueNumber, release, useCurrent = false) {
     try {
-        console.log(`  → Assigning #${issueNumber} to ${release}`);
-        const result = await execAsyncSafe(`gh pmu move ${issueNumber} --release "${release}" 2>&1`);
+        const releaseArg = useCurrent ? 'current' : `"${release}"`;
+        const displayRelease = useCurrent ? `${release} (current)` : release;
+        console.log(`  → Assigning #${issueNumber} to ${displayRelease}`);
+        const result = await execAsyncSafe(`gh pmu move ${issueNumber} --release ${releaseArg} 2>&1`);
         if (result && result.includes('unknown flag')) {
             console.log(`    (Note: gh pmu --release not yet supported, manual assignment needed)`);
             return false;
@@ -239,11 +241,12 @@ async function assignToRelease(issueNumber, release) {
 async function main() {
     const args = process.argv.slice(2);
 
-    // Parse args
+    // Parse args - order-independent parsing
     const assignAll = args.includes('--all');
     const checkEpic = args.includes('--check-epic');
     showTiming = args.includes('--timing');
 
+    // Auto-detect: arguments starting with # are issues, release/patch/hotfix prefixes are releases
     let release = args.find(a => a.startsWith('release/') || a.startsWith('patch/') || a.startsWith('hotfix/'));
     let issueNumbers = args.filter(a => a.match(/^#?\d+$/)).map(a => parseInt(a.replace('#', ''), 10));
     const userInput = args.find(a => !a.startsWith('-') && !a.startsWith('release/') && !a.startsWith('patch/') && !a.startsWith('hotfix/') && !a.match(/^#?\d+$/));
@@ -253,60 +256,84 @@ async function main() {
 
     // Step 1: Get releases (gh pmu handles caching internally)
     const releases = await getOpenReleases();
+    const currentRelease = releases.length === 1 ? releases[0].version : null;
 
-    if (!release) {
-        if (releases.length === 0) {
-            console.log('NO_RELEASE_FOUND');
-            console.log('');
+    // Step 2: Handle no releases case
+    if (releases.length === 0) {
+        console.log('NO_RELEASE_FOUND');
+        console.log('');
 
-            const lastVersion = getLastVersion();
-            const labels = issueNumbers.length > 0 ? await getIssueLabels(issueNumbers[0]) : [];
+        const lastVersion = getLastVersion();
+        const labels = issueNumbers.length > 0 ? await getIssueLabels(issueNumbers[0]) : [];
 
-            console.log(`CONTEXT:`);
-            console.log(`  Last version: ${lastVersion ? lastVersion.raw : '(none)'}`);
-            if (issueNumbers.length > 0) {
-                console.log(`  Issue: #${issueNumbers[0]}`);
-                console.log(`  Labels: ${labels.length > 0 ? labels.join(', ') : '(none)'}`);
-            }
-            if (userInput) {
-                console.log(`  User input: ${userInput}`);
-            }
-            console.log('');
+        console.log(`CONTEXT:`);
+        console.log(`  Last version: ${lastVersion ? lastVersion.raw : '(none)'}`);
+        if (issueNumbers.length > 0) {
+            console.log(`  Issue: #${issueNumbers[0]}`);
+            console.log(`  Labels: ${labels.length > 0 ? labels.join(', ') : '(none)'}`);
+        }
+        if (userInput) {
+            console.log(`  User input: ${userInput}`);
+        }
+        console.log('');
 
-            const suggestions = generateBranchSuggestions(lastVersion, userInput, labels);
+        const suggestions = generateBranchSuggestions(lastVersion, userInput, labels);
 
-            if (suggestions.length > 0) {
-                console.log('SUGGESTIONS:');
-                suggestions.forEach((s, i) => {
-                    const recMarker = s.recommended ? ' (recommended)' : '';
-                    console.log(`${i + 1}|${s.branch}|${s.description}${recMarker}`);
-                });
-            } else {
-                console.log('SUGGESTIONS:');
-                console.log('1|release/v1.0.0|Initial release');
-                console.log('2|patch/v0.0.1|Initial patch');
-            }
-
-            console.log('');
-            console.log('ACTION_REQUIRED: Use AskUserQuestion to let user select a branch, then run:');
-            console.log('  gh pmu release start --branch "<selected-branch>"');
-            endTimer('total');
-            return;
+        if (suggestions.length > 0) {
+            console.log('SUGGESTIONS:');
+            suggestions.forEach((s, i) => {
+                const recMarker = s.recommended ? ' (recommended)' : '';
+                console.log(`${i + 1}|${s.branch}|${s.description}${recMarker}`);
+            });
+        } else {
+            console.log('SUGGESTIONS:');
+            console.log('1|release/v1.0.0|Initial release');
+            console.log('2|patch/v0.0.1|Initial patch');
         }
 
-        console.log('Open Releases:');
-        releases.forEach((r, i) => {
-            const name = r.name || r.version || r;
-            console.log(`  ${i + 1}. ${name}`);
-        });
-        console.log('\nUsage: /assign-release <release> [#issue...] [--all]');
-        console.log('Example: /assign-release release/v2.0.0 #123 #124');
-        console.log('Example: /assign-release release/v2.0.0 --all\n');
+        console.log('');
+        console.log('ACTION_REQUIRED: Use AskUserQuestion to let user select a branch, then run:');
+        console.log('  gh pmu release start --branch "<selected-branch>"');
         endTimer('total');
         return;
     }
 
-    // Step 2: Get issues to assign
+    // Step 3: Single-release shortcut - if only one release and issues provided, use current
+    if (!release && currentRelease && issueNumbers.length > 0) {
+        release = currentRelease;
+        console.log(`Using current release: ${release}\n`);
+    }
+
+    // Step 4: Show help if no release determined
+    if (!release) {
+        console.log('Open Releases:');
+        releases.forEach((r, i) => {
+            const name = r.name || r.version || r;
+            const currentMarker = (releases.length === 1) ? ' (current)' : '';
+            console.log(`  ${i + 1}. ${name}${currentMarker}`);
+        });
+        console.log('');
+        console.log('Usage:');
+        if (releases.length === 1) {
+            console.log('  /assign-release #issue              # Assign to current release');
+            console.log('  /assign-release #issue #issue ...   # Assign multiple issues');
+        }
+        console.log('  /assign-release #issue release/...  # Assign to specific release');
+        console.log('  /assign-release release/... #issue  # Same (order doesn\'t matter)');
+        console.log('  /assign-release release/... --all   # Assign all backlog issues');
+        console.log('');
+        console.log('Examples:');
+        if (currentRelease) {
+            console.log(`  /assign-release #123`);
+            console.log(`  /assign-release #123 #124 #125`);
+        }
+        console.log(`  /assign-release ${releases[0].version} #123`);
+        console.log(`  /assign-release ${releases[0].version} --all\n`);
+        endTimer('total');
+        return;
+    }
+
+    // Step 5: Get issues to assign
     if (issueNumbers.length === 0) {
         const backlog = await getBacklogIssues();
 
@@ -372,20 +399,21 @@ async function main() {
         }
     }
 
-    // Step 3: Confirm if large selection
+    // Step 6: Confirm if large selection
     if (issueNumbers.length >= 20) {
         console.log(`WARNING: About to assign ${issueNumbers.length} issues to ${release}.`);
         console.log('If this is too many, cancel and specify individual issue numbers.\n');
     }
 
-    // Step 4: Assign issues
+    // Step 7: Assign issues (use --release current when single release)
     let totalAssigned = 0;
     let epicCount = 0;
     let subIssueCount = 0;
 
     const shouldCheckEpic = checkEpic || issueNumbers.length > 1 || assignAll;
+    const useCurrent = (currentRelease && release === currentRelease);
 
-    console.log(`Assigning to ${release}:\n`);
+    console.log(`Assigning to ${release}${useCurrent ? ' (current)' : ''}:\n`);
 
     // For parallel assignment (when multiple issues)
     if (issueNumbers.length > 3) {
@@ -410,14 +438,14 @@ async function main() {
                                 const subData = JSON.parse(subResult);
                                 const children = subData.children || [];
                                 const subResults = await Promise.all(
-                                    children.map(sub => assignToRelease(sub.number || sub, release))
+                                    children.map(sub => assignToRelease(sub.number || sub, release, useCurrent))
                                 );
                                 subAssigned = subResults.filter(Boolean).length;
                             } catch {}
                         }
                     }
 
-                    const assigned = await assignToRelease(num, release);
+                    const assigned = await assignToRelease(num, release, useCurrent);
                     return { num, isEpic, assigned, subAssigned };
                 })
             );
@@ -451,7 +479,7 @@ async function main() {
                         const children = subData.children || [];
                         for (const sub of children) {
                             const subNum = sub.number || sub;
-                            if (await assignToRelease(subNum, release)) {
+                            if (await assignToRelease(subNum, release, useCurrent)) {
                                 subIssueCount++;
                                 totalAssigned++;
                             }
@@ -460,13 +488,13 @@ async function main() {
                 }
             }
 
-            if (await assignToRelease(num, release)) {
+            if (await assignToRelease(num, release, useCurrent)) {
                 totalAssigned++;
             }
         }
     }
 
-    console.log(`\n✓ ${totalAssigned} issues assigned to ${release}`);
+    console.log(`\n✓ ${totalAssigned} issues assigned to ${release}${useCurrent ? ' (current)' : ''}`);
     if (epicCount > 0) {
         console.log(`  (${epicCount} epics with ${subIssueCount} sub-issues)`);
     }

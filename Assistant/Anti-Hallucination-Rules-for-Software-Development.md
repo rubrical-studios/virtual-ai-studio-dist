@@ -1,5 +1,5 @@
 # Anti-Hallucination Rules for Software Development
-**Version:** v2.16.0
+**Version:** v2.16.1
 
 ---
 
@@ -18,6 +18,7 @@
 - ❌ Configuration syntax or command-line flags
 - ❌ File paths, package names, library dependencies
 - ❌ Test framework assertions
+- ❌ URLs or endpoints without verifying they exist
 
 ### NEVER Assume:
 - ❌ OS/platform, installed tools, project structure

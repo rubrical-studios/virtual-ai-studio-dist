@@ -1,0 +1,180 @@
+/**
+ * constants.js - Configuration data for IDPF Framework Installer
+ * @module install/lib/constants
+ */
+
+const DOMAIN_SPECIALISTS = [
+  'Accessibility-Specialist',
+  'API-Integration-Specialist',
+  'Backend-Specialist',
+  'Cloud-Solutions-Architect',
+  'Database-Engineer',
+  'Data-Engineer',
+  'Desktop-Application-Developer',
+  'DevOps-Engineer',
+  'Embedded-Systems-Engineer',
+  'Frontend-Specialist',
+  'Full-Stack-Developer',
+  'Game-Developer',
+  'Graphics-Engineer-Specialist',
+  'ML-Engineer',
+  'Mobile-Specialist',
+  'Performance-Engineer',
+  'Platform-Engineer',
+  'PRD-Analyst',
+  'QA-Test-Engineer',
+  'Security-Engineer',
+  'SRE-Specialist',
+  'Systems-Programmer-Specialist',
+  'Technical-Writer-Specialist',
+];
+
+const FRAMEWORK_SKILLS = {
+  'IDPF-Structured': ['tdd-red-phase', 'tdd-green-phase', 'tdd-refactor-phase', 'tdd-failure-recovery', 'test-writing-patterns'],
+  'IDPF-Agile': ['tdd-red-phase', 'tdd-green-phase', 'tdd-refactor-phase', 'tdd-failure-recovery', 'test-writing-patterns'],
+  'IDPF-Vibe': [],
+  'IDPF-LTS': ['tdd-red-phase', 'tdd-green-phase', 'tdd-refactor-phase', 'tdd-failure-recovery', 'test-writing-patterns'],
+};
+
+const VIBE_VARIANT_SKILLS = {
+  'vibe-newbie': ['flask-setup', 'sinatra-setup', 'common-errors', 'sqlite-integration', 'beginner-testing'],
+  'vibe-web': [],
+  'vibe-desktop': [],
+  'vibe-mobile': [],
+  'vibe-game': [],
+  'vibe-embedded': [],
+};
+
+/**
+ * Manifest of installed files for cleanup purposes
+ * Each entry specifies:
+ * - dir: relative directory path from project root
+ * - files: array of expected filenames (functions receive config and return true/false for conditional files)
+ */
+const INSTALLED_FILES_MANIFEST = {
+  root: {
+    dir: '.',
+    files: [
+      'CLAUDE.md',
+      'framework-config.json',
+      (config) => process.platform === 'win32' ? 'run_claude.cmd' : null,
+      (config) => process.platform === 'win32' ? 'runp_claude.cmd' : null,
+      (config) => process.platform !== 'win32' ? 'run_claude.sh' : null,
+      (config) => process.platform !== 'win32' ? 'runp_claude.sh' : null,
+    ],
+  },
+  rules: {
+    dir: '.claude/rules',
+    files: [
+      '01-anti-hallucination.md',
+      (config) => config?.enableGitHubWorkflow ? '02-github-workflow.md' : null,
+      '03-startup.md',
+    ],
+  },
+  commands: {
+    dir: '.claude/commands',
+    files: [
+      (config) => config?.domainSpecialists?.length > 0 ? 'switch-role.md' : null,
+      'add-role.md',
+      (config) => config?.enableGitHubWorkflow ? 'assign-release.md' : null,
+      (config) => config?.enableGitHubWorkflow ? 'switch-release.md' : null,
+      (config) => config?.enableGitHubWorkflow ? 'transfer-issue.md' : null,
+      (config) => config?.enableGitHubWorkflow ? 'plan-sprint.md' : null,
+      (config) => config?.enableGitHubWorkflow ? 'sprint-status.md' : null,
+      (config) => config?.enableGitHubWorkflow ? 'sprint-retro.md' : null,
+      (config) => config?.enableGitHubWorkflow ? 'end-sprint.md' : null,
+      (config) => config?.enableGitHubWorkflow ? 'open-release.md' : null,
+      (config) => config?.enableGitHubWorkflow ? 'close-release.md' : null,
+    ],
+  },
+  scripts: {
+    dir: '.claude/scripts',
+    files: [
+      (config) => config?.enableGitHubWorkflow ? 'assign-release.js' : null,
+      (config) => config?.enableGitHubWorkflow ? 'switch-release.js' : null,
+      (config) => config?.enableGitHubWorkflow ? 'transfer-issue.js' : null,
+      (config) => config?.enableGitHubWorkflow ? 'plan-sprint.js' : null,
+      (config) => config?.enableGitHubWorkflow ? 'sprint-status.js' : null,
+      (config) => config?.enableGitHubWorkflow ? 'sprint-retro.js' : null,
+      (config) => config?.enableGitHubWorkflow ? 'end-sprint.js' : null,
+    ],
+  },
+  hooks: {
+    dir: '.claude/hooks',
+    files: [
+      (config) => config?.enableGitHubWorkflow ? 'workflow-trigger.js' : null,
+    ],
+  },
+};
+
+const PROCESS_FRAMEWORKS = [
+  { value: 'IDPF-Structured', title: 'IDPF-Structured', description: 'Test-Driven Development with fixed requirements' },
+  { value: 'IDPF-Agile', title: 'IDPF-Agile', description: 'Sprint-based development with user stories' },
+  { value: 'IDPF-Vibe', title: 'IDPF-Vibe', description: 'Exploratory development with evolution paths' },
+  { value: 'IDPF-LTS', title: 'IDPF-LTS', description: 'Long-Term Support maintenance mode' },
+];
+
+const VIBE_VARIANTS = [
+  { value: 'vibe-newbie', title: 'Vibe-Newbie', description: 'Beginner-friendly (Flask/Sinatra)' },
+  { value: 'vibe-web', title: 'Vibe-Web', description: 'Web development (Frontend/Backend)' },
+  { value: 'vibe-desktop', title: 'Vibe-Desktop', description: 'Desktop applications' },
+  { value: 'vibe-mobile', title: 'Vibe-Mobile', description: 'Mobile applications' },
+  { value: 'vibe-game', title: 'Vibe-Game', description: 'Game development' },
+  { value: 'vibe-embedded', title: 'Vibe-Embedded', description: 'Embedded systems' },
+];
+
+const TESTING_FRAMEWORKS = [
+  { value: 'IDPF-Testing-Core', title: 'IDPF-Testing-Core', description: 'Foundation testing framework' },
+  { value: 'IDPF-QA-Automation', title: 'IDPF-QA-Automation', description: 'QA automation framework' },
+  { value: 'IDPF-Performance', title: 'IDPF-Performance', description: 'Performance testing framework' },
+  { value: 'IDPF-Security', title: 'IDPF-Security', description: 'Security testing framework' },
+  { value: 'IDPF-Accessibility', title: 'IDPF-Accessibility', description: 'Accessibility testing framework' },
+  { value: 'IDPF-Chaos', title: 'IDPF-Chaos', description: 'Chaos engineering framework' },
+  { value: 'IDPF-Contract-Testing', title: 'IDPF-Contract-Testing', description: 'Contract testing framework' },
+];
+
+/**
+ * Valid framework transitions per Framework-Transitions.md
+ */
+const VALID_TRANSITIONS = {
+  'IDPF-Vibe': ['IDPF-Structured', 'IDPF-Agile'],
+  'IDPF-Structured': ['IDPF-Agile', 'IDPF-LTS'],
+  'IDPF-Agile': ['IDPF-Structured', 'IDPF-LTS'],
+  'IDPF-LTS': [],
+};
+
+const ALL_SKILLS = [
+  'anti-pattern-analysis',
+  'api-versioning',
+  'bdd-writing',
+  'beginner-testing',
+  'ci-cd-pipeline-design',
+  'common-errors',
+  'error-handling-patterns',
+  'extract-prd',
+  'flask-setup',
+  'migration-patterns',
+  'mutation-testing',
+  'postgresql-integration',
+  'property-based-testing',
+  'sinatra-setup',
+  'sqlite-integration',
+  'tdd-failure-recovery',
+  'tdd-green-phase',
+  'tdd-red-phase',
+  'tdd-refactor-phase',
+  'test-writing-patterns',
+  'uml-generation',
+];
+
+module.exports = {
+  DOMAIN_SPECIALISTS,
+  FRAMEWORK_SKILLS,
+  VIBE_VARIANT_SKILLS,
+  INSTALLED_FILES_MANIFEST,
+  PROCESS_FRAMEWORKS,
+  VIBE_VARIANTS,
+  TESTING_FRAMEWORKS,
+  VALID_TRANSITIONS,
+  ALL_SKILLS,
+};

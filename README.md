@@ -1,6 +1,6 @@
 # IDPF Framework - AI-Assisted Development
 
-**Current Version:** 2.9.6
+**Current Version:** v2.16.1
 
 A comprehensive ecosystem for AI-assisted software development with Claude.
 
@@ -39,7 +39,7 @@ The installer will:
 
 ---
 
-## Skills (14)
+## Skills (21)
 
 **TDD:** tdd-red-phase, tdd-green-phase, tdd-refactor-phase, tdd-failure-recovery, test-writing-patterns
 
@@ -47,7 +47,15 @@ The installer will:
 
 **Beginner Support:** beginner-testing, common-errors, sqlite-integration
 
+**Database:** postgresql-integration, migration-patterns
+
+**Architecture:** api-versioning, error-handling-patterns
+
+**Advanced Testing:** property-based-testing, mutation-testing
+
 **Analysis:** uml-generation, anti-pattern-analysis, bdd-writing, extract-prd
+
+**DevOps:** ci-cd-pipeline-design
 
 ---
 

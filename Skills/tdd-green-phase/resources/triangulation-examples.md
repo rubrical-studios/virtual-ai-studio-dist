@@ -1,5 +1,5 @@
 # Triangulation Examples
-**Version:** v2.16.0
+**Version:** v2.16.1
 
 How multiple test cases drive general solutions in TDD.
 

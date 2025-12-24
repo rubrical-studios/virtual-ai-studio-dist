@@ -1,6 +1,6 @@
 ---
 name: sinatra-setup-for-beginners
-version: v2.16.0
+version: v2.16.1
 description: Set up Ruby Sinatra development environment for beginners
 ---
 

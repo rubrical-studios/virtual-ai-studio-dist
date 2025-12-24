@@ -1,5 +1,5 @@
 # Framework Examples
-**Version:** v2.16.0
+**Version:** v2.16.1
 
 Setup and usage examples for popular mutation testing frameworks.
 

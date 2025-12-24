@@ -1,5 +1,5 @@
 # Stakeholder Mapping Guide
-**Version:** v2.16.0
+**Version:** v2.16.1
 
 **Purpose:** Identify and categorize all stakeholders involved in product development.
 

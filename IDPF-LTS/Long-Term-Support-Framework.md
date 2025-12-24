@@ -1,6 +1,6 @@
 # Long-Term Support (LTS) Framework
 
-**Version:** v2.16.0
+**Version:** v2.16.1
 
 ---
 

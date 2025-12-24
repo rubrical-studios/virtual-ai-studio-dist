@@ -1,5 +1,5 @@
 # Error Hierarchy Patterns
-**Version:** v2.16.0
+**Version:** v2.16.1
 
 Design patterns for structuring application errors.
 

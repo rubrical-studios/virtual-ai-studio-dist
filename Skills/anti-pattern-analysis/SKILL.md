@@ -2,7 +2,7 @@
 
 ---
 name: anti-pattern-analysis
-version: v2.16.0
+version: v2.16.1
 description: Systematic detection of anti-patterns with actionable refactoring guidance
 ---
 

@@ -1,5 +1,5 @@
 # JavaScript Anti-Patterns
-**Version:** v2.16.0
+**Version:** v2.16.1
 
 Common anti-patterns specific to JavaScript and TypeScript development.
 
