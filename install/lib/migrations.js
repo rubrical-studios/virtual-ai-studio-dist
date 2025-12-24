@@ -45,6 +45,7 @@ const MIGRATIONS = [
 
       // Determine if GitHub workflow was enabled (check for hook file)
       const hasGitHubWorkflow = fs.existsSync(path.join(projectDir, '.claude', 'hooks', 'workflow-trigger.js'));
+      const version = readFrameworkVersion(frameworkPath);
 
       // Create .claude/rules/ with new structure
       const rulesResult = deployRules(
@@ -53,7 +54,8 @@ const MIGRATIONS = [
         config.projectType.processFramework,
         config.projectType.domainSpecialists.join(', '),
         config.projectType.primarySpecialist,
-        hasGitHubWorkflow
+        hasGitHubWorkflow,
+        version
       );
 
       if (rulesResult.antiHallucination) {

@@ -1,5 +1,5 @@
 # GitHub Workflow Integration
-**Version:** v0.15.1
+**Version:** v0.15.2
 
 ---
 
@@ -213,14 +213,14 @@ If yes: `gh issue edit [parent] --add-label "epic"`, add "story" to sub-issues
 **Start:** `gh pmu release start --branch "release/v1.2.0"`
 **Add:** `gh pmu move [#] --release current` (recommended over `release add`)
 **Close:** `gh pmu release close [--tag]`
-**Artifacts:** `Releases/v1.2.0/release-notes.md`, `changelog.md`
+**Artifacts:** `Releases/release/v1.2.0/release-notes.md`, `changelog.md`
 
 ### 11. Patch Workflow
 **Note:** Uses `gh pmu release` with `patch/` branch naming.
 **Start:** `gh pmu release start --branch "patch/v1.1.5"`
 **Add:** `gh pmu move [#] --release current`
 **Close:** `gh pmu release close [--tag]`
-**Artifacts:** `Patches/v1.1.5/patch-notes.md`
+**Artifacts:** `Releases/patch/v1.1.5/patch-notes.md`, `changelog.md`
 
 ### 12. PR-Only Main Merges
 **CRITICAL:** All work must go through PRs to main. Never push directly.

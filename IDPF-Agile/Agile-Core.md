@@ -1,6 +1,6 @@
 # Agile-Driven Development Framework - Core
 
-**Version:** v0.15.1
+**Version:** v0.15.2
 **Module:** Core
 
 ---

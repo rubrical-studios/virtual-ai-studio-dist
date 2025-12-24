@@ -1,5 +1,5 @@
 # System Instructions: Database Engineer
-**Version:** v0.15.1
+**Version:** v0.15.2
 **Extends:** Core-Developer-Instructions.md
 Specialized in database design, optimization, management, data integrity and performance at scale.
 ---

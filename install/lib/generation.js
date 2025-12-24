@@ -488,7 +488,7 @@ See \`Templates/Testing-Approach-Selection-Guide.md\` for guidance on:
 /**
  * Generate startup rules content for user projects
  */
-function generateStartupRules(frameworkPath, processFramework, domainListStr, primarySpecialist) {
+function generateStartupRules(frameworkPath, processFramework, domainListStr, primarySpecialist, version) {
   const hasPrimary = primarySpecialist && primarySpecialist !== 'None';
   const specialistStep = hasPrimary
     ? `2. **Load Primary Specialist**: Read \`${frameworkPath}/System-Instructions/Domain/${primarySpecialist}.md\`
@@ -499,7 +499,7 @@ function generateStartupRules(frameworkPath, processFramework, domainListStr, pr
 
   return `# Session Startup
 
-**Version:** 1.0
+**Version:** ${version || '0.15.2'}
 **Framework:** ${processFramework}
 **Specialists:** ${domainListStr || 'None'}
 **Primary Specialist:** ${primarySpecialist || 'None'}

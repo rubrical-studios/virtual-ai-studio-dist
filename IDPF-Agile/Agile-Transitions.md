@@ -1,5 +1,5 @@
 # Agile-Driven Development Framework - Transitions
-**Version:** v0.15.1
+**Version:** v0.15.2
 **Module:** Transitions
 
 ---

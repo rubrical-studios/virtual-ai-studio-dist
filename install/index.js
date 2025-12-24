@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// **Version:** 0.15.1
+// **Version:** 0.15.2
 /**
  * IDPF Framework Installer - Main Entry Point
  * Unified cross-platform installer for Windows, macOS, and Linux
@@ -634,7 +634,7 @@ async function main() {
     logSuccess('  ✓ CLAUDE.md');
 
     // Deploy rules to .claude/rules/
-    const rulesResult = deployRules(projectDir, frameworkPath, processFramework, domainListStr, primarySpecialist, enableGitHubWorkflow);
+    const rulesResult = deployRules(projectDir, frameworkPath, processFramework, domainListStr, primarySpecialist, enableGitHubWorkflow, version);
     if (rulesResult.antiHallucination) {
       logSuccess('  ✓ .claude/rules/01-anti-hallucination.md');
     }

@@ -246,7 +246,7 @@ async function updateTrackedProjects(frameworkPath, prompts) {
       const domainListStr = (projectConfig.projectType?.domainSpecialists || []).join(', ');
       const primarySpecialist = projectConfig.projectType?.primarySpecialist;
       const currentFrameworkForRules = projectConfig.projectType?.processFramework;
-      const rulesResult = deployRules(projectPath, frameworkPath, currentFrameworkForRules, domainListStr, primarySpecialist, hasGitHubWorkflow);
+      const rulesResult = deployRules(projectPath, frameworkPath, currentFrameworkForRules, domainListStr, primarySpecialist, hasGitHubWorkflow, currentVersion);
       if (rulesResult.antiHallucination) {
         log(`    ${colors.dim('  Updated: .claude/rules/01-anti-hallucination.md')}`);
       }

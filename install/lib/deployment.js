@@ -10,7 +10,7 @@ const { generateStartupRules } = require('./generation');
 /**
  * Deploy rules to .claude/rules/ directory
  */
-function deployRules(projectDir, frameworkPath, processFramework, domainListStr, primarySpecialist, enableGitHubWorkflow) {
+function deployRules(projectDir, frameworkPath, processFramework, domainListStr, primarySpecialist, enableGitHubWorkflow, version) {
   const rulesDir = path.join(projectDir, '.claude', 'rules');
   fs.mkdirSync(rulesDir, { recursive: true });
 
@@ -20,17 +20,13 @@ function deployRules(projectDir, frameworkPath, processFramework, domainListStr,
   const ahSrc = path.join(frameworkPath, 'Assistant', 'Anti-Hallucination-Rules-for-Software-Development.md');
   const ahDest = path.join(rulesDir, '01-anti-hallucination.md');
   if (fs.existsSync(ahSrc)) {
-    // Read source and add version header
+    // Read source and add Source reference after Version line
     const ahContent = fs.readFileSync(ahSrc, 'utf8');
-    const ahWithHeader = `# Anti-Hallucination Rules for Software Development
-
-**Version:** 1.0
-**Source:** Assistant/Anti-Hallucination-Rules-for-Software-Development.md
-
----
-
-${ahContent.replace(/^# Anti-Hallucination Rules for Software Development\s*\n*/, '')}`;
-    fs.writeFileSync(ahDest, ahWithHeader);
+    const ahWithSource = ahContent.replace(
+      /(\*\*Version:\*\* .+)/,
+      '$1\n**Source:** Assistant/Anti-Hallucination-Rules-for-Software-Development.md'
+    );
+    fs.writeFileSync(ahDest, ahWithSource);
     results.antiHallucination = true;
   }
 
@@ -39,23 +35,19 @@ ${ahContent.replace(/^# Anti-Hallucination Rules for Software Development\s*\n*/
     const ghSrc = path.join(frameworkPath, 'Reference', 'GitHub-Workflow.md');
     const ghDest = path.join(rulesDir, '02-github-workflow.md');
     if (fs.existsSync(ghSrc)) {
-      // Read source and add version header
+      // Read source and add Source reference after Version line
       const ghContent = fs.readFileSync(ghSrc, 'utf8');
-      const ghWithHeader = `# GitHub Workflow Integration
-
-**Version:** 1.0
-**Source:** Reference/GitHub-Workflow.md
-
----
-
-${ghContent.replace(/^# GitHub Workflow Integration\s*\n*/, '')}`;
-      fs.writeFileSync(ghDest, ghWithHeader);
+      const ghWithSource = ghContent.replace(
+        /(\*\*Version:\*\* .+)/,
+        '$1\n**Source:** Reference/GitHub-Workflow.md'
+      );
+      fs.writeFileSync(ghDest, ghWithSource);
       results.githubWorkflow = true;
     }
   }
 
   // Generate startup rules
-  const startupContent = generateStartupRules(frameworkPath, processFramework, domainListStr, primarySpecialist);
+  const startupContent = generateStartupRules(frameworkPath, processFramework, domainListStr, primarySpecialist, version);
   fs.writeFileSync(path.join(rulesDir, '03-startup.md'), startupContent);
   results.startup = true;
 

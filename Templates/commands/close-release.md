@@ -30,7 +30,10 @@ gh pmu release current
 
 If no release active, error and exit.
 
-Extract version from current release.
+Extract track and version from current release:
+- `release/v1.2.0` → track=`release`, version=`v1.2.0`
+- `patch/v1.1.1` → track=`patch`, version=`v1.1.1`
+- `hotfix/v1.0.1` → track=`hotfix`, version=`v1.0.1`
 
 ### Step 2: Verify Deployment Complete
 

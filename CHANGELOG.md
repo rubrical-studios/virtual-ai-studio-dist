@@ -8,6 +8,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [0.15.2] - 2025-12-24
+
+### Fixed
+- **Inconsistent Patches/ and Releases/patch/ directory structure** (#536) - Consolidated all release artifacts under unified `Releases/{track}/` structure matching branch naming convention (`release/`, `patch/`, `hotfix/`)
+
+### Changed
+- **`/close-release` updated for track-based paths** (#536) - Now writes artifacts to `Releases/{track}/vX.Y.Z/` based on branch prefix
+- **GitHub Workflow updated to v1.7** - Updated artifact paths to use `Releases/{track}/` pattern
+
+---
+
 ## [0.15.1] - 2025-12-24
 
 ### Fixed
