@@ -1,5 +1,5 @@
 # JavaScript/TypeScript to UML Patterns
-**Version:** v0.8.0
+**Version:** v0.6.0
 
 Guide for extracting UML diagrams from JavaScript and TypeScript source code.
 

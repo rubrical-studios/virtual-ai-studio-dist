@@ -1,5 +1,5 @@
 # Session Startup Instructions
-**Version:** v0.8.0
+**Version:** v0.6.0
 
 ---
 

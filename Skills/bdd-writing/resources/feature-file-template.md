@@ -1,5 +1,5 @@
 # Feature File Template
-**Version:** v0.8.0
+**Version:** v0.6.0
 
 Use this template as a starting point for new feature files.
 
