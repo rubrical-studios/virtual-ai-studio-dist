@@ -1,5 +1,5 @@
 # Framework Summary
-**Version:** v0.16.0
+**Version:** v0.16.1
 
 ---
 
@@ -43,27 +43,27 @@
 
 | Skill | Version | Category |
 |-------|---------|----------|
-| tdd-red-phase | v0.16.0 | TDD |
-| tdd-green-phase | v0.16.0 | TDD |
-| tdd-refactor-phase | v0.16.0 | TDD |
-| tdd-failure-recovery | v0.16.0 | TDD |
-| test-writing-patterns | v0.16.0 | TDD |
-| bdd-writing | v0.16.0 | BDD |
-| extract-prd | v0.16.0 | PRD |
-| anti-pattern-analysis | v0.16.0 | Code Quality |
-| uml-generation | v0.16.0 | Code Quality |
-| flask-setup | v0.16.0 | Beginner Setup |
-| sinatra-setup | v0.16.0 | Beginner Setup |
-| common-errors | v0.16.0 | Beginner Support |
-| sqlite-integration | v0.16.0 | Beginner Support |
-| beginner-testing | v0.16.0 | Beginner Support |
-| postgresql-integration | v0.16.0 | Database |
-| migration-patterns | v0.16.0 | Database |
-| property-based-testing | v0.16.0 | Advanced Testing |
-| mutation-testing | v0.16.0 | Advanced Testing |
-| api-versioning | v0.16.0 | Architecture |
-| error-handling-patterns | v0.16.0 | Architecture |
-| ci-cd-pipeline-design | v0.16.0 | DevOps |
+| tdd-red-phase | v0.16.1 | TDD |
+| tdd-green-phase | v0.16.1 | TDD |
+| tdd-refactor-phase | v0.16.1 | TDD |
+| tdd-failure-recovery | v0.16.1 | TDD |
+| test-writing-patterns | v0.16.1 | TDD |
+| bdd-writing | v0.16.1 | BDD |
+| extract-prd | v0.16.1 | PRD |
+| anti-pattern-analysis | v0.16.1 | Code Quality |
+| uml-generation | v0.16.1 | Code Quality |
+| flask-setup | v0.16.1 | Beginner Setup |
+| sinatra-setup | v0.16.1 | Beginner Setup |
+| common-errors | v0.16.1 | Beginner Support |
+| sqlite-integration | v0.16.1 | Beginner Support |
+| beginner-testing | v0.16.1 | Beginner Support |
+| postgresql-integration | v0.16.1 | Database |
+| migration-patterns | v0.16.1 | Database |
+| property-based-testing | v0.16.1 | Advanced Testing |
+| mutation-testing | v0.16.1 | Advanced Testing |
+| api-versioning | v0.16.1 | Architecture |
+| error-handling-patterns | v0.16.1 | Architecture |
+| ci-cd-pipeline-design | v0.16.1 | DevOps |
 
 ## Framework Selection Matrix
 

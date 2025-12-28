@@ -1,5 +1,5 @@
 # Chaos Experiment Plan: [Experiment Name]
-**Version:** v0.16.0
+**Version:** v0.16.1
 
 **Date:** YYYY-MM-DD
 **Author:** [Name]

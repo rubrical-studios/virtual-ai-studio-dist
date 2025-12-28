@@ -213,6 +213,8 @@ function writeConfig(projectDir, config) {
  * @param {string} options.language - Project language
  * @param {string} options.description - Project description
  * @param {string[]} options.domainSpecialists - Domain specialists
+ * @param {string} options.primarySpecialist - Primary domain specialist
+ * @param {string} options.frameworkPath - Path to framework source
  * @returns {object} Updated config
  */
 function createOrUpdateConfig(projectDir, manifest, options = {}) {
@@ -242,7 +244,8 @@ function createOrUpdateConfig(projectDir, manifest, options = {}) {
       processFramework: options.processFramework || existingConfig.projectType.processFramework,
       language: options.language || existingConfig.projectType.language || detectLanguage(projectDir),
       description: options.description !== undefined ? options.description : existingConfig.projectType.description,
-      domainSpecialists: options.domainSpecialists || existingConfig.projectType.domainSpecialists || []
+      domainSpecialists: options.domainSpecialists || existingConfig.projectType.domainSpecialists || [],
+      primarySpecialist: options.primarySpecialist || existingConfig.projectType.primarySpecialist || null
     };
   } else {
     // Fresh install
@@ -250,7 +253,8 @@ function createOrUpdateConfig(projectDir, manifest, options = {}) {
       processFramework: options.processFramework || 'IDPF-Structured',
       language: options.language || detectLanguage(projectDir) || 'unknown',
       description: options.description || '',
-      domainSpecialists: options.domainSpecialists || []
+      domainSpecialists: options.domainSpecialists || [],
+      primarySpecialist: options.primarySpecialist || null
     };
   }
 

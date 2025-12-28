@@ -65,7 +65,8 @@ async function updateTrackedProjects(frameworkPath, prompts) {
       continue;
     }
 
-    const installedVersion = projectConfig.installedVersion || '0.0.0';
+    // Support both old (installedVersion) and new (frameworkVersion) schema
+    const installedVersion = projectConfig.frameworkVersion || projectConfig.installedVersion || '0.0.0';
 
     // Compare versions
     if (compareVersions(installedVersion, currentVersion) >= 0) {
@@ -137,8 +138,14 @@ async function updateTrackedProjects(frameworkPath, prompts) {
                 }
               }
 
-              // Save config
+              // Save config (migrate to new schema if needed)
               projectConfig.installedDate = new Date().toISOString().split('T')[0];
+              // Ensure using new schema field
+              if (projectConfig.installedVersion && !projectConfig.frameworkVersion) {
+                projectConfig.frameworkVersion = projectConfig.installedVersion;
+                delete projectConfig.installedVersion;
+              }
+              delete projectConfig.components;
               fs.writeFileSync(configPath, JSON.stringify(projectConfig, null, 2));
             }
           }
@@ -302,9 +309,13 @@ async function updateTrackedProjects(frameworkPath, prompts) {
         }
       }
 
-      // Update version in config
-      projectConfig.installedVersion = currentVersion;
+      // Update version in config (migrate to new schema field name)
+      projectConfig.frameworkVersion = currentVersion;
       projectConfig.installedDate = new Date().toISOString().split('T')[0];
+      // Remove old field if present (schema migration)
+      delete projectConfig.installedVersion;
+      // Remove old components field if present (deprecated in v0.16.0+)
+      delete projectConfig.components;
       fs.writeFileSync(configPath, JSON.stringify(projectConfig, null, 2));
 
       // Update tracking

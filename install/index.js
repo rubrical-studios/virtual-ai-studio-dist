@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// **Version:** 0.16.0
+// **Version:** 0.16.1
 /**
  * IDPF Framework Installer - Main Entry Point
  * Unified cross-platform installer for Windows, macOS, and Linux
@@ -56,7 +56,6 @@ const {
 } = require('./lib/detection');
 
 const {
-  generateFrameworkConfig,
   generateClaudeMd,
   generateSwitchRole,
   generateAddRole,
@@ -64,6 +63,11 @@ const {
   generateSettingsLocal,
   generatePrdReadme,
 } = require('./lib/generation');
+
+const {
+  parseManifest,
+  createOrUpdateConfig,
+} = require('./lib/config');
 
 const {
   deployRules,
@@ -339,8 +343,14 @@ async function main() {
       process.exit(1);
     }
 
-    // Read version
-    const version = readFrameworkVersion(frameworkPath);
+    // Parse manifest for version and config
+    const manifestResult = parseManifest(frameworkPath);
+    if (!manifestResult.success) {
+      logError(`ERROR: ${manifestResult.error}`);
+      process.exit(1);
+    }
+    const manifest = manifestResult.manifest;
+    const version = manifest.version;
 
     divider();
     log(`  Framework: ${colors.cyan(frameworkPath)}`);
@@ -599,8 +609,13 @@ async function main() {
     divider();
     log();
 
-    // framework-config.json
-    generateFrameworkConfig(projectDir, frameworkPath, version, processFramework, selectedDomains, primarySpecialist);
+    // framework-config.json (using new v0.16.0+ schema)
+    createOrUpdateConfig(projectDir, manifest, {
+      processFramework,
+      domainSpecialists: selectedDomains,
+      primarySpecialist,
+      frameworkPath,
+    });
     logSuccess('  ✓ framework-config.json');
 
     // Deploy skills

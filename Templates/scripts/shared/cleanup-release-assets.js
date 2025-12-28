@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// **Version:** 0.16.1
 /**
  * cleanup-release-assets.js - Clean up old release assets
  *

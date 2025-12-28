@@ -1,5 +1,5 @@
 ---
-version: v0.16.0
+version: v0.16.1
 allowed-tools: Bash
 description: Show current sprint status (project)
 ---

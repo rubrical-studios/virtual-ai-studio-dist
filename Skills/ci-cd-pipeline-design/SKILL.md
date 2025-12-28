@@ -1,6 +1,6 @@
 ---
 name: ci-cd-pipeline-design
-version: v0.16.0
+version: v0.16.1
 description: Pipeline architecture, stage design, security for CI/CD
 ---
 

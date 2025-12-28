@@ -22,6 +22,9 @@ function getCoreFrameworkFileName(processFramework) {
 
 /**
  * Generate framework-config.json
+ * @deprecated Use createOrUpdateConfig from config.js instead (v0.16.1+)
+ * This function uses the old schema with installedVersion and components.
+ * Kept for reference only - not exported.
  */
 function generateFrameworkConfig(projectDir, frameworkPath, version, processFramework, domainList, primarySpecialist) {
   const config = {
@@ -462,7 +465,7 @@ function generateStartupRules(frameworkPath, processFramework, domainListStr, pr
 
   return `# Session Startup
 
-**Version:** ${version || '0.16.0'}
+**Version:** ${version || '0.16.1'}
 **Framework:** ${processFramework}
 **Specialists:** ${domainListStr || 'None'}
 **Primary Specialist:** ${primarySpecialist || 'None'}
@@ -494,7 +497,7 @@ ${specialistStep}
 
 module.exports = {
   getCoreFrameworkFileName,
-  generateFrameworkConfig,
+  // generateFrameworkConfig removed in v0.16.1 - use createOrUpdateConfig from config.js
   generateClaudeMd,
   generateSwitchRole,
   generateAddRole,

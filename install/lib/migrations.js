@@ -182,7 +182,8 @@ function runMigrations(projectDir, frameworkPath) {
   }
 
   const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-  const installedVersion = config.installedVersion || '0.0.0';
+  // Support both old (installedVersion) and new (frameworkVersion) schema
+  const installedVersion = config.frameworkVersion || config.installedVersion || '0.0.0';
   const currentVersion = readFrameworkVersion(frameworkPath);
 
   log(`Installed version: ${installedVersion}`);
@@ -226,9 +227,13 @@ function runMigrations(projectDir, frameworkPath) {
     log();
   }
 
-  // Update installed version
-  config.installedVersion = currentVersion;
+  // Update installed version (migrate to new schema field name)
+  config.frameworkVersion = currentVersion;
   config.migratedDate = getCurrentDate();
+  // Remove old field if present (schema migration)
+  delete config.installedVersion;
+  // Remove old components field if present (deprecated in v0.16.0+)
+  delete config.components;
   fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
 
   logSuccess(`Migration complete. Updated to version ${currentVersion}`);
