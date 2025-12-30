@@ -5,7 +5,7 @@ license: Complete terms in LICENSE.txt
 ---
 
 # SQLite Integration for Beginners
-**Version:** v0.17.0
+**Version:** v0.17.1
 
 ## When to Use
 - User has app with in-memory storage (lists/arrays)

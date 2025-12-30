@@ -1,5 +1,5 @@
 # Spring Cloud Contract Guide
-**Version:** v0.17.0
+**Version:** v0.17.1
 
 **Framework:** IDPF-Contract-Testing
 

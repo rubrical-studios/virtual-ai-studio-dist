@@ -1,5 +1,5 @@
 # System Instructions: Core Developer
-**Version:** v0.17.0
+**Version:** v0.17.1
 **Purpose:** Foundation competencies for all domain specialists
 
 ---

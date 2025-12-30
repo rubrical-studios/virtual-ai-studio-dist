@@ -55,7 +55,7 @@ function generateFrameworkConfig(projectDir, frameworkPath, version, processFram
  * @param {string} projectDir - Target project directory
  * @param {string} frameworkPath - Path to framework installation
  * @param {string} processFramework - Selected process framework (IDPF-Structured, etc.)
- * @param {string} domainSpecialist - Selected domain specialist (v0.17.0+: singular)
+ * @param {string} domainSpecialist - Selected domain specialist (v0.17.1+: singular)
  * @param {string} _unused - Deprecated parameter (kept for API compatibility)
  * @param {string} projectInstructions - Existing project instructions to preserve
  */
@@ -269,7 +269,7 @@ See \`Templates/Testing-Approach-Selection-Guide.md\` for guidance on:
  * Generate startup rules content for user projects
  * @param {string} frameworkPath - Path to framework installation
  * @param {string} processFramework - Selected process framework
- * @param {string} domainSpecialist - Selected domain specialist (v0.17.0+: singular)
+ * @param {string} domainSpecialist - Selected domain specialist (v0.17.1+: singular)
  * @param {string} _unused - Deprecated parameter (kept for API compatibility)
  * @param {string} version - Framework version
  */
@@ -284,7 +284,7 @@ function generateStartupRules(frameworkPath, processFramework, domainSpecialist,
 
   return `# Session Startup
 
-**Version:** ${version || '0.17.0'}
+**Version:** ${version || '0.17.1'}
 **Framework:** ${processFramework}
 **Domain Specialist:** ${domainSpecialist || 'None'}
 
@@ -317,8 +317,8 @@ module.exports = {
   getCoreFrameworkFileName,
   // generateFrameworkConfig removed in v0.16.1 - use createOrUpdateConfig from config.js
   generateClaudeMd,
-  // generateSwitchRole removed in v0.17.0 - single specialist model
-  // generateAddRole removed in v0.17.0 - single specialist model
+  // generateSwitchRole removed in v0.17.1 - single specialist model
+  // generateAddRole removed in v0.17.1 - single specialist model
   generateGhPmuConfig,
   generateSettingsLocal,
   generatePrdReadme,

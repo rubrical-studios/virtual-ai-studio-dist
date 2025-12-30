@@ -1,5 +1,5 @@
 # Skill: extract-prd
-**Version:** v0.17.0
+**Version:** v0.17.1
 
 **Purpose:** Extract PRD worksheets from existing codebases
 **Audience:** Developers documenting legacy/undocumented projects

@@ -163,7 +163,7 @@ function deployFrameworkScripts(projectDir, frameworkPath) {
 
 /**
  * Deploy rules to .claude/rules/ directory
- * v0.17.0+: domainSpecialist is singular string (primarySpecialist removed)
+ * v0.17.1+: domainSpecialist is singular string (primarySpecialist removed)
  */
 function deployRules(projectDir, frameworkPath, processFramework, domainSpecialist, _unused, enableGitHubWorkflow, version) {
   const rulesDir = path.join(projectDir, '.claude', 'rules');
@@ -287,6 +287,32 @@ function deployGitPrePushHook(projectDir, frameworkPath) {
 }
 
 /**
+ * Deploy core commands that are always available (not tied to GitHub workflow)
+ * Copies from Templates/commands/ to project .claude/commands/
+ */
+function deployCoreCommands(projectDir, frameworkPath) {
+  const commandsDir = path.join(projectDir, '.claude', 'commands');
+  fs.mkdirSync(commandsDir, { recursive: true });
+
+  const coreCommands = [
+    'change-domain-expert'
+  ];
+
+  const deployed = [];
+
+  for (const cmd of coreCommands) {
+    const srcCmd = path.join(frameworkPath, 'Templates', 'commands', `${cmd}.md`);
+    const destCmd = path.join(commandsDir, `${cmd}.md`);
+    if (fs.existsSync(srcCmd)) {
+      fs.copyFileSync(srcCmd, destCmd);
+      deployed.push(cmd);
+    }
+  }
+
+  return deployed;
+}
+
+/**
  * Deploy workflow commands and scripts for GitHub workflow integration
  * Copies from Templates/commands/ and Templates/scripts/ to project .claude/
  */
@@ -305,6 +331,8 @@ function deployWorkflowCommands(projectDir, frameworkPath) {
     'sprint-retro',
     'end-sprint',
     'open-release',
+    'prepare-release',
+    'prepare-beta',
     'close-release'
   ];
 
@@ -357,6 +385,7 @@ module.exports = {
   createExtensibilityStructure,
   deployFrameworkScripts,
   deployRules,
+  deployCoreCommands,
   deployWorkflowHook,
   deployGitPrePushHook,
   deployWorkflowCommands,

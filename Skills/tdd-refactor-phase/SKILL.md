@@ -5,7 +5,7 @@ license: Complete terms in LICENSE.txt
 ---
 
 # TDD REFACTOR Phase
-**Version:** v0.17.0
+**Version:** v0.17.1
 
 Guide through REFACTOR phase: improving code quality while keeping tests green.
 

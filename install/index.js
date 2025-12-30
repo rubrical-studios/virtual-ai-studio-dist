@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// **Version:** 0.17.0
+// **Version:** 0.17.1
 /**
  * IDPF Framework Installer - Main Entry Point
  * Unified cross-platform installer for Windows, macOS, and Linux
@@ -58,8 +58,8 @@ const {
 
 const {
   generateClaudeMd,
-  // generateSwitchRole removed in v0.17.0 - single specialist model
-  // generateAddRole removed in v0.17.0 - single specialist model
+  // generateSwitchRole removed in v0.17.1 - single specialist model
+  // generateAddRole removed in v0.17.1 - single specialist model
   generateGhPmuConfig,
   generateSettingsLocal,
   generatePrdReadme,
@@ -72,6 +72,7 @@ const {
 
 const {
   deployRules,
+  deployCoreCommands,
   deployWorkflowHook,
   deployGitPrePushHook,
   deployWorkflowCommands,
@@ -562,10 +563,10 @@ async function main() {
     divider();
     log();
 
-    // framework-config.json (using new v0.17.0+ schema - single specialist)
+    // framework-config.json (using new v0.17.1+ schema - single specialist)
     createOrUpdateConfig(projectDir, manifest, {
       processFramework,
-      domainSpecialist,  // v0.17.0: singular string instead of array
+      domainSpecialist,  // v0.17.1: singular string instead of array
       frameworkPath,
     });
     logSuccess('  ✓ framework-config.json');
@@ -652,14 +653,13 @@ async function main() {
       logSuccess('  ✓ .claude/rules/05-windows-shell.md (Windows only)');
     }
 
-    // switch-role and add-role commands removed in v0.17.0 - single specialist model
+    // switch-role and add-role commands removed in v0.17.1 - single specialist model
+    // prepare-release/prepare-beta moved to deployWorkflowCommands in v0.17.1
 
-    // prepare-release command (copy from template)
-    const commandsDir = path.join(projectDir, '.claude', 'commands');
-    const prepareReleaseSrc = path.join(frameworkPath, 'Templates', 'commands', 'prepare-release.md');
-    const prepareReleaseDest = path.join(commandsDir, 'prepare-release.md');
-    if (copyFile(prepareReleaseSrc, prepareReleaseDest)) {
-      logSuccess('  ✓ .claude/commands/prepare-release.md');
+    // Deploy core commands (always available, not tied to GitHub workflow)
+    const coreDeployed = deployCoreCommands(projectDir, frameworkPath);
+    for (const cmd of coreDeployed) {
+      logSuccess(`  ✓ .claude/commands/${cmd}.md`);
     }
 
     // Copy run scripts
@@ -732,7 +732,7 @@ async function main() {
 
     // Clean up orphaned files from previous installations
     const cleanupConfig = {
-      domainSpecialist,  // v0.17.0: singular
+      domainSpecialist,  // v0.17.1: singular
       enableGitHubWorkflow: enableGitHubWorkflow,
     };
     const cleanupResult = cleanupOrphanedFiles(projectDir, cleanupConfig);

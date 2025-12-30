@@ -1,5 +1,5 @@
 # Security Test Plan: [Application/Feature Name]
-**Version:** v0.17.0
+**Version:** v0.17.1
 
 **Date:** YYYY-MM-DD
 **Author:** [Name]

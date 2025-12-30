@@ -97,8 +97,9 @@ const INSTALLED_FILES_MANIFEST = {
   commands: {
     dir: '.claude/commands',
     files: [
-      // switch-role.md removed in v0.17.0 - single specialist model
-      // add-role.md removed in v0.17.0 - single specialist model
+      // switch-role.md removed in v0.17.1 - single specialist model
+      // add-role.md removed in v0.17.1 - single specialist model
+      'change-domain-expert.md',  // Core command (always deployed)
       (config) => config?.enableGitHubWorkflow ? 'assign-release.md' : null,
       (config) => config?.enableGitHubWorkflow ? 'switch-release.md' : null,
       (config) => config?.enableGitHubWorkflow ? 'transfer-issue.md' : null,
@@ -107,6 +108,8 @@ const INSTALLED_FILES_MANIFEST = {
       (config) => config?.enableGitHubWorkflow ? 'sprint-retro.md' : null,
       (config) => config?.enableGitHubWorkflow ? 'end-sprint.md' : null,
       (config) => config?.enableGitHubWorkflow ? 'open-release.md' : null,
+      (config) => config?.enableGitHubWorkflow ? 'prepare-release.md' : null,
+      (config) => config?.enableGitHubWorkflow ? 'prepare-beta.md' : null,
       (config) => config?.enableGitHubWorkflow ? 'close-release.md' : null,
     ],
   },

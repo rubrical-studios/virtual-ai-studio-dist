@@ -8,7 +8,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
-## [v0.17.0] - 2025-12-29
+## [0.17.1] - 2025-12-29
+
+### Fixed
+- **Installer ENOENT error** (#616) - Fixed installer failing when copying `prepare-release.md` to user projects before `.claude/commands/` directory existed. Commands now deploy after directory creation.
+
+### Added
+- **`/change-domain-expert` command** (#615) - New slash command allows users to change their Base Expert after installation without reinstalling the framework. Displays 12 Base Expert options and updates CLAUDE.md, 03-startup.md, and framework-config.json.
+
+---
+
+## [v0.17.1] - 2025-12-29
 
 ### Breaking Changes
 - **Single-Specialist Model** (#588) - Users now select ONE Base Expert at install time instead of multiple specialists:

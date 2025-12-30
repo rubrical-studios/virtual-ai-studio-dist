@@ -1,5 +1,5 @@
 # IDPF-PRD Framework
-**Version:** v0.17.0
+**Version:** v0.17.1
 **Framework-Debug:** True
 **Load with:** Anti-Hallucination-Rules-for-PRD-Work.md
 

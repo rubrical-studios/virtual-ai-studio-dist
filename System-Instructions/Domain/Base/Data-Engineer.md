@@ -1,5 +1,5 @@
 # System Instructions: Data Engineer
-**Version:** v0.17.0
+**Version:** v0.17.1
 Extends: Core-Developer-Instructions.md
 
 ---

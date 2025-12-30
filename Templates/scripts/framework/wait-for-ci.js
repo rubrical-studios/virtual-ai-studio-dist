@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-// **Version:** 0.17.0
+// **Version:** 0.17.1
 /**
- * @framework-script v0.17.0
+ * @framework-script v0.17.1
  * @description Poll GitHub Actions workflow status with timeout
  * @checksum sha256:placeholder
  *

@@ -1,5 +1,5 @@
 # Framework Development Reference
-**Version:** v0.17.0
+**Version:** v0.17.1
 **Purpose:** Detailed reference for IDPF development frameworks
 
 ---
