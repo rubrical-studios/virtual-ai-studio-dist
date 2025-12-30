@@ -8,6 +8,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [0.18.0] - 2025-12-30
+
+### Changed
+- **Repository Rename** (#613) - Repository renamed from `process-docs` to `idpf-praxis` to better reflect the framework's purpose. All internal references and deployment workflows updated.
+
+### Added
+- **`gh pmu edit` documentation** (#632) - Documented the new `gh pmu edit` command in GitHub-Workflow.md for round-trip issue body editing: `gh pmu view --body-file` → edit → `gh pmu edit -F`
+- **`gh pmu --body-file` flags** (#620) - Documented `-F/--body-file` support across `gh pmu create`, `gh pmu view`, and `gh pmu edit` commands
+
+### Fixed
+- **Template version placeholders** (#627) - Fixed 35+ Template files missing `{{VERSION}}` placeholder. Commands, scripts, and shell scripts now properly receive version during installation.
+- **Release branch prefix** (#625) - Fixed `/open-release` incorrectly prefixing branch names with `release/release/`
+
+---
+
 ## [0.17.1] - 2025-12-29
 
 ### Fixed
@@ -18,7 +33,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
-## [v0.17.1] - 2025-12-29
+## [v0.18.0] - 2025-12-29
 
 ### Breaking Changes
 - **Single-Specialist Model** (#588) - Users now select ONE Base Expert at install time instead of multiple specialists:
@@ -392,18 +407,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
-[0.15.0]: https://github.com/rubrical-studios/process-docs/compare/v0.14.0...v0.15.0
-[0.14.0]: https://github.com/rubrical-studios/process-docs/compare/v0.13.0...v0.14.0
-[0.13.0]: https://github.com/rubrical-studios/process-docs/compare/v0.12.0...v0.13.0
-[0.12.0]: https://github.com/rubrical-studios/process-docs/compare/v0.11.0...v0.12.0
-[0.11.0]: https://github.com/rubrical-studios/process-docs/compare/v0.10.0...v0.11.0
-[0.10.0]: https://github.com/rubrical-studios/process-docs/compare/v0.9.0...v0.10.0
-[0.9.0]: https://github.com/rubrical-studios/process-docs/compare/v0.8.0...v0.9.0
-[0.8.0]: https://github.com/rubrical-studios/process-docs/compare/v0.7.0...v0.8.0
-[0.7.0]: https://github.com/rubrical-studios/process-docs/compare/v0.6.0...v0.7.0
-[0.6.0]: https://github.com/rubrical-studios/process-docs/compare/v0.5.0...v0.6.0
-[0.5.0]: https://github.com/rubrical-studios/process-docs/compare/v0.4.0...v0.5.0
-[0.4.0]: https://github.com/rubrical-studios/process-docs/compare/v0.3.0...v0.4.0
-[0.3.0]: https://github.com/rubrical-studios/process-docs/compare/v0.2.0...v0.3.0
-[0.2.0]: https://github.com/rubrical-studios/process-docs/compare/v0.1.0...v0.2.0
-[0.1.0]: https://github.com/rubrical-studios/process-docs/releases/tag/v0.1.0
+[0.15.0]: https://github.com/rubrical-studios/idpf-praxis/compare/v0.14.0...v0.15.0
+[0.14.0]: https://github.com/rubrical-studios/idpf-praxis/compare/v0.13.0...v0.14.0
+[0.13.0]: https://github.com/rubrical-studios/idpf-praxis/compare/v0.12.0...v0.13.0
+[0.12.0]: https://github.com/rubrical-studios/idpf-praxis/compare/v0.11.0...v0.12.0
+[0.11.0]: https://github.com/rubrical-studios/idpf-praxis/compare/v0.10.0...v0.11.0
+[0.10.0]: https://github.com/rubrical-studios/idpf-praxis/compare/v0.9.0...v0.10.0
+[0.9.0]: https://github.com/rubrical-studios/idpf-praxis/compare/v0.8.0...v0.9.0
+[0.8.0]: https://github.com/rubrical-studios/idpf-praxis/compare/v0.7.0...v0.8.0
+[0.7.0]: https://github.com/rubrical-studios/idpf-praxis/compare/v0.6.0...v0.7.0
+[0.6.0]: https://github.com/rubrical-studios/idpf-praxis/compare/v0.5.0...v0.6.0
+[0.5.0]: https://github.com/rubrical-studios/idpf-praxis/compare/v0.4.0...v0.5.0
+[0.4.0]: https://github.com/rubrical-studios/idpf-praxis/compare/v0.3.0...v0.4.0
+[0.3.0]: https://github.com/rubrical-studios/idpf-praxis/compare/v0.2.0...v0.3.0
+[0.2.0]: https://github.com/rubrical-studios/idpf-praxis/compare/v0.1.0...v0.2.0
+[0.1.0]: https://github.com/rubrical-studios/idpf-praxis/releases/tag/v0.1.0

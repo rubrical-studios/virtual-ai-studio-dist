@@ -1,5 +1,5 @@
 # Test Parsing Guide
-**Version:** v0.17.1
+**Version:** v0.18.0
 
 **Purpose:** Detailed rules for extracting requirements from test files
 

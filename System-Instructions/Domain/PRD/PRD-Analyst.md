@@ -1,5 +1,5 @@
 # System Instructions: PRD Analyst
-**Version:** v0.17.1
+**Version:** v0.18.0
 Extends: Core-Developer-Instructions.md
 **Also Load:** Anti-Hallucination-Rules-for-PRD-Work.md
 

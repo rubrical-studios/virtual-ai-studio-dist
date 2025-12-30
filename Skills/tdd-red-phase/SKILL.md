@@ -5,7 +5,7 @@ license: Complete terms in LICENSE.txt
 ---
 
 # TDD RED Phase
-**Version:** v0.17.1
+**Version:** v0.18.0
 
 Guide through RED phase: writing failing tests and verifying expected failures.
 

@@ -1,5 +1,5 @@
 # Windows Shell Safety for Claude Code
-**Version:** v0.17.1
+**Version:** v0.18.0
 
 ---
 
@@ -30,6 +30,17 @@ gh issue create --body "$(cat README.md)"
 
 # GOOD - use --body-file flag
 gh issue create --body-file README.md
+```
+
+## gh pmu Body-File Flags
+```bash
+# Create with body from file
+gh pmu create --title "Bug: ..." -F .tmp-body.md --status backlog
+
+# Export body for editing (replaces gh issue view --json body -q '.body')
+gh pmu view 123 --body-file    # Creates tmp/issue-123.md
+gh issue edit 123 --body-file tmp/issue-123.md
+rm tmp/issue-123.md
 ```
 
 ## Path Handling

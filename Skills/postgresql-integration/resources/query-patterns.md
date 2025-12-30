@@ -1,5 +1,5 @@
 # PostgreSQL Query Patterns
-**Version:** v0.17.1
+**Version:** v0.18.0
 
 Common query patterns and best practices for PostgreSQL.
 

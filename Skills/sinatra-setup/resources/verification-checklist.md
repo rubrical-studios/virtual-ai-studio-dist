@@ -1,5 +1,5 @@
 # Sinatra Setup Verification Checklist
-**Version:** v0.17.1
+**Version:** v0.18.0
 
 Use this checklist to verify your Sinatra setup is correct.
 

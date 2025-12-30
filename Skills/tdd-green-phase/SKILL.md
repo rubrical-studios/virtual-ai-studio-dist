@@ -5,7 +5,7 @@ license: Complete terms in LICENSE.txt
 ---
 
 # TDD GREEN Phase
-**Version:** v0.17.1
+**Version:** v0.18.0
 
 Guide through GREEN phase: implementing minimum code to make failing test pass.
 

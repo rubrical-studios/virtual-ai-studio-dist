@@ -7,6 +7,19 @@ const fs = require('fs');
 const path = require('path');
 const { generateStartupRules } = require('./generation');
 const { computeFileHash, writeManifest, readManifest, isFileModified } = require('./checksums');
+const { readFrameworkVersion } = require('./detection');
+
+/**
+ * Copy file with {{VERSION}} placeholder replacement
+ * @param {string} src - Source file path
+ * @param {string} dest - Destination file path
+ * @param {string} version - Version string to replace {{VERSION}} with
+ */
+function copyFileWithVersion(src, dest, version) {
+  let content = fs.readFileSync(src, 'utf8');
+  content = content.replace(/\{\{VERSION\}\}/g, version);
+  fs.writeFileSync(dest, content);
+}
 
 /**
  * REQ-007 (PRD #559): Create extensibility directory structure
@@ -106,6 +119,7 @@ function deployFrameworkScripts(projectDir, frameworkPath) {
 
   const frameworkManifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
   const existingManifest = readManifest(projectDir) || { scripts: {} };
+  const version = readFrameworkVersion(frameworkPath);
 
   // AC-1: Deploy scripts per category
   const categories = ['framework', 'shared', 'lib', 'hooks'];
@@ -136,8 +150,8 @@ function deployFrameworkScripts(projectDir, frameworkPath) {
         }
       }
 
-      // AC-3 & AC-4: Copy file from Templates
-      fs.copyFileSync(srcPath, destPath);
+      // AC-3 & AC-4: Copy file from Templates with version replacement
+      copyFileWithVersion(srcPath, destPath, version);
       deployed[category].push(file);
 
       // AC-2: Record checksum
@@ -163,7 +177,7 @@ function deployFrameworkScripts(projectDir, frameworkPath) {
 
 /**
  * Deploy rules to .claude/rules/ directory
- * v0.17.1+: domainSpecialist is singular string (primarySpecialist removed)
+ * v0.18.0+: domainSpecialist is singular string (primarySpecialist removed)
  */
 function deployRules(projectDir, frameworkPath, processFramework, domainSpecialist, _unused, enableGitHubWorkflow, version) {
   const rulesDir = path.join(projectDir, '.claude', 'rules');
@@ -231,13 +245,14 @@ function deployRules(projectDir, frameworkPath, processFramework, domainSpeciali
 function deployWorkflowHook(projectDir, frameworkPath) {
   const hooksDir = path.join(projectDir, '.claude', 'hooks');
   fs.mkdirSync(hooksDir, { recursive: true });
+  const version = readFrameworkVersion(frameworkPath);
 
   // Look in Templates/hooks/ (bundled location for distribution)
   const srcHook = path.join(frameworkPath, 'Templates', 'hooks', 'workflow-trigger.js');
   const destHook = path.join(hooksDir, 'workflow-trigger.js');
 
   if (fs.existsSync(srcHook)) {
-    fs.copyFileSync(srcHook, destHook);
+    copyFileWithVersion(srcHook, destHook, version);
     return true;
   }
   return false;
@@ -257,6 +272,7 @@ function deployGitPrePushHook(projectDir, frameworkPath) {
 
   // Create hooks directory if it doesn't exist
   fs.mkdirSync(gitHooksDir, { recursive: true });
+  const version = readFrameworkVersion(frameworkPath);
 
   const srcHook = path.join(frameworkPath, 'Templates', 'hooks', 'pre-push');
   const destHook = path.join(gitHooksDir, 'pre-push');
@@ -270,8 +286,8 @@ function deployGitPrePushHook(projectDir, frameworkPath) {
     // Read existing hook to check if it's ours
     const existing = fs.readFileSync(destHook, 'utf8');
     if (existing.includes('Pre-push hook: Prevents unauthorized version tag pushes')) {
-      // Our hook already installed - update it
-      fs.copyFileSync(srcHook, destHook);
+      // Our hook already installed - update it with version replacement
+      copyFileWithVersion(srcHook, destHook, version);
       try { fs.chmodSync(destHook, 0o755); } catch (e) { /* Windows may not support chmod */ }
       return { success: true, action: 'updated' };
     } else {
@@ -280,8 +296,8 @@ function deployGitPrePushHook(projectDir, frameworkPath) {
     }
   }
 
-  // Install hook
-  fs.copyFileSync(srcHook, destHook);
+  // Install hook with version replacement
+  copyFileWithVersion(srcHook, destHook, version);
   try { fs.chmodSync(destHook, 0o755); } catch (e) { /* Windows may not support chmod */ }
   return { success: true, action: 'installed' };
 }
@@ -293,6 +309,7 @@ function deployGitPrePushHook(projectDir, frameworkPath) {
 function deployCoreCommands(projectDir, frameworkPath) {
   const commandsDir = path.join(projectDir, '.claude', 'commands');
   fs.mkdirSync(commandsDir, { recursive: true });
+  const version = readFrameworkVersion(frameworkPath);
 
   const coreCommands = [
     'change-domain-expert'
@@ -304,7 +321,7 @@ function deployCoreCommands(projectDir, frameworkPath) {
     const srcCmd = path.join(frameworkPath, 'Templates', 'commands', `${cmd}.md`);
     const destCmd = path.join(commandsDir, `${cmd}.md`);
     if (fs.existsSync(srcCmd)) {
-      fs.copyFileSync(srcCmd, destCmd);
+      copyFileWithVersion(srcCmd, destCmd, version);
       deployed.push(cmd);
     }
   }
@@ -321,6 +338,7 @@ function deployWorkflowCommands(projectDir, frameworkPath) {
   const scriptsDir = path.join(projectDir, '.claude', 'scripts');
   fs.mkdirSync(commandsDir, { recursive: true });
   fs.mkdirSync(scriptsDir, { recursive: true });
+  const version = readFrameworkVersion(frameworkPath);
 
   const workflowCommands = [
     'assign-release',
@@ -339,19 +357,19 @@ function deployWorkflowCommands(projectDir, frameworkPath) {
   const deployed = { commands: [], scripts: [] };
 
   for (const cmd of workflowCommands) {
-    // Deploy command (.md file)
+    // Deploy command (.md file) with version replacement
     const srcCmd = path.join(frameworkPath, 'Templates', 'commands', `${cmd}.md`);
     const destCmd = path.join(commandsDir, `${cmd}.md`);
     if (fs.existsSync(srcCmd)) {
-      fs.copyFileSync(srcCmd, destCmd);
+      copyFileWithVersion(srcCmd, destCmd, version);
       deployed.commands.push(cmd);
     }
 
-    // Deploy script (.js file)
+    // Deploy script (.js file) with version replacement
     const srcScript = path.join(frameworkPath, 'Templates', 'scripts', `${cmd}.js`);
     const destScript = path.join(scriptsDir, `${cmd}.js`);
     if (fs.existsSync(srcScript)) {
-      fs.copyFileSync(srcScript, destScript);
+      copyFileWithVersion(srcScript, destScript, version);
       deployed.scripts.push(cmd);
     }
   }

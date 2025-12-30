@@ -5,7 +5,7 @@ license: Complete terms in LICENSE.txt
 ---
 
 # Property-Based Testing
-**Version:** v0.17.1
+**Version:** v0.18.0
 
 ## When to Use
 - Functions with many possible inputs

@@ -5,7 +5,7 @@ license: Complete terms in LICENSE.txt
 ---
 
 # PostgreSQL Integration
-**Version:** v0.17.1
+**Version:** v0.18.0
 
 ## When to Use
 - Setting up PostgreSQL connection

@@ -1,5 +1,5 @@
 # Interactive Development Process Framework
-**Version:** v0.17.1
+**Version:** v0.18.0
 **Framework-Debug:** True
 
 ---

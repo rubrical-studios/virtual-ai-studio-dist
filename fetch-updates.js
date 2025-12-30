@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// **Version:** 0.17.1
+// **Version:** 0.18.0
 /**
  * IDPF Framework Update Fetcher
  *
@@ -21,7 +21,7 @@ const { execSync } = require('child_process');
 //  Configuration
 // ======================================
 
-const DIST_REPO = 'https://github.com/rubrical-studios/virtual-ai-studio-dist.git';
+const DIST_REPO = 'https://github.com/rubrical-studios/idpf-praxis-dist.git';
 const TEMP_DIR = path.join(require('os').tmpdir(), 'idpf-framework-update');
 
 // ======================================

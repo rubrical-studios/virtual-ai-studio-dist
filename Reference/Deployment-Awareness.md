@@ -1,12 +1,12 @@
 # Deployment Awareness
-**Version:** v0.17.1
+**Version:** v0.18.0
 **Purpose:** Document deployment chain from dev to distribution
 
 ---
 
 ## Architecture
 ```
-process-docs (Dev)              virtual-ai-studio-dist (Dist)
+idpf-praxis (Dev)               idpf-praxis-dist (Dist)
 ─────────────────               ────────────────────────────
 Source Files
     ↓ /minimize-files

@@ -1,6 +1,6 @@
 # IDPF Framework - AI-Assisted Development
 
-**Current Version:** v0.17.1
+**Current Version:** v0.18.0
 
 A comprehensive ecosystem for AI-assisted software development with Claude.
 
@@ -98,7 +98,7 @@ node [frameworkPath]/install.js --migrate
 
 ## Source Repository
 
-https://github.com/rubrical-studios/process-docs
+https://github.com/rubrical-studios/idpf-praxis
 
 ---
 

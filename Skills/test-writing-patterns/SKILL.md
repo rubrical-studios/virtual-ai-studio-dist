@@ -5,7 +5,7 @@ license: Complete terms in LICENSE.txt
 ---
 
 # Test Writing Patterns
-**Version:** v0.17.1
+**Version:** v0.18.0
 
 Test structure patterns, assertion strategies, test doubles, and organizational practices.
 
