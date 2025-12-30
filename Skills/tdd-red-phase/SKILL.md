@@ -1,40 +1,73 @@
 ---
 name: tdd-red-phase
-version: v0.16.1
-description: Guide experienced developers through RED phase of TDD cycle - writing failing tests
+description: Guide experienced developers through RED phase of TDD cycle - writing failing tests and verifying expected failures
+license: Complete terms in LICENSE.txt
 ---
 
 # TDD RED Phase
+**Version:** v0.17.0
+
+Guide through RED phase: writing failing tests and verifying expected failures.
 
 ## When to Use
-- Starting implementation of new feature
-- "First-Step" command in IDPF-Structured
-- "Start-Story [ID]" command in IDPF-Agile
+- Starting new feature implementation
+- User issues "First-Step" (IDPF-Structured)
+- User issues "Start-Story [ID]" (IDPF-Agile)
 - Beginning new TDD iteration
 
-## RED Phase Goal
+## Objective
 **Write a test that fails for the right reason.**
 
-**Correct failure:** Test fails because feature doesn't exist yet
+**Correct failure:** Feature doesn't exist, behavior not implemented, failure message clear
 **Incorrect failure:** Syntax error, missing imports, test passes unexpectedly
 
 ## Workflow
-1. **Identify Testable Behavior:** One test per behavior
-2. **Write Failing Test:** ARRANGE → ACT → ASSERT
-3. **Execute Test:** Verify it FAILS with expected message
-4. **Report:** Did test fail as expected?
 
-## Output Format
+**Step 1: Identify Testable Behavior**
+One test per behavior, one behavior per test.
 ```
-TASK: [description]
-STEP 1: [Create/open test file]
-STEP 2: [Add imports]
-STEP 3: [Write complete test]
-STEP 4: [Save file]
-STEP 5: [Run test command]
-STEP 6: [Verify FAILS with expected message]
-STEP 7: [Report results]
+Good: "GET /users returns 200 status"
+Bad: "User management works" (too broad)
 ```
 
-## Next Step
-After test fails correctly → User says "Done-Next-Step" → Invoke tdd-green-phase
+**Step 2: Write Failing Test (Single Code Block)**
+```
+TASK: [Description]
+STEP 1: Create/open test file
+STEP 2: Add imports
+STEP 3: Write complete test (AAA: Arrange-Act-Assert)
+STEP 4: Save file
+STEP 5: Run test command
+STEP 6: Verify test FAILS with expected message
+STEP 7: Report: Did test fail as expected?
+```
+
+**Step 3: Execute and Verify**
+- [ ] Test executed without syntax errors
+- [ ] Test failed (not passed)
+- [ ] Failure message indicates missing implementation
+
+**Step 4: Analyze**
+- Fails as expected → "Done-Next-Step" → GREEN phase
+- Passes unexpectedly → Revise test
+- Errors instead of fails → Fix test code
+
+## Best Practices
+- Write minimal tests (single assertion)
+- Clear test names: `test_[feature]_[scenario]_[expected_result]`
+- Descriptive assertions with helpful failure messages
+
+## Anti-Patterns
+- Writing implementation first
+- Skipping failure verification
+- Tolerating test errors
+
+## Checklist
+- [ ] Test complete and syntactically correct
+- [ ] Test FAILS (not passes, not errors)
+- [ ] Failure message clearly indicates missing implementation
+- [ ] User reported via "Done-Next-Step"
+
+---
+
+**End of TDD RED Phase Skill**

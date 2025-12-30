@@ -1,48 +1,108 @@
-# Anti-Pattern Analysis Skill
-
 ---
 name: anti-pattern-analysis
-version: v0.16.1
-description: Systematic detection of anti-patterns with actionable refactoring guidance
+description: Systematic detection of anti-patterns during code review with actionable refactoring guidance
 ---
+
+# Anti-Pattern Analysis Skill
+**Version:** v0.17.0
+
+## Purpose
+Structured guidance for identifying anti-patterns across languages, architectures, and testing. Supports code reviews, refactoring planning, technical debt assessment, and reverse-PRD workflows.
 
 ## When to Invoke
 - Code review sessions
 - Refactoring planning
 - Technical debt assessment
 - Architecture review
-- Reverse-PRD extraction
+- Reverse-PRD extraction (document as tech debt/NFRs)
 
 ## Anti-Pattern Categories
 
-### Design/OOP Anti-Patterns
+### 1. Design/OOP
 | Pattern | Description | Severity |
 |---------|-------------|----------|
-| God Object | Class with too many responsibilities | High |
-| Singleton Abuse | Overuse creating global state | Medium |
-| Anemic Domain Model | Data classes with no behavior | Medium |
-| Circular Dependency | Classes depending on each other | High |
+| **God Object** | Class >500 lines or >10 methods | High |
+| **Singleton Abuse** | Overuse creating global state | Medium |
+| **Anemic Domain Model** | Data classes with no behavior | Medium |
+| **Circular Dependency** | Classes depend on each other | High |
+| **Yo-yo Problem** | Deep inheritance requiring navigation | Medium |
 
-### Code Smells
+### 2. Code Smells
 | Pattern | Description | Severity |
 |---------|-------------|----------|
-| Long Method | Methods exceeding 20-30 lines | Medium |
-| Deep Nesting | More than 3 levels | Medium |
-| Magic Numbers | Unexplained literal values | Low |
-| Feature Envy | Method uses another class's data excessively | Medium |
-| Shotgun Surgery | One change requires many edits | High |
+| **Long Method** | >20-30 lines | Medium |
+| **Deep Nesting** | >3 levels indentation | Medium |
+| **Magic Numbers** | Unexplained literals | Low |
+| **Feature Envy** | Method uses another class's data excessively | Medium |
+| **Shotgun Surgery** | One change requires many edits | High |
+| **Divergent Change** | One class changed for many reasons | High |
 
-### Architecture Anti-Patterns
+### 3. Architecture
 | Pattern | Description | Severity |
 |---------|-------------|----------|
-| Big Ball of Mud | No discernible architecture | Critical |
-| Distributed Monolith | Microservices with tight coupling | High |
-| Lava Flow | Dead code nobody removes | Medium |
-| Copy-Paste Programming | Duplicated code blocks | High |
+| **Big Ball of Mud** | No discernible architecture | Critical |
+| **Distributed Monolith** | Microservices with tight coupling | High |
+| **Copy-Paste Programming** | Duplicated code blocks | High |
+| **Spaghetti Code** | Tangled control flow | High |
+| **Lasagna Code** | Too many abstraction layers | Medium |
 
-### Testing Anti-Patterns
+### 4. Database
 | Pattern | Description | Severity |
 |---------|-------------|----------|
-| Ice Cream Cone | More E2E than unit tests | High |
-| Hidden Dependencies | Tests rely on external state | Medium |
-| Test Interdependence | Tests depend on each other | High |
+| **N+1 Queries** | Loop executing individual queries | Critical |
+| **SELECT *** | Fetching all columns unnecessarily | Medium |
+| **EAV Schema** | Flexible but unqueryable | High |
+| **No Indexes** | Missing indexes on queried columns | High |
+| **God Table** | Table with too many columns | High |
+
+### 5. Testing
+| Pattern | Description | Severity |
+|---------|-------------|----------|
+| **Flaky Tests** | Non-deterministic results | Critical |
+| **Test Interdependence** | Tests depend on order | High |
+| **Over-Mocking** | Mocking makes test meaningless | High |
+| **Testing Implementation** | Tests break on refactor | Medium |
+| **Happy Path Only** | No edge case testing | Medium |
+
+### 6. Security
+| Pattern | Description | Severity |
+|---------|-------------|----------|
+| **Hardcoded Secrets** | Credentials in source | Critical |
+| **SQL Concatenation** | String-built queries | Critical |
+| **Trust All Input** | No input validation | Critical |
+| **Rolling Own Crypto** | Custom cryptography | Critical |
+| **Missing Authentication** | Endpoints without auth | Critical |
+
+## Severity Levels
+| Level | Impact | Action |
+|-------|--------|--------|
+| **Critical** | Security/data loss risk | Must fix before merge |
+| **High** | Major tech debt | Fix in same PR/sprint |
+| **Medium** | Code smell | Create follow-up issue |
+| **Low** | Minor improvement | Optional |
+
+## Quick Review Checklist
+**Design:** No God objects, no circular deps, SRP followed
+**Code:** Methods <30 lines, nesting <4 levels, no magic numbers
+**Database:** No N+1, no SELECT *, indexes exist, parameterized queries
+**Testing:** Deterministic, independent, reasonable mocking
+**Security:** No hardcoded secrets, input validated, auth on endpoints
+
+## Refactoring Guidance
+- **God Object** → Extract to focused services
+- **Long Method** → Extract method
+- **N+1 Query** → Eager loading/prefetch
+- **Magic Numbers** → Named constants
+- **Deep Nesting** → Guard clauses
+
+## Reverse-PRD Integration
+Detection maps to NFR categories:
+- Security → NFR-SEC-*
+- Performance → NFR-PERF-*
+- Maintainability → NFR-MAINT-*
+- Testing → NFR-QUAL-*
+- Architecture → NFR-ARCH-*
+
+---
+
+**End of Skill Document**

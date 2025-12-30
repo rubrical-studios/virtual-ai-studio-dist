@@ -1,59 +1,78 @@
 # Domain Specialist Selection Guide
-**Version:** v0.16.1
+**Version:** v0.17.0
+**Purpose:** Guide for selecting domain specialist during installation
+
 ---
+
 ## Usage
-**Step 1:** Identify primary focus | **Step 2:** Match to specialist | **Step 3:** Load Core-Developer-Instructions.md + Domain specialist
+1. Identify project's primary focus
+2. Select ONE Base Expert from 12 options
+3. Installer configures Core + selected specialist
+4. Additional Packs available on-demand via JIT loading
+
 ---
-## Quick Reference
-| Domain | Primary Focus | When to Use |
-|--------|---------------|-------------|
-| Backend | Server logic, APIs | REST/GraphQL APIs, auth, business logic |
-| Frontend | UI, client-side | SPAs, PWAs, component libraries |
-| DevOps | Deployment, infra | CI/CD, Docker, Kubernetes, IaC |
-| Database | Data modeling | Schema design, query optimization |
-| API-Integration | System integration | Third-party APIs, microservices, webhooks |
-| Security | App security | Audits, OWASP, compliance |
-| Platform | Dev platforms | Internal portals, self-service infra |
-| Mobile | iOS/Android | Native/cross-platform mobile |
-| Data | Pipelines, warehousing | ETL, Spark, Airflow, dbt |
-| QA & Test | Test automation | Test frameworks, QA process |
-| Cloud Architect | System design | Cloud architecture, scalability |
-| SRE | Reliability | SLOs, incident response |
-| Embedded | Firmware, hardware | IoT, microcontrollers, RTOS |
-| ML | Machine learning | Models, MLOps, training |
-| Performance | Optimization | Load testing, profiling |
-| PRD Analyst | Requirements | PRDs, user stories, acceptance criteria |
-| Accessibility | WCAG, AT | Audits, compliance, screen readers |
-| Desktop App | Desktop apps | Qt, Electron, Tauri, WPF |
-| Game Dev | Video games | Unity, Unreal, Godot |
-| Graphics | Rendering, shaders | Vulkan, DirectX, GLSL |
-| Systems | Low-level, OS | Compilers, runtimes, drivers |
-| Technical Writer | Documentation | API docs, doc sites |
+
+## Base Experts (Select ONE)
+
+| Expert | File | Use When |
+|--------|------|----------|
+| Backend | Domain/Base/Backend-Specialist.md | APIs, server logic, auth |
+| Frontend | Domain/Base/Frontend-Specialist.md | UIs, React/Vue/Angular |
+| Full-Stack | Domain/Base/Full-Stack-Developer.md | End-to-end web apps, MVPs |
+| Mobile | Domain/Base/Mobile-Specialist.md | iOS/Android, React Native/Flutter |
+| Desktop App | Domain/Base/Desktop-Application-Developer.md | Qt/Electron/Tauri apps |
+| Game | Domain/Base/Game-Developer.md | Unity/Unreal/Godot games |
+| Embedded | Domain/Base/Embedded-Systems-Engineer.md | Firmware, IoT, hardware |
+| Systems | Domain/Base/Systems-Programmer-Specialist.md | OS, compilers, low-level |
+| Data | Domain/Base/Data-Engineer.md | ETL, pipelines, warehousing |
+| ML | Domain/Base/ML-Engineer.md | TensorFlow/PyTorch, MLOps |
+| Cloud Architect | Domain/Base/Cloud-Solutions-Architect.md | System design, AWS/Azure/GCP |
+| SRE | Domain/Base/SRE-Specialist.md | SLOs, reliability, incidents |
+
 ---
-## Decision Tree
-- **Building UI?** → Frontend
-- **Building APIs/server?** → Backend or API-Integration
-- **Deploying/operating?** → DevOps or SRE or Platform
-- **Working with data?** → Data (pipelines) or Database (optimization)
-- **Mobile app?** → Mobile
-- **Security focus?** → Security
-- **System architecture?** → Cloud Architect
-- **Quality assurance?** → QA & Test
-- **Hardware/firmware?** → Embedded
-- **Machine learning?** → ML
-- **Performance tuning?** → Performance
-- **Requirements/PRD?** → PRD Analyst
-- **Accessibility/WCAG?** → Accessibility
-- **Desktop app?** → Desktop App
-- **Game development?** → Game Dev
-- **Graphics/rendering?** → Graphics
-- **Systems/low-level?** → Systems
-- **Documentation?** → Technical Writer
+
+## Selection Decision Tree
+
+| Focus Area | Select |
+|------------|--------|
+| User Interfaces | Frontend |
+| APIs/Server Logic | Backend |
+| End-to-End Web | Full-Stack |
+| Mobile Apps | Mobile |
+| Desktop Apps | Desktop App |
+| Video Games | Game |
+| Hardware/IoT | Embedded |
+| OS/Compilers | Systems |
+| Data Pipelines | Data |
+| Machine Learning | ML |
+| Architecture | Cloud Architect |
+| Reliability/Ops | SRE |
+
 ---
-## Combining Specialists
-**Full-Stack Web:** Core + Backend + Frontend + Database
-**Cloud-Native:** Core + API-Integration + DevOps + Cloud Architect
-**Mobile + Backend:** Core + Mobile + Backend
-**Data Platform:** Core + Data + Database + Cloud Architect
-**Secure Production:** Core + Backend + Security + SRE
+
+## Expertise Packs (JIT Loading)
+
+| Pack | Purpose |
+|------|---------|
+| Database-Engineer | Schema, optimization, modeling |
+| DevOps-Engineer | CI/CD, containers, infrastructure |
+| Security-Engineer | OWASP, vulnerabilities |
+| Performance-Engineer | Load testing, profiling |
+| QA-Test-Engineer | Test strategy, automation |
+| Accessibility-Specialist | WCAG, assistive tech |
+| API-Integration-Specialist | Microservices, gateways |
+| Graphics-Engineer-Specialist | Rendering, shaders |
+| Platform-Engineer | Internal platforms, tooling |
+| Technical-Writer-Specialist | Documentation, API docs |
+
+**JIT Loading:** Tell Claude your need, Pack loads on-demand.
+
+---
+
+## PRD Analyst
+**File:** Domain/PRD/PRD-Analyst.md
+For requirements engineering: PRDs, user stories, reverse-engineering requirements.
+
+---
+
 **End of Domain Selection Guide**

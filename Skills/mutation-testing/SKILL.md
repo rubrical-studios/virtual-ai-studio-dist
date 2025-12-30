@@ -1,64 +1,111 @@
 ---
 name: mutation-testing
-version: v0.16.1
-description: Mutation testing with mutmut, Stryker, PIT
+description: Guide developers through mutation testing to assess and improve test suite quality
+license: Complete terms in LICENSE.txt
 ---
 
 # Mutation Testing
+**Version:** v0.17.0
 
 ## When to Use
-- Evaluating test suite quality
-- Finding weak tests
-- Improving test coverage meaningfulness
-- After achieving high line coverage
+- Assessing test suite quality beyond coverage
+- Identifying weak test coverage
+- Evaluating test meaningfulness
+- Improving test effectiveness
 
-## Concept
-Mutation testing introduces small bugs (mutations) into code. If tests don't fail, they're weak.
+## Core Concept
+1. **Mutate:** Make small code changes
+2. **Test:** Run test suite against mutated code
+3. **Evaluate:** Check if tests detect (kill) mutations
 
-## Tools
-| Language | Tool |
-|----------|------|
-| Python | mutmut |
-| JavaScript | Stryker |
-| Java | PIT |
+## Key Terms
+- **Mutant:** Modified code with one change
+- **Killed:** Test detected mutation (good)
+- **Survived:** Test missed mutation (bad)
+- **Equivalent:** Mutation behaves identically (can't kill)
+- **Mutation Score:** killed / (total - equivalent)
 
-## Mutation Types
-| Mutation | Example |
+## Mutation Operators
+
+### Arithmetic
+| Original | Mutated |
 |----------|---------|
-| Arithmetic | `+` → `-` |
-| Comparison | `>` → `>=` |
-| Boolean | `True` → `False` |
-| Return | `return x` → `return None` |
-| Delete | Remove statement |
+| `+` | `-` |
+| `*` | `/` |
 
-## mutmut (Python)
+### Relational
+| Original | Mutated |
+|----------|---------|
+| `<` | `<=` |
+| `==` | `!=` |
+| `>` | `>=` |
+
+### Logical
+| Original | Mutated |
+|----------|---------|
+| `and` | `or` |
+| `not` | (removed) |
+
+### Constants
+| Original | Mutated |
+|----------|---------|
+| `0` | `1` |
+| `true` | `false` |
+
+## Score Interpretation
+| Score | Quality |
+|-------|---------|
+| 90-100% | Excellent |
+| 75-89% | Good |
+| 60-74% | Acceptable |
+| <60% | Weak |
+
+**Context matters:** High-risk code (payment, auth) should target 90%+
+
+## Analyzing Survivors
+1. Review the mutant code change
+2. Understand what behavior changed
+3. Decide: Add test, mark equivalent, or accept risk
+
+**Common survival patterns:**
+- Missing boundary tests
+- Missing error case tests
+- Missing assertions on return values
+
+## Framework Examples
+
+**Python (mutmut):**
 ```bash
-# Run mutation testing
+pip install mutmut
 mutmut run
-
-# See results
 mutmut results
-
-# See specific mutation
-mutmut show 1
 ```
 
-## Stryker (JavaScript)
+**JavaScript (Stryker):**
 ```bash
-# Initialize
+npm install @stryker-mutator/core
 npx stryker init
-
-# Run
 npx stryker run
 ```
 
-## Metrics
-- **Killed:** Test caught the mutant (good)
-- **Survived:** Test missed the mutant (bad)
-- **Mutation Score:** killed / total (aim for >80%)
+**Java (PIT):**
+```bash
+mvn org.pitest:pitest-maven:mutationCoverage
+```
 
 ## Best Practices
-- Start with critical code paths
-- Fix surviving mutants by adding assertions
-- Don't aim for 100% (diminishing returns)
-- Use incrementally, not all at once
+1. Start small (critical modules first)
+2. Set realistic goals (not 100%)
+3. Address survivors systematically
+4. Integrate with CI (limited scope on PRs)
+5. Balance cost vs value
+
+## Common Pitfalls
+- Running on everything (too slow)
+- Ignoring equivalent mutants
+- Adding tests without understanding
+- Over-testing to kill mutants
+
+---
+
+**End of Mutation Testing Skill**

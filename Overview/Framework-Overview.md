@@ -1,71 +1,72 @@
 # Framework Overview
-
-**Version:** v0.16.1
+**Version:** v0.17.0
+**Purpose:** Comprehensive reference for AI assistants and framework development
 
 ---
 
 ## Core Principle
-System Instructions define WHO; Frameworks define WHAT process; Skills provide capabilities; Assistant Guidelines ensure quality.
+**System Instructions** = WHO (identity/expertise)
+**Frameworks** = WHAT (process)
+**Skills** = TOOLS (capabilities)
+**Guidelines** = HOW WELL (quality)
 
 ---
 
 ## IDPF-PRD (Pre-Development)
-**Version:** v0.16.1 | **Type:** Requirements Engineering
+**Location:** `IDPF-PRD/IDPF-PRD.md` | **Type:** Requirements Engineering
 
 **Forward Path:** Discovery → Elicitation → Specification → Generation
 **Reverse Path:** Analyze → Extract → Refine → Generate
 
 **Commands:** PRD-Start, PRD-Status, PRD-Next, Generate-PRD, Reverse-PRD-Start
-
 **Handoff:** PRD → Structured (REQ-IDs) | PRD → Agile (Epics/Stories) | Skip → Vibe
 
 ---
 
 ## IDPF-Structured
-**Version:** v0.16.1 | **Type:** TDD with Fixed Requirements
+**Location:** `IDPF-Structured/Interactive Development Process Framework.md`
+**Type:** TDD with Fixed Requirements
 
 **Workflow:** Session Init → TDD Iterations (RED-GREEN-REFACTOR) → Completion
+**Commands:** Done-Next-Step, Rollback-Previous-Step, Push-Changes, Final-Commit-Create-PR, Double-Check
 
-**Critical:** Single code block, numbered STEP format, complete runnable code
-
-**Commands:** Done-Next-Step, Rollback-Previous-Step, Push-Changes, Final-Commit-Create-PR, Roadblock-Stop, Double-Check
-
-**Skills:** tdd-red-phase, tdd-green-phase, tdd-refactor-phase, tdd-failure-recovery, test-writing-patterns
+**When to Use:** Fixed requirements, small-medium projects, solo/small team, TDD without sprint overhead
 
 ---
 
 ## IDPF-Agile
-**Version:** v0.16.1 | **Type:** Sprint-Based Development
+**Location:** `IDPF-Agile/Agile-Driven Development Framework.md`
+**Type:** Sprint-Based Development
 
-**Workflow:** Backlog Creation → Sprint Planning → Story Dev (TDD) → Review → Retro
+**Workflow:** Backlog Creation → Sprint Planning → Story Development (TDD) → Review → Retrospective
+**Commands:** Create-Backlog, Plan-Sprint, Start-Story, Story-Complete, Sprint-Retro, Velocity-Report
 
-**Story Format:** As a [user] I want [goal] So that [benefit] + Acceptance Criteria + Story Points
-
-**Commands:** Create-Backlog, Plan-Sprint, Start-Story, Story-Complete, Sprint-Review, End-Sprint
-**Release Lifecycle:** Open-Release, Prepare-Release, Close-Release (trunk-based)
+**When to Use:** Evolving requirements, iterative delivery, feature prioritization, velocity tracking
 
 ---
 
 ## IDPF-Vibe
-**Core Revision:** 4.0 | **Type:** Exploratory → Structured Evolution
+**Location:** `IDPF-Vibe/` | **Core Rev:** 4.0 | **Type:** Exploratory → Structured Evolution
 
-**Phase 1 VIBE:** Try-This, That-Works, Undo-That, Run-It, Vibe-Status
-**Phase 2 EVOLUTION:** Ready-to-Structure → Choose Structured OR Agile
-**Phase 3 STRUCTURED:** Switch to chosen framework with TDD
+**Platforms:** Desktop, Mobile, Web, Game, Embedded, Newbie (7 variants)
 
-**Variants:** Core, Desktop, Web, Mobile, Game, Embedded, Newbie
+**Phase 1 (Vibe):** Exploratory, no formal requirements
+**Phase 2 (Evolution):** Ready-to-Structure → Choose Structured or Agile
+**Phase 3 (Structured):** TDD with chosen framework
+
+**Commands:** Vibe-Start, Try-This, That-Works, Run-It, Ready-to-Structure
 
 ---
 
 ## IDPF-LTS
-**Version:** v0.16.1 | **Type:** Production Maintenance (Terminal)
+**Location:** `IDPF-LTS/Long-Term-Support-Framework.md`
+**Type:** Production Maintenance (Terminal State)
 
-**Allowed:** Critical bugs, security patches, doc fixes
-**Forbidden:** New features, refactoring, non-security upgrades
+**Principles:** Stability First, Minimal Change, No New Features, Backwards Compatibility
+**Allowed:** Critical bugs, security patches, documentation fixes
+**Forbidden:** New features, refactoring, dependency upgrades, breaking changes
 
-**Workflow:** Bug Triage → Impact → Fix (TDD) → Regression Check → Release
-
-**Severity:** P0 Critical (24h) | P1 High | P2 Medium | P3/P4 Low
+**Workflow:** Triage → Impact Assessment → Fix (TDD) → Regression Prevention → Release
 
 ---
 
@@ -73,58 +74,64 @@ System Instructions define WHO; Frameworks define WHAT process; Skills provide c
 
 ```
 IDPF-Testing-Core (foundation)
-    ├── IDPF-QA-Automation (Selenium, Playwright, Cypress)
-    ├── IDPF-Performance (k6, JMeter, Gatling)
-    ├── IDPF-Security (OWASP ZAP, SAST/DAST)
-    ├── IDPF-Accessibility (axe, Pa11y)
-    ├── IDPF-Chaos (Gremlin, LitmusChaos)
-    └── IDPF-Contract-Testing (Pact)
+├── IDPF-QA-Automation (Selenium, Playwright, Cypress, Appium)
+├── IDPF-Performance (k6, JMeter, Gatling, Locust)
+├── IDPF-Security (OWASP ZAP, SAST/DAST, SCA)
+├── IDPF-Accessibility (axe, Lighthouse, WCAG)
+├── IDPF-Chaos (Chaos Monkey, Gremlin, LitmusChaos)
+└── IDPF-Contract-Testing (Pact, Spring Cloud Contract)
 ```
 
-**Embedded:** TDD/ATDD/BDD in app repo
-**Separate:** QA Automation, Performance, Security, Chaos, Contract
+**Separate repos** use Testing frameworks; **Embedded tests** use Structured/Agile
 
 ---
 
 ## System Instructions
 
-**Architecture:** Core-Developer-Instructions.md + 23 Domain Specialists
+**Architecture:** Core + Domain Specialization
+- **Core-Developer-Instructions.md:** Universal competencies
+- **23 Domain Specialists:** Backend, Frontend, DevOps, Database, API-Integration, Security, Platform, Mobile, Data, QA-Test, Cloud-Architect, SRE, Embedded, ML, Performance, PRD-Analyst, Accessibility, Full-Stack, Desktop-App, Game, Graphics, Systems-Programmer, Technical-Writer
+- **Vibe Agents:** Core + 6 platform-specific
 
-**Core Competencies:** Git, Testing, Agile, SOLID, Design Patterns, Security, Performance
-
-**Domain Specialists:** Full-Stack, Backend, Frontend, DevOps, Database, API-Integration, Security, Platform, Mobile, Data, QA-Test, Cloud-Architect, SRE, Embedded, ML, Performance, PRD-Analyst, Accessibility, Desktop, Game, Graphics, Systems-Programmer, Technical-Writer
-
-**Legacy:** Senior_Full_Stack_Developer.md (backward compatibility)
-**Vibe Agent:** Core + Platform-specific (Desktop, Web, Mobile, Game, Embedded, Newbie)
+**Loading:** Core first, then Domain specialist(s)
 
 ---
 
-## Skills (21)
+## Skills (21 Total)
 
-**TDD:** tdd-red-phase, tdd-green-phase, tdd-refactor-phase, tdd-failure-recovery, test-writing-patterns, bdd-writing
-**PRD:** extract-prd
-**Code Quality:** anti-pattern-analysis, uml-generation
-**Beginner:** flask-setup, sinatra-setup, common-errors, sqlite-integration, beginner-testing
-**Database:** postgresql-integration, migration-patterns
-**Advanced Testing:** property-based-testing, mutation-testing
-**Architecture:** api-versioning, error-handling-patterns
-**DevOps:** ci-cd-pipeline-design
+| Category | Skills |
+|----------|--------|
+| TDD | tdd-red-phase, tdd-green-phase, tdd-refactor-phase, tdd-failure-recovery, test-writing-patterns |
+| BDD | bdd-writing |
+| PRD | extract-prd |
+| Code Quality | anti-pattern-analysis, uml-generation |
+| Beginner Setup | flask-setup, sinatra-setup |
+| Beginner Support | common-errors, sqlite-integration, beginner-testing |
+| Database | postgresql-integration, migration-patterns |
+| Advanced Testing | property-based-testing, mutation-testing |
+| Architecture | api-versioning, error-handling-patterns |
+| DevOps | ci-cd-pipeline-design |
 
 ---
 
 ## Framework Transitions
 
+**Valid:**
 ```
 VIBE ──► STRUCTURED ──► LTS
   │          ↑↓
   └────► AGILE ────────► LTS
 ```
 
-**Valid:** Vibe→Structured, Vibe→Agile, Structured↔Agile, Structured→LTS, Agile→LTS
-**Invalid:** Structured/Agile→Vibe, LTS→Any
+**Invalid:** Structured/Agile → Vibe, LTS → Any
 
-**Preserved:** Code, tests, Git history, TDD methodology
-**Changes:** Documentation format, workflow structure, progress tracking
+| From | To | When |
+|------|----|------|
+| Vibe | Structured | Fixed scope, solo/small team |
+| Vibe | Agile | Large feature set, sprints needed |
+| Structured | Agile | Scope expanded, iterative delivery |
+| Agile | Structured | Scope narrowed, sprint overhead not justified |
+| Structured/Agile | LTS | Production ready, maintenance mode |
 
 ---
 
@@ -134,33 +141,9 @@ VIBE ──► STRUCTURED ──► LTS
 |--------------|-----------|-----------|
 | Fixed requirements | IDPF-Structured | → LTS |
 | Evolving requirements | IDPF-Agile | → LTS |
-| Unclear requirements | IDPF-Vibe | → Structured/Agile |
+| Exploration needed | IDPF-Vibe | → Structured/Agile |
 | Production maintenance | IDPF-LTS | Terminal |
 | Separate test repo | IDPF-Testing-Core | Use Structured/Agile |
-
----
-
-## Rules Auto-Loading
-
-**Location:** `.claude/rules/`
-- 01-anti-hallucination.md
-- 02-github-workflow.md
-- 03-session-startup.md
-
-Benefits: No explicit reads, compact-resilient, token reduction
-
----
-
-## Assistant Guidelines
-
-**Anti-Hallucination (Software Dev):**
-- NEVER invent API methods, class names, config syntax
-- NEVER assume OS, tools, project structure, versions
-- Auto-search: "current", "latest", uncertain syntax
-
-**Confidence:** High → Medium → Low → "I don't know"
-
-**File Operations:** READ before editing, verify paths, enumerate before bulk ops
 
 ---
 

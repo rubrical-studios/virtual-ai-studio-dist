@@ -3,6 +3,29 @@
  * @module install/lib/constants
  */
 
+/**
+ * Base Experts - 12 specialists available for install-time selection
+ * Full-Stack-Developer is first (default selection)
+ */
+const BASE_EXPERTS = [
+  'Full-Stack-Developer',
+  'Backend-Specialist',
+  'Frontend-Specialist',
+  'Mobile-Specialist',
+  'Desktop-Application-Developer',
+  'Embedded-Systems-Engineer',
+  'Game-Developer',
+  'ML-Engineer',
+  'Data-Engineer',
+  'Cloud-Solutions-Architect',
+  'SRE-Specialist',
+  'Systems-Programmer-Specialist',
+];
+
+/**
+ * All domain specialists (Base + Pack + PRD)
+ * Kept for validation and cleanup purposes
+ */
 const DOMAIN_SPECIALISTS = [
   'Accessibility-Specialist',
   'API-Integration-Specialist',
@@ -74,8 +97,8 @@ const INSTALLED_FILES_MANIFEST = {
   commands: {
     dir: '.claude/commands',
     files: [
-      (config) => config?.domainSpecialists?.length > 0 ? 'switch-role.md' : null,
-      'add-role.md',
+      // switch-role.md removed in v0.17.0 - single specialist model
+      // add-role.md removed in v0.17.0 - single specialist model
       (config) => config?.enableGitHubWorkflow ? 'assign-release.md' : null,
       (config) => config?.enableGitHubWorkflow ? 'switch-release.md' : null,
       (config) => config?.enableGitHubWorkflow ? 'transfer-issue.md' : null,
@@ -168,6 +191,7 @@ const ALL_SKILLS = [
 ];
 
 module.exports = {
+  BASE_EXPERTS,
   DOMAIN_SPECIALISTS,
   FRAMEWORK_SKILLS,
   VIBE_VARIANT_SKILLS,

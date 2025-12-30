@@ -1,181 +1,128 @@
 # Framework Testing Reference
-**Version:** v0.16.1
+**Version:** v0.17.0
+**Purpose:** Reference for IDPF testing frameworks
 
 ---
 
-## IDPF-Testing-Core Framework
-
-**Location:** `IDPF-Testing-Core/IDPF-Testing-Core.md`
-**Version:** v0.16.1
-**Type:** Foundational Testing Framework
-
-**Core Principle:** "Test automation is software development."
-
-### Architecture
-
+## Architecture
 ```
 IDPF-Testing-Core (foundation)
-    ├── IDPF-QA-Automation      (Selenium, Playwright, Cypress, Appium)
-    ├── IDPF-Performance        (k6, JMeter, Gatling, Locust)
-    ├── IDPF-Security           (OWASP ZAP, Burp Suite, SAST/DAST)
-    ├── IDPF-Accessibility      (axe, Lighthouse, Pa11y)
-    ├── IDPF-Chaos              (Chaos Monkey, Gremlin, LitmusChaos)
-    └── IDPF-Contract-Testing   (Pact, Spring Cloud Contract)
+├── IDPF-QA-Automation (Selenium, Playwright, Cypress, Appium)
+├── IDPF-Performance (k6, JMeter, Gatling, Locust)
+├── IDPF-Security (OWASP ZAP, SAST/DAST, SCA)
+├── IDPF-Accessibility (axe, Lighthouse, WCAG)
+├── IDPF-Chaos (Chaos Monkey, Gremlin, LitmusChaos)
+└── IDPF-Contract-Testing (Pact, Spring Cloud Contract)
 ```
 
-### Embedded vs Separate Repository
-
-| Testing Type | Framework | Rationale |
-|--------------|-----------|-----------|
-| TDD/ATDD/BDD | Embedded in app repo | Part of application development |
-| QA Automation | IDPF-QA-Automation | Independent codebase |
-| Performance | IDPF-Performance | Specialized tooling |
-| Security | IDPF-Security | Compliance, vulnerability tracking |
-| Chaos | IDPF-Chaos | Separate from deployment |
-| Contract Testing | IDPF-Contract-Testing | Cross-repo coordination |
-| Accessibility | IDPF-Accessibility | Flexible: Embedded OR Separate |
-
-### Workflow: PLAN → DESIGN → DEVELOP → EXECUTE → REPORT
+**Embedded vs Separate:**
+- Embedded (app repo): TDD, ATDD, BDD
+- Separate repo: QA Automation, Performance, Security, Chaos, Contract Testing
+- Flexible: Accessibility
 
 ---
 
-## IDPF-QA-Automation Framework
+## IDPF-Testing-Core
+**Workflow:** PLAN → DESIGN → DEVELOP → EXECUTE → REPORT
 
-**Extends:** IDPF-Testing-Core
-**Type:** UI & End-to-End Test Automation
+**Test Plans** replace PRDs for test repos. Location: `<test-repo>/PRD/TestPlans/`
 
-### Test Types
+**Commands:** Test-Plan-Start, Test-Plan-Review, Coverage-Check, Run-Tests, Generate-Report
 
-| Type | Scope | Time |
-|------|-------|------|
+---
+
+## IDPF-QA-Automation
+**Type:** UI & E2E Test Automation
+
+| Test Type | Scope | Time |
+|-----------|-------|------|
 | Smoke | Critical paths | < 5 min |
 | Regression | Full coverage | 30-60 min |
 | E2E | User journeys | 15-45 min |
 
-### Tool Ecosystem
+**Tools:**
+- Web: Selenium, Playwright, Cypress, WebDriverIO
+- Mobile: Appium, XCUITest, Espresso, Detox
 
-**Web:** Selenium, Playwright, Cypress, WebDriverIO
-**Mobile:** Appium, XCUITest, Espresso, Detox
+**Pattern:** Page Object Model (one per page, encapsulates locators)
 
-### Selector Priority
-1. data-testid → 2. ID → 3. Name → 4. ARIA → 5. CSS Class
-
----
-
-## IDPF-Performance Framework
-
-**Extends:** IDPF-Testing-Core
-**Type:** Performance Testing
-
-### Test Types
-
-| Type | Purpose | Load Pattern |
-|------|---------|--------------|
-| Load | Expected load | Steady state |
-| Stress | Breaking point | Ramping up |
-| Endurance | Memory leaks | 4-24 hours |
-| Spike | Traffic bursts | Sudden spikes |
-
-### Tools
-k6 (JS), JMeter (Java), Gatling (Scala), Locust (Python)
-
-### Key Metrics
-- Response Time p95 < 500ms, p99 < 1000ms
-- Error Rate < 0.1%
-- Apdex > 0.9
+**Selector Priority:** data-testid > ID > Name > ARIA > CSS Class
 
 ---
 
-## IDPF-Security Framework
+## IDPF-Performance
+**Test Types:**
+| Type | Purpose | Duration |
+|------|---------|----------|
+| Load | Expected load | 15-60 min |
+| Stress | Breaking point | Until failure |
+| Soak | Memory leaks | 4-24 hours |
+| Spike | Traffic bursts | 15-30 min |
 
-**Extends:** IDPF-Testing-Core
-**Type:** Security Testing
+**Tools:** k6 (JS), JMeter (Java), Gatling (Scala), Locust (Python)
 
-### Testing Types
-
-| Type | When | Tools |
-|------|------|-------|
-| SAST | Dev/CI | SonarQube, Semgrep, CodeQL |
-| SCA | Dev/CI | Snyk, Dependabot |
-| DAST | Staging | OWASP ZAP, Burp Suite |
-| Secret Scan | Dev/CI | GitLeaks, TruffleHog |
-
-### OWASP Top 10 Coverage
-A01-A10: Broken Access Control, Cryptographic Failures, Injection, Insecure Design, Misconfiguration, Vulnerable Components, Auth Failures, Data Integrity, Logging Failures, SSRF
-
-### Vulnerability SLAs
-Critical (9.0-10.0): 24h | High (7.0-8.9): 7d | Medium (4.0-6.9): 30d | Low: 90d
+**Key Metrics:** Response time p95 < 500ms, p99 < 1s, Error rate < 0.1%
 
 ---
 
-## IDPF-Accessibility Framework
+## IDPF-Security
+**Test Types:** SAST (source), SCA (dependencies), DAST (running app), IAST (runtime), Pentest (manual)
 
-**Extends:** IDPF-Testing-Core
-**Type:** Accessibility Testing (Flexible: Embedded OR Separate)
+**OWASP Top 10 Coverage:**
+| # | Vulnerability | Approach |
+|---|---------------|----------|
+| A01 | Broken Access Control | DAST, Manual |
+| A02 | Cryptographic Failures | SAST |
+| A03 | Injection | SAST, DAST |
+| A06 | Vulnerable Components | SCA |
 
-### Testing Types
+**Remediation SLA:** Critical 24h, High 7d, Medium 30d, Low 90d
 
+**CI/CD Gates:** SAST (commit), Secret Scan (commit), SCA (PR), DAST (pre-deploy)
+
+---
+
+## IDPF-Accessibility
+**Flexible:** Embedded OR Separate repository
+
+**Test Types:**
 | Type | Automation | Coverage |
 |------|------------|----------|
 | Automated Scans | Full | ~30-40% |
-| Keyboard | Partial | Focus management |
+| Keyboard Testing | Partial | Focus management |
 | Screen Reader | Manual | Content |
 
-### WCAG Levels
-- A: Minimum (must meet)
-- AA: Standard (legal requirement)
-- AAA: Enhanced (aspirational)
+**WCAG Levels:** A (minimum), AA (standard/legal), AAA (enhanced)
 
-**Target:** WCAG 2.1 Level AA
-
-### Tools
-**Automated:** axe-core, Lighthouse, Pa11y
-**Assistive:** NVDA (Windows), JAWS, VoiceOver (macOS/iOS), TalkBack (Android)
+**Tools:** axe-core, Lighthouse, Pa11y, NVDA, JAWS, VoiceOver
 
 ---
 
-## IDPF-Chaos Framework
+## IDPF-Chaos
+**Principles:** Hypothesis → Real-world events → Production testing → Automate → Minimize blast radius
 
-**Extends:** IDPF-Testing-Core
-**Type:** Chaos Engineering
-
-### Fault Injection Types
-
+**Fault Types:**
 | Category | Examples |
 |----------|----------|
 | Infrastructure | Instance termination, AZ failure |
-| Network | Latency, packet loss, DNS failure |
+| Network | Latency, packet loss |
 | Application | Memory pressure, CPU stress |
 | Dependency | Service unavailable |
-| State | Database failure, cache eviction |
 
-### Tools
-Chaos Monkey (AWS), Gremlin (Enterprise), LitmusChaos (K8s), Chaos Mesh (K8s), Toxiproxy (Network)
-
-### Workflow
-Hypothesis → Observability → Design → Approval → Execute → Analyze → Fix
+**Tools:** Chaos Monkey, Gremlin, LitmusChaos, Chaos Mesh, Toxiproxy
 
 ---
 
-## IDPF-Contract-Testing Framework
+## IDPF-Contract-Testing
+**Flow:** Consumer → Generate Contract → Publish → Provider Verify → Can-I-Deploy → Deploy
 
-**Extends:** IDPF-Testing-Core
-**Type:** API Contract Testing
-
-### Flow
-```
-Consumer → Generate Contract → Broker → Provider Verifies → Can-I-Deploy → Deploy
-```
-
-### Tools
-Pact (multi-lang), Spring Cloud Contract (Java), Specmatic (OpenAPI)
-
-### Key Concepts
-- Consumer: Service calling API
-- Provider: Service exposing API
+**Concepts:**
+- Consumer: Calls API
+- Provider: Exposes API
 - Contract: Request/response agreement
-- Broker: Central repository
-- Can-I-Deploy: Safety check
+- Broker: Contract repository
+
+**Tools:** Pact, Spring Cloud Contract, Specmatic
 
 ---
 

@@ -1,10 +1,10 @@
 ---
-version: v0.16.1
+version: v0.17.0
 description: Prepare release with PR, merge to main, and tag
 argument-hint: [version] [--skip-coverage] [--dry-run] [--help]
 ---
 
-<!-- EXTENSIBLE: vv0.16.1 -->
+<!-- EXTENSIBLE: vv0.17.0 -->
 # /prepare-release
 
 Validate, create PR to main, merge, and tag for deployment.

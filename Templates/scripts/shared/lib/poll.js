@@ -1,4 +1,4 @@
-// **Version:** 0.16.1
+// **Version:** 0.17.0
 /**
  * lib/poll.js - Async polling with exponential backoff
  *

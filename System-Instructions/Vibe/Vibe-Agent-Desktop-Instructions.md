@@ -1,50 +1,79 @@
 # Vibe Agent System Instructions (Desktop)
-**Version:** v0.16.1
+**Version:** v0.17.0
+**Type:** Desktop Application Agent Behaviors
 **Extends:** Vibe-Agent-Core-Instructions.md
-Specializes core instructions for desktop applications on Windows, macOS, Linux.
+
 ---
+
+## Purpose
+Specializes core instructions for desktop development on Windows, macOS, Linux.
+
+---
+
 ## Platform Detection
-**Direct:** "CLI tool", "desktop app", "GUI application", Windows/macOS/Linux
-**Frameworks:** Python+tkinter/PyQt | Ruby+gtk | JS+Electron/Tauri | C#+WinForms/WPF | Swift+AppKit | Rust+iced
+**Direct:** CLI tool, desktop app, GUI, file system ops
+**Frameworks:** Python+tkinter/PyQt, Ruby+gtk, Electron/Tauri, C#+WinForms/WPF, Swift+AppKit, Rust+iced
+
 ---
-## Windows (Default when unspecified)
-**Paths:** Use backslashes `src\main.py`, `E:\Projects\app\`
-**Scripts:** Create `.cmd`/`.bat` (NOT .ps1)
-**Commands:** `dir` (not ls), `type` (not cat), `del` (not rm), `copy` (not cp), `cls` (not clear)
-**Python:** `python` (not python3)
+
+## Windows (Default)
+
+**Path Syntax:** Backslashes
 ```
-STEP 1: cd E:\Projects\my-tool
-STEP 2: python src\main.py --input data\test.txt
-STEP 3: dir results\output.txt
-STEP 4: type results\output.txt
+STEP 1: Open src\main.py
+STEP 2: Save to E:\Projects\my-app\data\output.txt
 ```
+
+**Script Files:** `.cmd` or `.bat` (NOT .ps1)
+
+**Commands:** `dir` (ls), `type` (cat), `del` (rm), `copy` (cp), `move` (mv), `cls` (clear)
+
 ---
+
 ## macOS
-**Paths:** Forward slashes `src/main.py`, `~/Projects/app/`
-**Scripts:** `.sh` with `#!/bin/bash`, then `chmod +x`
-**Python:** `python3`, `pip3`
+
+**Path Syntax:** Forward slashes, tilde for home
 ```
-STEP 1: cd ~/Projects/my-tool
-STEP 2: python3 src/main.py --input data/test.txt
-STEP 3: ls -l results/output.txt
-STEP 4: cat results/output.txt
+STEP 1: Open src/main.py
+STEP 2: Save to ~/Documents/my-app/config.json
 ```
+
+**Script Files:** `.sh` with `chmod +x`
+**Python:** Use `python3`, `pip3`
+
 ---
+
 ## Linux
-**Paths:** Forward slashes, `~/.config/`, `$XDG_CONFIG_HOME`
-**Scripts:** `.sh` with `#!/bin/bash` and `set -e`
-**Python:** `python3`, `pip3`
+
+**Path Syntax:** Forward slashes, tilde, XDG vars
+```
+Save to ~/.config/my-app/config.json
+```
+
+**Script Files:** `.sh` with `#!/bin/bash`
+
 ---
+
 ## Cross-Platform Code
-✅ Use `os.path.join()` or `pathlib.Path`
-❌ Hardcoded paths like `data\\input.txt` or `/home/user/`
+
+```python
+from pathlib import Path
+project_root = Path(__file__).parent
+config_file = project_root / 'config' / 'settings.json'
+```
+
 ---
+
 ## Quick Reference
-| Action | Windows | macOS/Linux |
-|--------|---------|-------------|
-| List | `dir` | `ls` |
-| Show | `type` | `cat` |
-| Delete | `del` | `rm` |
+
+| | Windows | macOS/Linux |
+|--|---------|-------------|
+| Path | `src\main.py` | `src/main.py` |
 | Python | `python` | `python3` |
-| Scripts | `.cmd` | `.sh` |
+| Script | `.cmd` | `.sh` |
+| List | `dir` | `ls` |
+| Show file | `type` | `cat` |
+
+---
+
 **End of Desktop Agent Instructions**

@@ -1,9 +1,8 @@
 # Framework Summary
-**Version:** v0.16.1
+**Version:** v0.17.0
+**Purpose:** Compact startup reference for framework developers
 
 ---
-
-**Purpose:** Compact startup reference for framework developers
 
 ## Quick Reference
 
@@ -11,16 +10,18 @@
 |-----------|-------|----------|
 | Development Frameworks | 4 | IDPF-Structured, IDPF-Agile, IDPF-Vibe (7 variants), IDPF-LTS |
 | Testing Frameworks | 7 | IDPF-Testing-Core + 6 specialized |
-| System Instructions | 23 Domain + 1 Core + 1 Legacy + Vibe Agent | System-Instructions/ |
+| Domain Specialists | 23 | 12 Base + 10 Pack + 1 PRD |
+| Core Instructions | 2 | Core-Developer-Instructions + Domain-Selection-Guide |
 | Skills | 21 | Skills/ |
 | Assistant Guidelines | 4 | Assistant/ |
+
+---
 
 ## Current Versions
 
 ### Development Frameworks
-
-| Framework | Revision | Type |
-|-----------|----------|------|
+| Framework | Rev | Type |
+|-----------|-----|------|
 | IDPF-PRD | 3 | Requirements Engineering |
 | IDPF-Structured | 9 | TDD with Fixed Requirements |
 | IDPF-Agile | 3 | Sprint-Based Development |
@@ -28,9 +29,8 @@
 | IDPF-LTS | 1 | Production Maintenance |
 
 ### Testing Frameworks
-
-| Framework | Revision | Extends |
-|-----------|----------|---------|
+| Framework | Rev | Extends |
+|-----------|-----|---------|
 | IDPF-Testing-Core | 1 | (Foundation) |
 | IDPF-QA-Automation | 1 | Testing-Core |
 | IDPF-Performance | 1 | Testing-Core |
@@ -40,49 +40,43 @@
 | IDPF-Contract-Testing | 1 | Testing-Core |
 
 ### Skills Registry
+| Skill | Category |
+|-------|----------|
+| tdd-red-phase, tdd-green-phase, tdd-refactor-phase, tdd-failure-recovery, test-writing-patterns | TDD |
+| bdd-writing | BDD |
+| extract-prd | PRD |
+| anti-pattern-analysis, uml-generation | Code Quality |
+| flask-setup, sinatra-setup | Beginner Setup |
+| common-errors, sqlite-integration, beginner-testing | Beginner Support |
+| postgresql-integration, migration-patterns | Database |
+| property-based-testing, mutation-testing | Advanced Testing |
+| api-versioning, error-handling-patterns | Architecture |
+| ci-cd-pipeline-design | DevOps |
 
-| Skill | Version | Category |
-|-------|---------|----------|
-| tdd-red-phase | v0.16.1 | TDD |
-| tdd-green-phase | v0.16.1 | TDD |
-| tdd-refactor-phase | v0.16.1 | TDD |
-| tdd-failure-recovery | v0.16.1 | TDD |
-| test-writing-patterns | v0.16.1 | TDD |
-| bdd-writing | v0.16.1 | BDD |
-| extract-prd | v0.16.1 | PRD |
-| anti-pattern-analysis | v0.16.1 | Code Quality |
-| uml-generation | v0.16.1 | Code Quality |
-| flask-setup | v0.16.1 | Beginner Setup |
-| sinatra-setup | v0.16.1 | Beginner Setup |
-| common-errors | v0.16.1 | Beginner Support |
-| sqlite-integration | v0.16.1 | Beginner Support |
-| beginner-testing | v0.16.1 | Beginner Support |
-| postgresql-integration | v0.16.1 | Database |
-| migration-patterns | v0.16.1 | Database |
-| property-based-testing | v0.16.1 | Advanced Testing |
-| mutation-testing | v0.16.1 | Advanced Testing |
-| api-versioning | v0.16.1 | Architecture |
-| error-handling-patterns | v0.16.1 | Architecture |
-| ci-cd-pipeline-design | v0.16.1 | DevOps |
+---
 
-## Framework Selection Matrix
+## Framework Selection
 
-| Project Type | Starting Point | Evolution Path |
-|--------------|---------------|----------------|
-| Fixed requirements, clear scope | IDPF-Structured | → LTS |
-| Evolving requirements, large scope | IDPF-Agile | → LTS |
-| Unclear requirements, exploration | IDPF-Vibe | → Structured or Agile |
+| Project Type | Start | Evolution |
+|--------------|-------|-----------|
+| Fixed requirements | IDPF-Structured | → LTS |
+| Evolving requirements | IDPF-Agile | → LTS |
+| Exploration needed | IDPF-Vibe | → Structured/Agile |
 | Production maintenance | IDPF-LTS | Terminal |
-| Separate test repository | IDPF-Testing-Core | Use Structured or Agile |
+| Separate test repo | IDPF-Testing-Core | Use Structured/Agile |
+
+---
 
 ## Core Principle
 
-**System Instructions** define WHO the assistant is
-**Frameworks** define WHAT process to follow
-**Skills** provide reusable capabilities
-**Assistant Guidelines** ensure accuracy and quality
+**System Instructions** = WHO (identity/expertise)
+**Frameworks** = WHAT (process)
+**Skills** = TOOLS (capabilities)
+**Guidelines** = HOW WELL (quality)
 
-## Valid Framework Transitions
+---
+
+## Valid Transitions
 
 ```
 VIBE ──► STRUCTURED ──► LTS
@@ -92,16 +86,19 @@ VIBE ──► STRUCTURED ──► LTS
 
 **Invalid:** Structured/Agile → Vibe, LTS → Any
 
+---
+
 ## Detailed Documentation
 
 | File | Content |
 |------|---------|
-| Framework-Development.md | IDPF-PRD, Structured, Agile, Vibe, LTS details |
-| Framework-Testing.md | Testing-Core + 6 specialized frameworks |
-| Framework-System-Instructions.md | Core + 17 Domain Specialists |
-| Framework-Skills.md | All 21 skills with descriptions |
-| Framework-Transitions.md | Transition matrix, diagrams, hybrid usage |
-| Framework-Overview.md | Complete reference (all sections) |
+| Framework-Development.md | IDPF details |
+| Framework-Testing.md | Testing frameworks |
+| Framework-System-Instructions.md | Core + Specialists |
+| Framework-Skills.md | All skills |
+| Framework-Transitions.md | Transition matrix |
+| Framework-Overview.md | Complete reference |
 
 ---
+
 **End of Framework Summary**

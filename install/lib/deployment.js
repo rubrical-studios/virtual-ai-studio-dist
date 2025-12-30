@@ -163,8 +163,9 @@ function deployFrameworkScripts(projectDir, frameworkPath) {
 
 /**
  * Deploy rules to .claude/rules/ directory
+ * v0.17.0+: domainSpecialist is singular string (primarySpecialist removed)
  */
-function deployRules(projectDir, frameworkPath, processFramework, domainListStr, primarySpecialist, enableGitHubWorkflow, version) {
+function deployRules(projectDir, frameworkPath, processFramework, domainSpecialist, _unused, enableGitHubWorkflow, version) {
   const rulesDir = path.join(projectDir, '.claude', 'rules');
   fs.mkdirSync(rulesDir, { recursive: true });
 
@@ -201,7 +202,7 @@ function deployRules(projectDir, frameworkPath, processFramework, domainListStr,
   }
 
   // Generate startup rules
-  const startupContent = generateStartupRules(frameworkPath, processFramework, domainListStr, primarySpecialist, version);
+  const startupContent = generateStartupRules(frameworkPath, processFramework, domainSpecialist, _unused, version);
   fs.writeFileSync(path.join(rulesDir, '03-startup.md'), startupContent);
   results.startup = true;
 

@@ -1,46 +1,89 @@
 ---
 name: tdd-refactor-phase
-version: v0.16.1
-description: Guide through REFACTOR phase of TDD cycle - improving code while tests pass
+description: Guide experienced developers through REFACTOR phase of TDD cycle - improving code quality while maintaining green tests
+license: Complete terms in LICENSE.txt
 ---
 
 # TDD REFACTOR Phase
+**Version:** v0.17.0
+
+Guide through REFACTOR phase: improving code quality while keeping tests green.
 
 ## When to Use
-- GREEN phase complete (test passes)
-- User responds "Done-Next-Step" after GREEN
+- GREEN phase complete with passing test
+- User responds "Done-Next-Step" after GREEN phase
 - Code works but could be improved
 
-## REFACTOR Phase Goal
-**Improve code quality while keeping tests green.**
+## Objectives
+1. **Improve code quality** - Cleaner, more maintainable
+2. **Keep tests green** - No behavior changes
 
-## What to Refactor
-- Remove duplication (DRY)
-- Improve naming (clarity)
-- Simplify logic (KISS)
-- Extract methods/classes (SRP)
-- Remove magic numbers
-- Improve structure
-
-## What NOT to Do
-- Add new features (needs test first)
-- Change behavior (tests should still pass)
-- Break working code
+**Refactoring IS:** Improving structure without changing behavior
+**Refactoring IS NOT:** Adding features, fixing bugs, breaking tests
 
 ## Workflow
-1. Identify refactoring opportunity
-2. Make small change
-3. Run tests - must stay GREEN
-4. Repeat or move to next RED phase
 
-## Output Format
+**Step 1: Analyze Opportunities**
+ASSISTANT instructs: "Ask Claude Code: Analyze this code for refactoring opportunities"
+Identify: Duplication, long functions, unclear names, complex logic
+
+**Step 2: Evaluate Suggestions**
+- **Refactor Now:** Clear improvement, low risk, high value
+- **Skip:** Premature abstraction, high risk, over-engineering
+
+**Step 3: Apply Refactoring (Single Code Block)**
 ```
-TASK: Refactor [description]
-STEP 1: [Identify improvement]
-STEP 2: [Apply refactoring]
-STEP 3: [Run tests - verify GREEN]
-STEP 4: [Report results]
+TASK: [Description]
+STEP 1: Open implementation file
+STEP 2: Navigate to code
+STEP 3: Apply refactored code
+STEP 4: Explanation of improvements
+STEP 5: Save file
+STEP 6: Run full test suite
+STEP 7: Verify ALL tests still PASS
+STEP 8: Report: All tests green?
 ```
 
-## Next Step
-After refactoring complete → Next TDD cycle (RED phase for new behavior)
+**Step 4: Verify Tests Remain Green**
+- Run FULL test suite
+- ALL tests must pass
+- **If any fail → ROLLBACK immediately**
+
+**Step 5: Complete**
+- Refactoring applied + tests green → "Done-Next-Step"
+- Refactoring skipped → "Done-Next-Step"
+
+## Best Practices
+1. Refactor in small steps (test after each)
+2. One refactoring at a time
+3. **Keep tests green** (rollback if broken)
+4. Refactor for clarity, not cleverness
+
+## Common Refactorings
+- Extract Variable/Function
+- Rename for Clarity
+- Eliminate Duplication
+- Simplify Conditional Logic
+
+## When to Skip
+- Only one use of code (Rule of Three)
+- Code already clear
+- High risk, low value
+- Premature abstraction
+
+## Anti-Patterns
+- Refactoring without tests
+- Accepting broken tests
+- Big bang refactoring
+- Mixing refactor + features
+
+## Checklist
+- [ ] Claude Code analyzed code
+- [ ] ASSISTANT evaluated suggestions
+- [ ] If applied: All tests PASS
+- [ ] If skipped: Valid reason documented
+- [ ] User reported via "Done-Next-Step"
+
+---
+
+**End of TDD REFACTOR Phase Skill**

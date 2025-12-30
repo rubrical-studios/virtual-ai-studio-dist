@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// **Version:** 0.16.1
+// **Version:** 0.17.0
 /**
  * IDPF Framework Installer - Main Entry Point
  * Unified cross-platform installer for Windows, macOS, and Linux
@@ -14,6 +14,7 @@ const { execSync } = require('child_process');
 
 // Import modules
 const {
+  BASE_EXPERTS,
   DOMAIN_SPECIALISTS,
   FRAMEWORK_SKILLS,
   VIBE_VARIANT_SKILLS,
@@ -57,8 +58,8 @@ const {
 
 const {
   generateClaudeMd,
-  generateSwitchRole,
-  generateAddRole,
+  // generateSwitchRole removed in v0.17.0 - single specialist model
+  // generateAddRole removed in v0.17.0 - single specialist model
   generateGhPmuConfig,
   generateSettingsLocal,
   generatePrdReadme,
@@ -398,7 +399,7 @@ async function main() {
     }
 
     // Check for existing installation
-    const { lockedFramework, existingDomains, projectInstructions } = parseExistingInstallation(projectDir);
+    const { lockedFramework, domainSpecialist: existingSpecialist, projectInstructions } = parseExistingInstallation(projectDir);
 
     let processFramework = '';
     let vibeVariant = '';
@@ -425,8 +426,8 @@ async function main() {
     if (lockedFramework) {
       logWarning('Detected existing installation');
       logCyan(`  Current framework: ${lockedFramework}`);
-      if (existingDomains.length > 0) {
-        logCyan(`  Existing specialists: ${existingDomains.join(', ')}`);
+      if (existingSpecialist) {
+        logCyan(`  Existing specialist: ${existingSpecialist}`);
       }
       if (projectInstructions) {
         logSuccess('  Will preserve existing Project-Specific Instructions');
@@ -525,70 +526,22 @@ async function main() {
       log();
     }
 
-    // Domain specialist selection with multi-select
-    const domainChoices = DOMAIN_SPECIALISTS.map(d => ({
-      title: d,
-      value: d,
-      selected: existingDomains.includes(d),
-    }));
+    // Domain specialist selection (single select from 12 Base Experts)
+    // Find initial selection index based on existing installation or default to Full-Stack-Developer
+    const initialIndex = existingSpecialist ? BASE_EXPERTS.indexOf(existingSpecialist) : 0;
 
-    const { selectedDomains } = await prompts({
-      type: 'multiselect',
-      name: 'selectedDomains',
-      message: 'Select Domain Specialists (Space to toggle, Enter to confirm)',
-      choices: domainChoices,
-      hint: '- Space to select. Enter to submit',
-      instructions: false,
+    const { domainSpecialist } = await prompts({
+      type: 'select',
+      name: 'domainSpecialist',
+      message: 'Select Domain Specialist (defines project identity)',
+      choices: BASE_EXPERTS.map(d => ({ title: d, value: d })),
+      initial: initialIndex >= 0 ? initialIndex : 0,  // Default to Full-Stack-Developer if not found
     }, { onCancel });
 
-    // Default to Full-Stack-Developer if no selection made
-    if (selectedDomains.length === 0) {
-      selectedDomains.push('Full-Stack-Developer');
-      log();
-      logWarning('No domain specialists selected - defaulting to Full-Stack-Developer');
-    } else {
-      log();
-      logSuccess(`Selected: ${selectedDomains.join(', ')}`);
-    }
     log();
-
-    // Primary specialist selection
-    let primarySpecialist = null;
-
-    if (selectedDomains.length === 1 && selectedDomains[0] === 'Full-Stack-Developer') {
-      // Auto-set primary when defaulted to Full-Stack-Developer
-      primarySpecialist = 'Full-Stack-Developer';
-      logSuccess(`Primary role: ${primarySpecialist} (default)`);
-      log(colors.dim('  This role will be loaded automatically at session startup.'));
-      log(colors.dim('  Use /switch-role to change during a session.'));
-      log();
-    } else if (selectedDomains.length > 0) {
-      const primaryChoices = selectedDomains.map(d => ({
-        title: d,
-        value: d,
-      }));
-
-      const { primary } = await prompts({
-        type: 'select',
-        name: 'primary',
-        message: 'Select PRIMARY specialist (auto-loaded at session startup)',
-        choices: [...primaryChoices, { title: '(skip - no primary)', value: null }],
-        initial: 0,
-      }, { onCancel });
-
-      primarySpecialist = primary;
-
-      if (primarySpecialist) {
-        log();
-        logSuccess(`Primary role: ${primarySpecialist}`);
-        log(colors.dim('  This role will be loaded automatically at session startup.'));
-        log(colors.dim('  Use /switch-role to change during a session.'));
-      } else {
-        log();
-        logWarning('No primary specialist selected');
-      }
-      log();
-    }
+    logSuccess(`Domain Specialist: ${domainSpecialist}`);
+    log(colors.dim('  This specialist will be loaded automatically at session startup.'));
+    log();
 
     // ======================================
     //  GitHub Workflow Integration (always enabled)
@@ -609,11 +562,10 @@ async function main() {
     divider();
     log();
 
-    // framework-config.json (using new v0.16.0+ schema)
+    // framework-config.json (using new v0.17.0+ schema - single specialist)
     createOrUpdateConfig(projectDir, manifest, {
       processFramework,
-      domainSpecialists: selectedDomains,
-      primarySpecialist,
+      domainSpecialist,  // v0.17.0: singular string instead of array
       frameworkPath,
     });
     logSuccess('  ✓ framework-config.json');
@@ -682,12 +634,11 @@ async function main() {
     }
 
     // CLAUDE.md
-    const domainListStr = selectedDomains.join(', ');
-    generateClaudeMd(projectDir, frameworkPath, processFramework, domainListStr, primarySpecialist, projectInstructions);
+    generateClaudeMd(projectDir, frameworkPath, processFramework, domainSpecialist, domainSpecialist, projectInstructions);
     logSuccess('  ✓ CLAUDE.md');
 
     // Deploy rules to .claude/rules/
-    const rulesResult = deployRules(projectDir, frameworkPath, processFramework, domainListStr, primarySpecialist, enableGitHubWorkflow, version);
+    const rulesResult = deployRules(projectDir, frameworkPath, processFramework, domainSpecialist, domainSpecialist, enableGitHubWorkflow, version);
     if (rulesResult.antiHallucination) {
       logSuccess('  ✓ .claude/rules/01-anti-hallucination.md');
     }
@@ -701,15 +652,7 @@ async function main() {
       logSuccess('  ✓ .claude/rules/05-windows-shell.md (Windows only)');
     }
 
-    // switch-role command (only if domain specialists selected)
-    if (generateSwitchRole(projectDir, frameworkPath, selectedDomains, primarySpecialist)) {
-      logSuccess('  ✓ .claude/commands/switch-role.md');
-    }
-
-    // add-role command (always generate - allows adding specialists later)
-    if (generateAddRole(projectDir, frameworkPath, selectedDomains)) {
-      logSuccess('  ✓ .claude/commands/add-role.md');
-    }
+    // switch-role and add-role commands removed in v0.17.0 - single specialist model
 
     // prepare-release command (copy from template)
     const commandsDir = path.join(projectDir, '.claude', 'commands');
@@ -789,7 +732,7 @@ async function main() {
 
     // Clean up orphaned files from previous installations
     const cleanupConfig = {
-      domainSpecialists: selectedDomains,
+      domainSpecialist,  // v0.17.0: singular
       enableGitHubWorkflow: enableGitHubWorkflow,
     };
     const cleanupResult = cleanupOrphanedFiles(projectDir, cleanupConfig);
@@ -998,10 +941,7 @@ async function main() {
     if (vibeVariant) {
       log(`  ${colors.dim('Vibe Variant:')}       ${colors.green(vibeVariant)}`);
     }
-    log(`  ${colors.dim('Domain Specialists:')} ${selectedDomains.length > 0 ? colors.green(domainListStr) : colors.dim('None')}`);
-    if (primarySpecialist) {
-      log(`  ${colors.dim('Primary Specialist:')} ${colors.green(primarySpecialist)}`);
-    }
+    log(`  ${colors.dim('Domain Specialist:')}  ${colors.green(domainSpecialist)}`);
     if (deployedSkills.length > 0) {
       log(`  ${colors.dim('Skills Deployed:')}    ${colors.green(deployedSkills.join(', '))}`);
     }

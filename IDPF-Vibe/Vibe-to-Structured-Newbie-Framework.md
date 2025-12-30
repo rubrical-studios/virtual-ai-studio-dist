@@ -1,57 +1,162 @@
-# Vibe-to-Structured Framework (Newbie)
-**Version:** v0.16.1
+# Vibe-to-Structured Development Framework (Newbie)
+**Version:** v0.17.0
 **Type:** Beginner-Friendly Specialization
 **Extends:** Vibe-to-Structured-Core-Framework.md
 
 ---
 
 ## Purpose
-Simplified framework for developers new to programming, emphasizing learning and clear explanations.
+Specializes Core Framework for developers new to programming. Emphasizes learning, clear explanations, and gradual skill building.
+**Evolution Options:** IDPF-Structured or IDPF-Agile
 
-## Skills Required
-- `flask-setup` - Flask environment setup
-- `sinatra-setup` - Sinatra environment setup
-- `common-errors` - Beginner error diagnosis
-- `sqlite-integration` - Database basics
-- `beginner-testing` - TDD introduction
+---
 
-## Technology Choices
+## Required Skills
+- **flask-setup**: Flask environment setup
+- **sinatra-setup**: Sinatra environment setup
+- **common-errors**: Troubleshooting common issues
+- **sqlite-integration**: Database integration
+- **beginner-testing**: TDD introduction
 
-**Backend:**
-- Ruby with Sinatra (easiest)
-- Python with Flask (very beginner-friendly)
+---
 
-**Frontend:**
-- Vanilla HTML/CSS/JavaScript (start here)
-- htmx, Alpine.js (after basics)
+## Technology Scope (Newbie-Friendly)
 
-**Database:**
-- SQLite (no server setup, just a file)
+### Backend (Choose One)
+**Ruby/Sinatra:** Minimal syntax, reads like English
+**Python/Flask:** Clear syntax, extensive resources
 
-## Initialization Approach
-1. Verify development environment
-2. Explain what we're building and why
-3. Use simple terminology
-4. Provide extra context for each step
-5. Celebrate small wins
+### Frontend
+Vanilla HTML/CSS/JavaScript (no build tools)
 
-## Code Style
-- Instructive comments explaining "why"
-- Clear variable names
-- Simple patterns over clever code
-- One concept at a time
+### Database
+**SQLite:** No setup, just a file
+**File-based (JSON):** Human-readable
 
-## Common Mistakes Addressed
-- Typos in file paths
-- Missing dependencies
-- Indentation errors
-- Copy/paste formatting issues
+### What This Framework Avoids
+React/Vue/Angular, complex build tools, microservices, Docker, cloud infrastructure
 
-## When to Evolve
-- Comfortable with basic patterns
-- Multiple working features
-- Ready for more complexity
-- Wants formal testing
+---
+
+## Session Initialization
+
+**STEP 0: Verify Claude Code Setup**
+```
+Do you have Claude Code installed and ready?
+- Yes → "Yes, Claude Code is ready"
+- No/Unsure → Guide through setup
+```
+
+**Then ask:**
+- Operating system? (Windows/Mac/Linux)
+- Programming experience? (None/Some/Comfortable)
+- What to build? (Website/API/Desktop/Learning)
+- Language? (Python or Ruby?)
+
+---
+
+## Vibe Phase Workflow
+
+**After "Vibe-Start":**
+1. Determine framework (Flask or Sinatra)
+2. Invoke setup Skill BEFORE any code
+3. Wait for user to report setup complete
+4. ONLY THEN begin application code
+
+---
+
+## Instructive Code Pattern
+
+```python
+# app.py - Main Flask file
+
+# Import Flask - gives us web tools
+from flask import Flask, render_template, request
+
+# Create Flask app instance
+app = Flask(__name__)
+
+# @app.route: when visiting '/', run this function
+@app.route('/')
+def home():
+    # render_template finds HTML in templates/ folder
+    return render_template('index.html', notes=notes)
+
+# debug=True: helpful errors, auto-reload
+if __name__ == '__main__':
+    app.run(debug=True)
+```
+
+---
+
+## Running Applications
+
+**Flask:**
+1. Activate venv: `venv\Scripts\activate` (Windows)
+2. Run: `python app.py`
+3. Browser: http://localhost:5000
+4. Stop: Ctrl+C
+
+**Sinatra:**
+1. Run: `ruby app.rb`
+2. Browser: http://localhost:4567
+3. Stop: Ctrl+C
+
+---
+
+## Error Explanations
+
+**"ModuleNotFoundError: No module named 'flask'"**
+1. Flask not installed → `pip install flask`
+2. venv not activated → run activate command
+3. Wrong folder → `cd` to project folder
+
+**"Address already in use"**
+Server running in another terminal → Ctrl+C there first
+
+---
+
+## Progressive Levels
+
+| Level | Skills |
+|-------|--------|
+| 1 | Single route, display text |
+| 2 | HTML forms, user input |
+| 3 | Store data in list |
+| 4 | Multiple pages, navigation |
+| 5 | SQLite database |
+| 6 | CSS styling |
+| 7 | Edit/Delete/Search |
+
+---
+
+## Verification Pattern
+
+```
+STEP 1: Save file (Ctrl+S)
+STEP 2: Check terminal for errors
+STEP 3: Refresh browser (F5)
+STEP 4: Report: "It worked!" or "Error: [message]"
+```
+
+---
+
+## Celebration Milestones
+
+**First page load:** You created a web server!
+**First form:** You handled user input!
+**First database:** You're a database developer!
+
+---
+
+## When to Graduate
+
+Ready for Web Framework when:
+- Built 3-4 working apps
+- Comfortable with routes, templates, forms
+- Understand request/response cycle
+- Can debug common errors yourself
+- Comfortable with basic SQL
 
 ---
 

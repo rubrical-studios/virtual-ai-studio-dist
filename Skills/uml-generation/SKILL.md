@@ -1,10 +1,13 @@
-# UML Generation Skill
-
 ---
 name: uml-generation
-version: v0.16.1
-description: Generate UML diagrams from source code using PlantUML
+description: Generate UML diagrams from project source code using PlantUML with online rendering
 ---
+
+# UML Generation Skill
+**Version:** v0.17.0
+
+## Purpose
+Analyze source code and generate UML diagrams with PlantUML syntax and online rendering URLs.
 
 ## When to Invoke
 - Code analysis requiring visual documentation
@@ -12,41 +15,95 @@ description: Generate UML diagrams from source code using PlantUML
 - Reverse-engineering existing codebases
 - Understanding class hierarchies
 - Documenting API call flows
+- Technical debt visualization (with anti-pattern-analysis)
 
-## Supported Diagram Types
+## Supported Diagrams
 | Diagram | Use Case | Priority |
 |---------|----------|----------|
-| Class Diagram | Code structure, inheritance | High |
-| Sequence Diagram | Method call flows, API interactions | High |
-| Component Diagram | Architecture, dependencies | Medium |
-| Activity Diagram | Workflow logic | Medium |
-| State Diagram | State machines | Low |
-
-## What Gets Extracted
-
-**Class Diagrams:** Classes, interfaces, inheritance, associations, visibility, methods, properties
-**Sequence Diagrams:** Method call chains, request/response, async operations
-**Component Diagrams:** Module structure, dependencies, interfaces
+| **Class** | Code structure, inheritance | High |
+| **Sequence** | Method flows, API interactions | High |
+| **Component** | Architecture, module dependencies | Medium |
+| **Activity** | Workflow logic, algorithms | Medium |
+| **State** | State machines, lifecycle | Low |
 
 ## Output Format
-1. PlantUML source (copyable)
-2. Rendering URL (plantuml.com)
-3. Brief description
+Each diagram includes:
+1. **PlantUML Source** - Copyable syntax
+2. **Online URL** - `http://www.plantuml.com/plantuml/svg/[encoded]`
+3. **Download Links** - SVG and PNG variants
 
-## Example Output
+## PlantUML Quick Reference
+
+### Class Diagram
 ```plantuml
 @startuml
-class User {
-  +id: int
-  +name: string
-  +getOrders(): List<Order>
+class ClassName {
+  +publicField: Type
+  -privateField: Type
+  +publicMethod(): ReturnType
 }
-class Order {
-  +id: int
-  +total: decimal
-}
-User "1" --> "*" Order
+ClassA <|-- ClassB        ' inheritance
+ClassA <|.. ClassB        ' implementation
+ClassA *-- ClassB         ' composition
+ClassA --> ClassB         ' association
+ClassA "1" --> "*" ClassB ' multiplicity
 @enduml
 ```
 
-Render: `http://www.plantuml.com/plantuml/png/[encoded]`
+### Sequence Diagram
+```plantuml
+@startuml
+participant Client
+participant Server
+Client -> Server: request()
+activate Server
+Server --> Client: response
+deactivate Server
+alt success
+  Server --> Client: 200 OK
+else error
+  Server --> Client: 500 Error
+end
+@enduml
+```
+
+### Component Diagram
+```plantuml
+@startuml
+package "Frontend" {
+  [Web App]
+}
+package "Backend" {
+  [API Gateway]
+  [User Service]
+}
+[Web App] --> [API Gateway]
+[API Gateway] --> [User Service]
+@enduml
+```
+
+## URL Encoding
+1. UTF-8 encode source
+2. Deflate compress
+3. Base64-like encode (PlantUML alphabet)
+4. Construct: `http://www.plantuml.com/plantuml/svg/{encoded}`
+
+**Limit:** ~2000 chars (browser limit). For larger diagrams, output source only.
+
+## Integration Points
+| Integration | Use |
+|-------------|-----|
+| extract-prd | Visual architecture in PRD extraction |
+| anti-pattern-analysis | Visualize problematic classes |
+| Backend-Specialist | Service layer diagrams |
+| API-Integration | Sequence diagrams for flows |
+
+## Limitations (Phase 1)
+- Internet required for rendering
+- URL length ~2000 chars
+- Code visible to public PlantUML server
+- No caching
+
+---
+
+**End of Skill Document**

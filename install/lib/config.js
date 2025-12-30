@@ -212,8 +212,7 @@ function writeConfig(projectDir, config) {
  * @param {string} options.processFramework - Process framework (IDPF-*)
  * @param {string} options.language - Project language
  * @param {string} options.description - Project description
- * @param {string[]} options.domainSpecialists - Domain specialists
- * @param {string} options.primarySpecialist - Primary domain specialist
+ * @param {string} options.domainSpecialist - Domain specialist (v0.17.0+: singular string)
  * @param {string} options.frameworkPath - Path to framework source
  * @returns {object} Updated config
  */
@@ -237,15 +236,23 @@ function createOrUpdateConfig(projectDir, manifest, options = {}) {
   const userScripts = discoverUserScripts(projectDir);
 
   // AC-7: projectType (preserve existing or use options/defaults)
+  // v0.17.0+: domainSpecialist is singular string, primarySpecialist removed
   let projectType;
   if (existingConfig?.projectType) {
     // Preserve existing projectType, but allow overrides
+    // Handle migration from array to singular
+    let existingSpecialist = existingConfig.projectType.domainSpecialist;
+    if (!existingSpecialist && existingConfig.projectType.domainSpecialists) {
+      // Migrate from array: use first element or primarySpecialist
+      existingSpecialist = existingConfig.projectType.primarySpecialist ||
+                           existingConfig.projectType.domainSpecialists[0] ||
+                           'Full-Stack-Developer';
+    }
     projectType = {
       processFramework: options.processFramework || existingConfig.projectType.processFramework,
       language: options.language || existingConfig.projectType.language || detectLanguage(projectDir),
       description: options.description !== undefined ? options.description : existingConfig.projectType.description,
-      domainSpecialists: options.domainSpecialists || existingConfig.projectType.domainSpecialists || [],
-      primarySpecialist: options.primarySpecialist || existingConfig.projectType.primarySpecialist || null
+      domainSpecialist: options.domainSpecialist || existingSpecialist || 'Full-Stack-Developer'
     };
   } else {
     // Fresh install
@@ -253,8 +260,7 @@ function createOrUpdateConfig(projectDir, manifest, options = {}) {
       processFramework: options.processFramework || 'IDPF-Structured',
       language: options.language || detectLanguage(projectDir) || 'unknown',
       description: options.description || '',
-      domainSpecialists: options.domainSpecialists || [],
-      primarySpecialist: options.primarySpecialist || null
+      domainSpecialist: options.domainSpecialist || 'Full-Stack-Developer'
     };
   }
 
@@ -310,8 +316,18 @@ function migrateConfigSchema(projectDir, oldConfig, manifest) {
   // AC-2: Migrate installedVersion → frameworkVersion
   const frameworkVersion = manifest.version;  // Use new version, not old
 
-  // AC-3: Preserve domainSpecialists
-  const domainSpecialists = oldConfig.projectType?.domainSpecialists || [];
+  // AC-3: Migrate domainSpecialists (array) to domainSpecialist (singular)
+  // v0.17.0+: Use primarySpecialist, or first element, or default
+  let domainSpecialist = 'Full-Stack-Developer';
+  if (oldConfig.projectType?.domainSpecialist) {
+    // Already migrated to singular
+    domainSpecialist = oldConfig.projectType.domainSpecialist;
+  } else if (oldConfig.projectType?.domainSpecialists) {
+    // Migrate from array: prioritize primarySpecialist, then first element
+    domainSpecialist = oldConfig.projectType.primarySpecialist ||
+                       oldConfig.projectType.domainSpecialists[0] ||
+                       'Full-Stack-Developer';
+  }
 
   // AC-4: Add new fields with defaults
   const extensibleCommands = manifest.extensibleCommands || [];
@@ -357,7 +373,7 @@ function migrateConfigSchema(projectDir, oldConfig, manifest) {
       processFramework: oldConfig.projectType?.processFramework || 'IDPF-Structured',
       language,
       description: oldConfig.projectType?.description || '',
-      domainSpecialists
+      domainSpecialist
     },
     frameworkPath
   };

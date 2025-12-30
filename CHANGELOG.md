@@ -8,6 +8,40 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [v0.17.0] - 2025-12-29
+
+### Breaking Changes
+- **Single-Specialist Model** (#588) - Users now select ONE Base Expert at install time instead of multiple specialists:
+  - `domainSpecialist` (string) replaces `domainSpecialists[]` + `primarySpecialist` in framework-config.json
+  - Removed `/switch-role` and `/add-role` commands (no longer needed)
+  - Future: Expertise Packs can be loaded on-demand via JIT loading
+
+### Changed
+- **Domain Specialist Reorganization** (#589-#595) - Files reorganized from flat `Domain/` to structured subdirectories:
+  - `Domain/Base/` - 12 Base Experts available at install time
+  - `Domain/Pack/` - 10 Expertise Packs for JIT loading
+  - `Domain/PRD/` - 1 specialized PRD analyst
+- **Installer Single-Specialist Support** (#603-#607) - Updated installer for single-specialist model:
+  - Radio-button UI (single-select) replaces checkbox UI (multi-select)
+  - Schema migration: `domainSpecialists[]` + `primarySpecialist` → `domainSpecialist`
+  - Orphaned command cleanup (`switch-role.md`, `add-role.md`)
+- **Branch Naming Enforcement** (#586) - `/open-release` now enforces `[prefix]/[name]` format:
+  - Exactly one `/` separator required
+  - Both prefix and name must be non-empty
+  - Examples: `release/v1.2.0`, `patch/v1.9.1`, `hotfix/auth-bypass`
+
+### Removed
+- **`/switch-role` command** - No longer needed with single-specialist model
+- **`/add-role` command** - No longer needed with single-specialist model
+- **Multi-select specialist prompt** - Replaced with single-select
+
+### Documentation
+- **Migration Guide** (#609-#611) - Added comprehensive migration documentation in `Releases/idpf/domain-reorg/release-notes.md`
+- **Updated Domain-Selection-Guide.md** - Reflects single-specialist model
+- **Superseded note added** - `Dynamic-Domain-Specialist-Roles.md` marked as superseded
+
+---
+
 ## [0.16.1] - 2025-12-28
 
 ### Fixed

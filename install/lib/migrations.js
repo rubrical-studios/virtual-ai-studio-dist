@@ -47,13 +47,17 @@ const MIGRATIONS = [
       const hasGitHubWorkflow = fs.existsSync(path.join(projectDir, '.claude', 'hooks', 'workflow-trigger.js'));
       const version = readFrameworkVersion(frameworkPath);
 
-      // Create .claude/rules/ with new structure
+      // Create .claude/rules/ with new structure (v0.17.0+: singular domainSpecialist)
+      const domainSpecialist = config.projectType.domainSpecialist ||
+                               config.projectType.primarySpecialist ||
+                               (config.projectType.domainSpecialists || [])[0] ||
+                               'Full-Stack-Developer';
       const rulesResult = deployRules(
         projectDir,
         frameworkPath,
         config.projectType.processFramework,
-        config.projectType.domainSpecialists.join(', '),
-        config.projectType.primarySpecialist,
+        domainSpecialist,
+        null,
         hasGitHubWorkflow,
         version
       );
@@ -74,8 +78,8 @@ const MIGRATIONS = [
         projectDir,
         frameworkPath,
         config.projectType.processFramework,
-        config.projectType.domainSpecialists.join(', '),
-        config.projectType.primarySpecialist,
+        domainSpecialist,
+        null,
         projectInstructions
       );
       logSuccess('  ✓ Updated CLAUDE.md (simplified)');
@@ -210,10 +214,13 @@ function runMigrations(projectDir, frameworkPath) {
     log();
   }
 
-  // Clean up orphaned files after all migrations
+  // Clean up orphaned files after all migrations (v0.17.0+: singular domainSpecialist)
   const hasGitHubWorkflow = fs.existsSync(path.join(projectDir, '.claude', 'hooks', 'workflow-trigger.js'));
   const cleanupConfig = {
-    domainSpecialists: config.projectType?.domainSpecialists || [],
+    domainSpecialist: config.projectType?.domainSpecialist ||
+                      config.projectType?.primarySpecialist ||
+                      (config.projectType?.domainSpecialists || [])[0] ||
+                      'Full-Stack-Developer',
     enableGitHubWorkflow: hasGitHubWorkflow,
   };
   const cleanupResult = cleanupOrphanedFiles(projectDir, cleanupConfig);

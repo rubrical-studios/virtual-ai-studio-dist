@@ -1,50 +1,119 @@
 ---
 name: beginner-testing
-version: v0.16.1
-description: Introduce test-driven development to beginners with simple examples
+description: Introduce test-driven development to beginners with simple Flask/Sinatra test examples and TDD concepts
+license: Complete terms in LICENSE.txt
 ---
 
 # Beginner Testing Introduction
+**Version:** v0.17.0
 
 ## When to Use
-- User has working Vibe app ready for Structured Phase
-- User mentions "testing" or asks "how to test"
-- Evolution Point reached ("Ready-to-Structure")
-- User asks "How do I know if my code works?"
+- User's Vibe app ready to transition to Structured
+- User mentions "testing" or "how to test"
+- User has 3-4 features, wants quality assurance
 
 ## Prerequisites
-- Working Flask or Sinatra app with 3-4 features
+- Working Flask/Sinatra app with 3-4 features
 - Understanding of routes and functions
-- Code that works but no tests yet
+- Code works but no tests
 
 ## What is Testing?
-Writing code that checks if your code works.
-- Without tests: Make change → Click around → Hope nothing broke
-- With tests: Make change → Run tests → Know immediately if something broke
+**Without tests:** Change code → Open browser → Click around → Hope nothing broke
+**With tests:** Change code → Run tests → See green/red → Know immediately
 
-## TDD Cycle: RED → GREEN → REFACTOR
-1. **RED:** Write a test that fails (feature doesn't exist yet)
-2. **GREEN:** Write just enough code to pass
-3. **REFACTOR:** Clean up while tests still pass
+## TDD Cycle
+```
+RED → GREEN → REFACTOR
 
-## Types of Tests
-- **Unit tests:** Test one function
-- **Integration tests:** Test functions working together
-- **Route tests:** Test web endpoints
+1. RED: Write test that fails (feature doesn't exist)
+2. GREEN: Write just enough code to pass
+3. REFACTOR: Clean up while tests still pass
+```
 
-## First Test Pattern
+## Test Types (Simple)
+| Type | Tests | Example |
+|------|-------|---------|
+| Unit | Individual functions | `add_numbers(2,3)` returns `5` |
+| Route | Pages load correctly | `/` returns status 200 |
+| Integration | Parts work together | Form adds to database |
 
-**Flask (pytest):**
+**Beginners: Start with route tests!**
+
+## First Test (Flask)
 ```python
-def test_homepage_returns_200(client):
+# test_app.py
+def test_homepage_loads():
+    from app import app
+    client = app.test_client()
     response = client.get('/')
     assert response.status_code == 200
 ```
 
-**Sinatra (minitest):**
+**Run:** `pip install pytest && pytest`
+
+## First Test (Sinatra)
 ```ruby
-def test_homepage_returns_200
-  get '/'
-  assert last_response.ok?
+# test_app.rb
+require 'minitest/autorun'
+require 'rack/test'
+require_relative 'app'
+
+class AppTest < Minitest::Test
+  include Rack::Test::Methods
+  def app; Sinatra::Application; end
+
+  def test_homepage_loads
+    get '/'
+    assert last_response.ok?
+  end
 end
 ```
+
+**Run:** `ruby test_app.rb`
+
+## Common Assertions
+**Python:** `assert value == 5`, `assert 'text' in response.data`
+**Ruby:** `assert_equal 5, value`, `assert_includes body, 'text'`
+
+## TDD Example: Delete Feature
+```python
+# 1. RED - Write failing test
+def test_delete_note():
+    client = app.test_client()
+    client.post('/add', data={'note': 'Test'})
+    response = client.get('/delete/1')
+    assert response.status_code == 302
+
+# 2. GREEN - Make it pass
+@app.route('/delete/<int:note_id>')
+def delete_note(note_id):
+    # implementation
+    return redirect('/')
+
+# 3. REFACTOR - Clean up
+```
+
+## Test Output
+**Pass:** `3 passed in 0.12s`
+**Fail:** `FAILED - AssertionError: assert 404 == 200`
+
+## What to Test (Beginners)
+- Routes exist (not 404)
+- Forms submit successfully
+- Data saves/displays correctly
+
+## Common Mistakes
+| Mistake | Solution |
+|---------|----------|
+| Not running tests | Run after every change |
+| Tests depend on order | Each test independent |
+| One giant test | Small tests, one thing each |
+
+## Benefits
+- Clarity: Test defines "working"
+- Confidence: Know when things break
+- Less fear: Change without worrying
+
+---
+
+**End of Skill**

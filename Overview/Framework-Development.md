@@ -1,148 +1,148 @@
 # Framework Development Reference
-**Version:** v0.16.1
+**Version:** v0.17.0
+**Purpose:** Detailed reference for IDPF development frameworks
 
 ---
 
-## IDPF-PRD Framework (Pre-Development)
+## IDPF-PRD (Pre-Development)
+**Location:** `IDPF-PRD/IDPF-PRD.md` | **Type:** Requirements Engineering
 
-**Location:** `IDPF-PRD/IDPF-PRD.md`
-**Version:** v0.16.1
-**Type:** Requirements Engineering & PRD Generation
-
-### Forward Path (New Projects)
-```
-Discovery → Elicitation → Specification → Generation
-```
-
-### Reverse Path (Existing Code)
-```
-Analyze → Extract → Refine → Generate
-```
-
-### Auto Template Selection
+**Auto-Template Selection:**
 | Framework | Template |
 |-----------|----------|
 | IDPF-Structured | PRD-Structured-Moderate |
 | IDPF-Agile | PRD-Agile-Lightweight |
 
-### Framework Handoff
-- PRD → IDPF-Structured: Fixed requirements with REQ-IDs
-- PRD → IDPF-Agile: Features mapped to Epics/Stories
-- Skip PRD → IDPF-Vibe: Exploratory projects
+**Forward Path:** Discovery → Elicitation → Specification → Generation
+**Reverse Path:** Analyze → Extract → Refine → Generate
+
+**Commands:**
+- Forward: PRD-Start, PRD-Status, PRD-Next, Generate-PRD, Export-PRD
+- Reverse: Reverse-PRD-Start, Reverse-PRD-Analyze, Reverse-PRD-Extract
+
+**Handoff:** PRD → Structured (REQ-IDs) | PRD → Agile (Epics/Stories) | Skip → Vibe
 
 ---
 
-## IDPF-Structured Framework
-
+## IDPF-Structured
 **Location:** `IDPF-Structured/Interactive Development Process Framework.md`
-**Version:** v0.16.1
 **Type:** TDD with Fixed Requirements
 
-### Workflow
-1. Session Initialization
-2. TDD Iterations (RED-GREEN-REFACTOR)
-3. Completion (PR or roadblock)
+**Terminology:**
+- ASSISTANT: Claude AI in chat
+- Claude Code: Execution tool
+- User: Human bridging both
 
-### Critical Requirements
-- Single code block format (numbered STEP format)
-- Complete, runnable code
-- Exact file paths and verification steps
+**Workflow:** Session Init → TDD Iterations → Completion
 
-### Commands
-- Done-Next-Step, Rollback-Previous-Step
-- Push-Changes, Final-Commit-Create-PR
-- Roadblock-Stop, Double-Check
+**TDD Cycle:**
+- RED: Write failing test, verify failure
+- GREEN: Minimal implementation to pass
+- REFACTOR: Improve while green
 
-### TDD Skills Integration
-tdd-red-phase, tdd-green-phase, tdd-refactor-phase, tdd-failure-recovery, test-writing-patterns
+**Critical Requirements:**
+- Single code block format (numbered STEP)
+- Complete, runnable code (no placeholders)
+- Exact file paths and verification
+
+**Commands:** Done-Next-Step, Rollback-Previous-Step, Push-Changes, Final-Commit-Create-PR, Double-Check, Create-Requirements
+
+**TDD Skills:** tdd-red-phase, tdd-green-phase, tdd-refactor-phase, tdd-failure-recovery, test-writing-patterns
+
+**When to Use:** Fixed requirements, clear scope, solo/small team
 
 ---
 
-## IDPF-Agile Framework
-
-**Location:** `IDPF-Agile/`
-**Version:** v0.16.1
+## IDPF-Agile
+**Location:** `IDPF-Agile/Agile-Driven Development Framework.md`
 **Type:** Sprint-Based Development
 
-### Workflow
-1. Product Backlog Creation
-2. Sprint Planning
-3. Story Development (TDD)
-4. Sprint Review
-5. Sprint Retrospective
+**Terminology:**
+- Product Backlog: All stories
+- Sprint Backlog: Current sprint stories
+- Story Points: Fibonacci (1,2,3,5,8,13,21)
+- Velocity: Points per sprint
 
-### Story Format
+**Workflow:** Backlog Creation → Sprint Planning → Story Development (TDD) → Review → Retrospective
+
+**User Story Format:**
 ```
-As a [user] I want [goal] So that [benefit]
-Acceptance Criteria: [checkboxes]
-Story Points: [estimate]
+As a [user type] I want [goal] So that [benefit]
+Acceptance Criteria: - [ ] ...
+Story Points: [n] | Priority: [H/M/L] | Status: [...]
 ```
 
-### Commands
-- **Backlog:** Create-Backlog, Add-Story, Prioritize-Backlog
-- **Sprint:** Plan-Sprint, Start-Story, Story-Complete, End-Sprint
-- **Development:** Done-Next-Step, Run-Tests, Refactor-Now
-- **Release Lifecycle:** Open-Release, Prepare-Release, Close-Release (trunk-based)
+**Commands:**
+- Backlog: Create-Backlog, Add-Story, Refine-Story, Split-Story
+- Sprint: Plan-Sprint, Start-Story, Story-Complete, Sprint-Retro
+- Dev: Done-Next-Step, Rollback-Previous-Step, Run-Tests
+- Release: Open-Release, Prepare-Release, Close-Release
+
+**When to Use:** Evolving requirements, iterative delivery, velocity tracking
 
 ---
 
-## IDPF-Vibe Framework
+## IDPF-Vibe
+**Location:** `IDPF-Vibe/` | **Core Rev:** 4.0
 
-**Location:** `IDPF-Vibe/`
-**Core Revision:** 4.0
-**Type:** Exploratory → Structured Evolution
+**Architecture:**
+- Core: Platform-agnostic workflow
+- Platforms: Desktop, Mobile, Web, Game, Embedded, Newbie
 
-### Three-Phase Workflow
+**Three-Phase Workflow:**
 
-**Phase 1: VIBE**
-- Exploratory, rapid iteration
-- Commands: Vibe-Start, Try-This, That-Works, Undo-That, Run-It
+**Phase 1 (Vibe):** Exploratory, no formal requirements
+- Commands: Vibe-Start, Try-This, Show-Me, That-Works, Undo-That, Run-It
 
-**Phase 2: EVOLUTION POINT**
-- Ready-to-Structure → Choose Structured OR Agile
+**Phase 2 (Evolution):** User says "Ready-to-Structure"
+- Option 1 → Structured: Fixed scope, generates PRD
+- Option 2 → Agile: Large feature set, generates backlog
 
-**Phase 3: STRUCTURED**
-- Switch to chosen framework with TDD
+**Phase 3 (Structured):** TDD with chosen framework
 
-### Platform Variants (7)
-- Core, Desktop, Web, Mobile, Game, Embedded, Newbie
-
-### Newbie Integration
-Skills: flask-setup, sinatra-setup, common-errors, sqlite-integration, beginner-testing
+**Platform Coverage:**
+| Platform | Technologies |
+|----------|-------------|
+| Desktop | Python, Ruby, Node/Electron, C#, Rust |
+| Mobile | Swift, Kotlin, React Native, Flutter |
+| Web | React, Vue, Express, Flask, Django |
+| Game | Godot, Unity, Unreal, Phaser |
+| Embedded | Arduino, ESP32, STM32, Wokwi, QEMU |
+| Newbie | Flask/Sinatra, vanilla HTML/CSS/JS, SQLite |
 
 ---
 
-## IDPF-LTS Framework
-
+## IDPF-LTS
 **Location:** `IDPF-LTS/Long-Term-Support-Framework.md`
-**Version:** v0.16.1
-**Type:** Production Maintenance
+**Type:** Production Maintenance (Terminal)
 
-### Core Tenets
+**Core Tenets:**
 1. Stability First
 2. Minimal Change
 3. No New Features
 4. Backwards Compatibility
 5. Comprehensive Testing
+6. Risk Assessment
+7. Clear Documentation
 
-### What Goes Into LTS
-- ✅ Critical/high bugs, security patches, doc fixes
-- ❌ New features, refactoring, non-security upgrades
+**Allowed:** Critical bugs, security patches, documentation fixes
+**Forbidden:** New features, refactoring, dependency upgrades, breaking changes
 
-### Five-Phase Workflow
-```
-Bug Triage → Impact Assessment → Fix (TDD) → Regression Prevention → Documentation & Release
-```
+**Five-Phase Workflow:**
+1. Triage: Classify severity (P0-P4), determine eligibility
+2. Impact Assessment: Reproduce, root cause, risk evaluation
+3. Fix Development: TDD (RED-GREEN), minimal fix
+4. Regression Prevention: Full test suite, validation
+5. Documentation & Release: CHANGELOG, notes, patch version
 
-### Severity
-- P0 Critical: 24h (data loss, security, system failure)
-- P1 High: Core broken, no workaround
-- P2 Medium: Workaround exists
-- P3/P4: Low/Trivial
+**Severity:**
+- P0: Data loss, security, system failure
+- P1: Core broken, no workaround
+- P2: Significant impact, workaround exists
+- P3: Minor impact
+- P4: Trivial
 
-### LTS is Terminal
-- No transitions FROM LTS
-- New development = new major version
+**Commands:** LTS-Triage, LTS-Investigate, LTS-Fix, LTS-Regression-Check, LTS-Hotfix, LTS-Release
 
 ---
 

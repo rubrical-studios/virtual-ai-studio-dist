@@ -1,61 +1,94 @@
 ---
 name: sinatra-setup-for-beginners
-version: v0.16.1
-description: Set up Ruby Sinatra development environment for beginners
+description: Set up Ruby Sinatra development environment for beginners with step-by-step guidance, Bundler setup, and troubleshooting
+license: Complete terms in LICENSE.txt
 ---
 
 # Sinatra Setup for Beginners
+**Version:** v0.17.0
 
 ## When to Use
-- User wants to build Sinatra web application
-- User needs Ruby/Sinatra environment setup
+- User wants Sinatra web application
+- Beginner needs Sinatra environment setup
 - User asks "How do I set up Sinatra?"
+
+## Instructions for ASSISTANT
+**Format ALL instructions as Claude Code copy/paste blocks.**
+
+**DO NOT:** Manual instructions like "Open File Explorer", "Navigate to folder"
+**ALWAYS:** Single code block with TASK, STEPs, and report request
 
 ## Setup Steps
 
 ### 1. Verify Ruby
 ```bash
-ruby --version  # Should show Ruby 2.7+
+ruby --version
 ```
+**Expected:** Ruby 3.0+ | **If missing:**
+- **Windows:** RubyInstaller from rubyinstaller.org
+- **Mac:** `brew install ruby`
+- **Linux:** `sudo apt-get install ruby-full`
 
-### 2. Create Project
+### 2. Install Bundler
 ```bash
-mkdir [project-name]
-cd [project-name]
+gem install bundler
 ```
+**What:** Ruby's package manager
+**Verify:** `bundler --version` shows 2.X.X
 
 ### 3. Create Gemfile
+File: `Gemfile` (no extension, capital G) in project root
 ```ruby
 source 'https://rubygems.org'
 gem 'sinatra'
-gem 'sinatra-contrib'  # For reloader
 ```
 
-### 4. Install Gems
+### 4. Install Dependencies
 ```bash
 bundle install
 ```
+**Wait:** 30-90 seconds
+**Creates:** `Gemfile.lock`
 
 ### 5. Create app.rb
-```ruby
-require 'sinatra'
-require 'sinatra/reloader' if development?
-
-get '/' do
-  'Hello, World!'
-end
+```
+my-project/
+├── Gemfile
+├── Gemfile.lock
+└── app.rb  ← Create here
 ```
 
-### 6. Run App
+### 6. Verify Installation
 ```bash
-ruby app.rb
+ruby --version
+bundle --version
+bundle list
+ruby -e "require 'sinatra'; puts 'Sinatra works!'"
 ```
-Open http://localhost:4567
+
+## Project Structure
+```
+my-project/
+├── Gemfile        ← Dependencies
+├── Gemfile.lock   ← Version lock
+├── app.rb         ← Main code
+├── views/         ← Templates (.erb)
+└── public/        ← Static files
+```
 
 ## Troubleshooting
-- Ruby not found: Install from rubyinstaller.org (Windows) or rbenv
-- Bundler not found: `gem install bundler`
-- Port in use: Use different port `ruby app.rb -p 4568`
+| Issue | Solution |
+|-------|----------|
+| `gem: command not found` | Ruby not installed |
+| `Could not locate Gemfile` | Wrong directory |
+| Permission denied | `bundle install --path vendor/bundle` |
+| Old Ruby version | Update to 3.0+ |
 
-## Note
-Sinatra doesn't auto-reload by default. Use sinatra-reloader gem or restart server after changes.
+## Next Steps
+After setup: Create first route, start server, build first page.
+
+**Remember:** Run `bundle exec ruby app.rb` to start (ensures correct gem versions).
+
+---
+
+**End of Skill**

@@ -1,107 +1,140 @@
 # Framework Transitions Reference
-**Version:** v0.16.1
+**Version:** v0.17.0
+**Purpose:** Transition rules, diagrams, hybrid usage
 
 ---
 
 ## Transition Diagram
-
 ```
 VIBE ──► STRUCTURED ──► LTS
   │          ↑↓
   └────► AGILE ────────► LTS
-
-Invalid: Structured/Agile → Vibe, LTS → Any
 ```
+
+**Invalid:** Structured/Agile → Vibe, LTS → Any
 
 ---
 
 ## Valid Transitions
 
 | From | To | When |
-|------|-----|------|
-| Vibe | Structured | Fixed scope emerged, solo/small team |
+|------|----|------|
+| Vibe | Structured | Fixed scope, solo/small team |
 | Vibe | Agile | Large feature set, need sprints |
-| Structured | Agile | Scope expanded, need iterative delivery |
+| Structured | Agile | Scope expanded, iterative delivery |
 | Agile | Structured | Scope narrowed, sprint overhead not justified |
 | Structured | LTS | Production ready, maintenance mode |
-| Agile | LTS | Final sprint complete, backlog frozen |
+| Agile | LTS | Final sprint, backlog frozen |
 
 ---
 
 ## Transition Principles
 
-**Always Preserved:**
+**Preserved:**
 - Code, tests, Git history
-- TDD methodology (RED-GREEN-REFACTOR)
-- Testing framework, architecture, dependencies
+- TDD methodology
+- Technical architecture
+- Dependencies
 
-**What Changes:**
-- Documentation format (Requirements ↔ User Stories ↔ Bug Triage)
-- Workflow structure (Linear ↔ Sprints ↔ Maintenance)
-- Progress tracking (Completion ↔ Velocity ↔ Regression Prevention)
+**Changes:**
+- Documentation format
+- Workflow structure
+- Planning granularity
+- Progress tracking
 
 **Best Practices:**
-1. Complete current work unit before transitioning
-2. Ensure all tests pass (100% green)
-3. Commit all work-in-progress
-4. Create transition documentation
-5. Generate new framework artifacts
+1. Complete current work
+2. All tests green
+3. Commit WIP
+4. Create transition docs
+5. Archive old artifacts
+6. Generate new artifacts
 
 ---
 
 ## Invalid Transitions
 
-- ❌ Structured → Vibe (defeats discipline)
-- ❌ Agile → Vibe (defeats discipline)
-- ❌ LTS → Any (LTS is terminal)
+| Invalid | Rationale |
+|---------|-----------|
+| Structured → Vibe | Defeats structured discipline |
+| Agile → Vibe | Abandons testing discipline |
+| LTS → Any | Terminal state |
 
-**Rationale:** Quality standards never decrease. LTS is end-of-lifecycle.
-
----
-
-## Framework-Specific Transitions
-
-### Structured → Agile
-**Changes:** Requirements → User Stories, Linear → Sprints, Add velocity
-
-### Structured → LTS
-**Changes:** New features forbidden, Requirements → Bug triage
-
-### Agile → Structured
-**Changes:** User Stories → Requirements, Sprints → Linear
-
-### Agile → LTS
-**Changes:** User Stories → Bug reports, Sprint Planning → LTS triage
-
-### LTS Transitions
-- LTS is terminal - no transitions FROM LTS
-- New development requires new major version
+**If new development needed from LTS:**
+- Start new project (Vibe/Structured/Agile)
+- Maintain LTS in parallel
+- Plan migration path
+- Archive LTS at EOL
 
 ---
 
-## Simultaneous Framework Usage
+## Specific Transitions
 
-**Valid Hybrid Scenarios:**
-- Backend (Structured) + Frontend (Agile) - separate concerns
-- Core Platform (LTS) + Extensions (Agile) - separate repos
-- Production v2.x (LTS) + Next Version v3.x (Vibe/Agile)
+**Structured → Agile:**
+- Requirements → User Stories
+- Linear → Sprints
+- Add velocity tracking
+
+**Structured → LTS:**
+- New features forbidden
+- Requirements → Bug triage
+- Active dev → Maintenance
+
+**Agile → Structured:**
+- User Stories → Requirements
+- Sprints → Linear
+- Remove backlog overhead
+
+**Agile → LTS:**
+- Stories → Bug reports
+- Sprint Planning → LTS triage
+
+---
+
+## Hybrid Usage
+
+**Valid Scenarios:**
+- Backend (Structured) + Frontend (Agile)
+- Core Platform (LTS) + Extensions (Agile)
+- Production v2.x (LTS) + v3.x (Vibe/Agile)
 
 **Guidelines:**
-- Document which framework governs which concern
-- Maintain clear boundaries
-- Never mix frameworks for same feature
+- Document framework per concern
+- Separate documentation
+- Clear boundaries
+- Never mix for same concern
 
 ---
 
-## Selection Criteria
+## Selection Matrix
 
-| Use Case | Framework |
-|----------|-----------|
-| Fixed requirements, clear scope | IDPF-Structured |
-| Evolving requirements, sprints needed | IDPF-Agile |
-| Unclear requirements, exploration | IDPF-Vibe |
-| Production maintenance only | IDPF-LTS |
-| Separate test repository | IDPF-Testing-Core |
+| Project Type | Framework | Evolution |
+|--------------|-----------|-----------|
+| Fixed requirements | Structured | → LTS |
+| Evolving requirements | Agile | → LTS |
+| Exploration needed | Vibe | → Structured/Agile |
+| Production maintenance | LTS | Terminal |
+| Separate test repo | Testing-Core | Use Structured/Agile |
+
+---
+
+## Integration Architecture
+
+```
+System Instructions (WHO)
+    ↓
+Framework (WHAT)
+    ↓
+Skills (TOOLS)
+    ↓
+Guidelines (HOW WELL)
+```
+
+**Common Elements:**
+- TDD: RED-GREEN-REFACTOR
+- Claude Code: Single block, STEP format
+- Context preservation
+- Git workflows
 
 ---
 

@@ -1,44 +1,69 @@
 # Agile-Driven Development Framework - Transitions
-**Version:** v0.16.1
-**Module:** Transitions
+**Version:** v0.17.0
+**Module:** Transitions (loaded on-demand)
 
 ---
 
 ## When to Use Agile
 - Evolving requirements, iterative delivery
-- Need prioritization based on value
-- Medium to large projects
-- Track velocity and predictability
+- Prioritize by value, medium-large projects
+- Track velocity, user-centric descriptions
 
-## When NOT to Use Agile
-- Fixed, well-defined requirements → Structured
-- Small project, clear scope → Structured
-- Unclear requirements, exploration → Vibe
+**Use Structured:** Fixed requirements, small/clear scope, single feature
+**Use Vibe:** Unclear requirements, exploration needed
+
+---
 
 ## Agile → Structured
-**When:** Scope narrows, solo developer, sprint overhead outweighs benefits
-**How:**
-1. Complete current sprint
-2. Convert remaining stories → PRD
-3. Begin Structured with "First-Step"
 
-**Carries forward:** Code, tests, TDD, Git history, architecture
-**Changes:** Stories → PRD, Sprints → Linear, Remove backlog overhead
+**When:** Scope narrows, solo developer, sprint overhead > benefits, requirements fixed
+**How:**
+1. Complete current sprint (Review + Retro)
+2. Commit all "Done" stories
+3. Move incomplete to Product Backlog
+4. Convert to PRD document
+5. Begin Structured with "First-Step"
+
+**Carries:** Code, tests, TDD, git history, architecture, acceptance criteria
+**Changes:** Stories→PRD, Sprint→Linear, Remove velocity tracking
+
+---
 
 ## Agile → LTS
-**When:** Production maintenance only, backlog frozen
+
+**When:** Production reached, maintenance mode, critical fixes only, backlog frozen
 **How:**
-1. Close final sprint
-2. Archive backlog/history
-3. Full test suite passing
-4. Tag final version
-5. Begin with "LTS-Triage"
+1. Complete/close current sprint
+2. Final Sprint-Review
+3. Archive backlog and history
+4. 100% test suite passing
+5. Full documentation
+6. Tag final version
+7. Begin LTS with "LTS-Triage"
+8. Establish EOL date
 
-**Carries forward:** Code, tests, TDD, Git history
-**Changes:** Stories → Bug reports, Sprint → LTS triage, Features → Fixes only
+**Carries:** All artifacts, TDD for fixes
+**Changes:** Stories→Bug reports, Sprint→Triage, Features→Fixes only
 
-## Invalid
-**Never:** Agile → Vibe (defeats structured development)
+---
+
+## Invalid Transitions
+**Never:** Agile → Vibe
+
+---
+
+## Integration
+
+### Agile + Vibe Coding
+1. Vibe Phase: Explore and prototype
+2. Create Backlog from prototype
+3. Agile Phase: Formalize with sprints/TDD
+
+### Agile for Existing Projects
+1. Audit current state
+2. Create Backlog (features + tech debt)
+3. Sprint Planning
+4. Incremental enhancement
 
 ---
 

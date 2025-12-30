@@ -1,5 +1,5 @@
 # Zero-Downtime Migration Patterns
-**Version:** v0.16.1
+**Version:** v0.17.0
 
 Patterns for migrating database schemas without service interruption.
 

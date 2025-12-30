@@ -380,13 +380,14 @@ function readFrameworkVersion(frameworkPath) {
 }
 
 /**
- * Parse existing CLAUDE.md for locked framework, domain specialists, and project instructions
+ * Parse existing CLAUDE.md for locked framework, domain specialist, and project instructions
+ * v0.17.0+: Returns singular domainSpecialist (string) instead of existingDomains (array)
  */
 function parseExistingInstallation(projectDir) {
   const claudeMdPath = path.join(projectDir, 'CLAUDE.md');
 
   if (!fs.existsSync(claudeMdPath)) {
-    return { lockedFramework: null, existingDomains: [], projectInstructions: null };
+    return { lockedFramework: null, domainSpecialist: null, projectInstructions: null };
   }
 
   const content = fs.readFileSync(claudeMdPath, 'utf8');
@@ -398,11 +399,24 @@ function parseExistingInstallation(projectDir) {
     lockedFramework = frameworkMatch[1];
   }
 
-  // Extract existing domain specialists
-  let existingDomains = [];
-  const domainsMatch = content.match(/\*\*Domain Specialists:\*\*\s*(.+)/);
-  if (domainsMatch && domainsMatch[1].trim() !== 'None') {
-    existingDomains = domainsMatch[1].split(',').map(d => d.trim()).filter(d => d && DOMAIN_SPECIALISTS.includes(d));
+  // Extract existing domain specialist (v0.17.0+: singular)
+  // Try new format first, fall back to old format
+  let domainSpecialist = null;
+  const specialistMatch = content.match(/\*\*Domain Specialist:\*\*\s*(.+)/);
+  if (specialistMatch && specialistMatch[1].trim() !== 'None') {
+    domainSpecialist = specialistMatch[1].trim();
+    // Validate against known specialists
+    if (!DOMAIN_SPECIALISTS.includes(domainSpecialist)) {
+      domainSpecialist = null;
+    }
+  } else {
+    // Fall back to old format (Domain Specialists: plural, comma-separated)
+    const domainsMatch = content.match(/\*\*Domain Specialists:\*\*\s*(.+)/);
+    if (domainsMatch && domainsMatch[1].trim() !== 'None') {
+      const domains = domainsMatch[1].split(',').map(d => d.trim()).filter(d => d && DOMAIN_SPECIALISTS.includes(d));
+      // Take first valid specialist from old format
+      domainSpecialist = domains[0] || null;
+    }
   }
 
   // Extract project-specific instructions
@@ -425,7 +439,7 @@ function parseExistingInstallation(projectDir) {
     }
   }
 
-  return { lockedFramework, existingDomains, projectInstructions };
+  return { lockedFramework, domainSpecialist, projectInstructions };
 }
 
 /**

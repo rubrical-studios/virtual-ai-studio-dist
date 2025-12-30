@@ -1,77 +1,121 @@
 ---
-name: sqlite-integration
-version: v0.16.1
-description: Add SQLite database storage with teaching examples
+name: sqlite-integration-for-beginners
+description: Add SQLite database to Flask or Sinatra app with beginner-friendly code examples and teaching comments
+license: Complete terms in LICENSE.txt
 ---
 
-# SQLite Integration
+# SQLite Integration for Beginners
+**Version:** v0.17.0
 
 ## When to Use
-- User needs to store data persistently
-- User asks about databases
-- Evolution Point - ready to add data storage
-- Simple local database needed
+- User has app with in-memory storage (lists/arrays)
+- User asks "How do I save data permanently?"
+- User wants data to persist after restart
 
-## Why SQLite for Beginners
-- No server setup required
-- Just a file
-- Built into Python (sqlite3)
-- Easy to learn SQL
+## Prerequisites
+- Working Flask/Sinatra app
+- Understanding routes and templates
+- At least one feature using list storage
 
-## Flask Setup
+## What is SQLite?
+**List/Array:** Like whiteboard notes - disappears when server stops
+**SQLite:** Like notebook - saved to file (`notes.db`), persists forever
+
+Perfect for beginners:
+- No server setup
+- Built into Python
+- Easy SQL basics
+- Upgrades to PostgreSQL later
+
+## Key Concepts
+
+### Database Structure
+```
+Table = Spreadsheet
+Columns = Data types (id, name, email)
+Rows = Data entries
+```
+
+### SQL Commands
+| Command | Purpose |
+|---------|---------|
+| CREATE TABLE | Make new table |
+| INSERT INTO | Add data |
+| SELECT | Get data |
+| UPDATE | Change data |
+| DELETE | Remove data |
+
+## Implementation
+
+### Flask
 ```python
 import sqlite3
 
 def get_db():
-    db = sqlite3.connect('app.db')
-    db.row_factory = sqlite3.Row
-    return db
+    conn = sqlite3.connect('notes.db')
+    conn.row_factory = sqlite3.Row
+    return conn
 
 def init_db():
-    db = get_db()
-    db.execute('''
-        CREATE TABLE IF NOT EXISTS todos (
+    conn = get_db()
+    conn.execute('''
+        CREATE TABLE IF NOT EXISTS notes (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             text TEXT NOT NULL,
-            done INTEGER DEFAULT 0
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     ''')
-    db.commit()
+    conn.commit()
+    conn.close()
+
+@app.route('/')
+def home():
+    conn = get_db()
+    notes = conn.execute('SELECT * FROM notes').fetchall()
+    conn.close()
+    return render_template('index.html', notes=notes)
 ```
 
-## Basic SQL Operations
+### Sinatra
+```ruby
+require 'sqlite3'
+DB = SQLite3::Database.new 'notes.db'
+DB.results_as_hash = true
 
-### Create
-```sql
-INSERT INTO todos (text) VALUES ('Buy milk');
+DB.execute <<-SQL
+  CREATE TABLE IF NOT EXISTS notes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    text TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  )
+SQL
+
+get '/' do
+  @notes = DB.execute('SELECT * FROM notes')
+  erb :index
+end
 ```
 
-### Read
-```sql
-SELECT * FROM todos WHERE done = 0;
-```
+## SQL Explanation
+- `CREATE TABLE IF NOT EXISTS`: Safe to run multiple times
+- `PRIMARY KEY AUTOINCREMENT`: Unique auto-incrementing ID
+- `NOT NULL`: Value required
+- `DEFAULT CURRENT_TIMESTAMP`: Auto-filled time
+- `?` placeholder: Prevents SQL injection
 
-### Update
-```sql
-UPDATE todos SET done = 1 WHERE id = 1;
-```
+## Common Questions
+- **Database location:** `notes.db` in project folder
+- **View inside:** DB Browser for SQLite
+- **Mistake?** Delete `notes.db`, it recreates
+- **Ruby install:** `gem install sqlite3`
 
-### Delete
-```sql
-DELETE FROM todos WHERE id = 1;
-```
+## Troubleshooting
+| Error | Solution |
+|-------|----------|
+| no such table | Run `init_db()` function |
+| Database locked | Close DB Browser, restart server |
+| no such column | Check spelling in SQL |
 
-## Python Example
-```python
-# Insert
-db.execute('INSERT INTO todos (text) VALUES (?)', ['New task'])
-db.commit()
+---
 
-# Query
-todos = db.execute('SELECT * FROM todos').fetchall()
-```
-
-## Best Practices
-- Use parameterized queries (?) to prevent SQL injection
-- Close connections when done
-- Use try/finally or context managers
+**End of Skill**

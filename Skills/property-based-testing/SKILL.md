@@ -1,60 +1,99 @@
 ---
 name: property-based-testing
-version: v0.16.1
-description: Property-based testing with Hypothesis (Python) and fast-check (JS)
+description: Guide developers through property-based testing including property definition, shrinking, and framework-specific implementation
+license: Complete terms in LICENSE.txt
 ---
 
 # Property-Based Testing
+**Version:** v0.17.0
 
 ## When to Use
-- Testing mathematical properties
-- Edge case discovery
-- Fuzz testing
-- Input validation testing
+- Functions with many possible inputs
+- Testing mathematical/algorithmic properties
+- Finding edge cases traditional testing misses
+- Serialization/deserialization roundtrips
+- Parsers or data transformations
 
-## Concept
-Instead of specific examples, define properties that should always hold true. The framework generates many random inputs.
+## Core Concepts
+**Property:** Assertion that holds for all valid inputs
+**Generator:** Creates random test inputs
+**Shrinking:** Finds minimal failing case when test fails
+**Counterexample:** Specific input that violates property
 
-## Hypothesis (Python)
+## Property Types
+
+| Pattern | Template | Example |
+|---------|----------|---------|
+| **Roundtrip** | `decode(encode(x)) == x` | serialize/deserialize |
+| **Idempotence** | `f(f(x)) == f(x)` | sort, absolute |
+| **Commutativity** | `f(a,b) == f(b,a)` | add, union |
+| **Associativity** | `f(f(a,b),c) == f(a,f(b,c))` | addition |
+| **Identity** | `f(x, identity) == x` | add(x,0) |
+| **Invariant** | `invariant(state)` always true | length preserved |
+
+## Writing Good Properties
+- Describe **what**, not how
+- Make properties specific
+- Combine multiple properties for complete coverage
+```
+sort(list) properties:
+1. len(sort(list)) == len(list)
+2. is_sorted(sort(list)) == true
+3. multiset(sort(list)) == multiset(list)
+```
+
+## Generators
+**Built-in:** integers, floats, strings, booleans, lists, dicts
+**Custom:** Constrained values, composite objects, dependent generators
+
+## Shrinking
+When test fails, framework finds simpler input that still fails.
+```
+Original: [43, -91, 7, 0, -15, 28]
+Shrunk:   [0, -1]
+```
+
+## Framework Examples
+
+**Python (Hypothesis):**
 ```python
-from hypothesis import given
-from hypothesis.strategies import integers, text
+from hypothesis import given, strategies as st
 
-@given(integers(), integers())
-def test_addition_is_commutative(a, b):
-    assert a + b == b + a
-
-@given(text())
-def test_string_roundtrip(s):
-    assert s.encode().decode() == s
+@given(st.lists(st.integers()))
+def test_sort_preserves_length(lst):
+    assert len(sorted(lst)) == len(lst)
 ```
 
-## fast-check (JavaScript)
+**JavaScript (fast-check):**
 ```javascript
-const fc = require('fast-check');
-
-test('sort is idempotent', () => {
-    fc.assert(fc.property(
-        fc.array(fc.integer()),
-        (arr) => {
-            const sorted = [...arr].sort((a, b) => a - b);
-            return JSON.stringify(sorted) ===
-                   JSON.stringify([...sorted].sort((a, b) => a - b));
-        }
-    ));
-});
+fc.assert(fc.property(fc.array(fc.integer()), arr =>
+  arr.sort().length === arr.length
+));
 ```
 
-## Common Strategies
-| Strategy | Generates |
+## Frameworks
+| Language | Framework |
 |----------|-----------|
-| integers() | Random integers |
-| text() | Random strings |
-| lists() | Random lists |
-| dictionaries() | Random dicts |
+| Python | Hypothesis |
+| JavaScript | fast-check |
+| Java | jqwik |
+| Scala | ScalaCheck |
+| Rust | proptest |
 
-## Benefits
-- Finds edge cases automatically
-- Tests properties, not examples
-- Shrinks failing cases to minimal examples
-- Better coverage than manual tests
+## Common Pitfalls
+- Overly constrained generators
+- Testing implementation details
+- Non-deterministic properties
+- Slow generators
+- Ignoring counterexamples
+
+## Debug Process
+1. Read counterexample
+2. Reproduce manually
+3. Add debug logging
+4. Fix bug
+5. Add as regression test
+
+---
+
+**End of Property-Based Testing Skill**

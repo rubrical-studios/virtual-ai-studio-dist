@@ -52,20 +52,21 @@ function generateFrameworkConfig(projectDir, frameworkPath, version, processFram
 
 /**
  * Generate CLAUDE.md file
+ * @param {string} projectDir - Target project directory
+ * @param {string} frameworkPath - Path to framework installation
+ * @param {string} processFramework - Selected process framework (IDPF-Structured, etc.)
+ * @param {string} domainSpecialist - Selected domain specialist (v0.17.0+: singular)
+ * @param {string} _unused - Deprecated parameter (kept for API compatibility)
+ * @param {string} projectInstructions - Existing project instructions to preserve
  */
-function generateClaudeMd(projectDir, frameworkPath, processFramework, domainListStr, primarySpecialist, projectInstructions) {
+function generateClaudeMd(projectDir, frameworkPath, processFramework, domainSpecialist, _unused, projectInstructions) {
   const instructionsContent = projectInstructions ||
     '<!-- Add your project-specific instructions below this line -->\n<!-- These will be preserved during framework updates -->';
-
-  const hasDomainSpecialists = domainListStr && domainListStr !== 'None';
-  const switchRoleRow = hasDomainSpecialists ? `| \`/switch-role\` | Switch active domain specialist mid-session |\n` : '';
-  const addRoleRow = `| \`/add-role\` | Add a new domain specialist to your project |\n`;
 
   const content = `# Claude Code - Project Instructions
 
 **Process Framework:** ${processFramework}
-**Domain Specialists:** ${domainListStr || 'None'}
-**Primary Specialist:** ${primarySpecialist || 'None'}
+**Domain Specialist:** ${domainSpecialist || 'None'}
 
 ---
 
@@ -95,16 +96,8 @@ Load detailed documentation when needed:
 | When Working On | Load File |
 |-----------------|-----------|
 | Framework workflow | \`${frameworkPath}/${processFramework}/${getCoreFrameworkFileName(processFramework)}\` |
-| Domain specialist | \`${frameworkPath}/System-Instructions/Domain/{specialist}.md\` |
+| Domain specialist | \`${frameworkPath}/System-Instructions/Domain/Base/{specialist}.md\` |
 | Testing patterns | \`.claude/skills/test-writing-patterns/SKILL.md\` |
-
----
-
-## Available Commands
-
-| Command | Purpose |
-|---------|---------|
-${switchRoleRow}${addRoleRow}
 
 ---
 
@@ -118,185 +111,6 @@ ${instructionsContent}
 `;
 
   fs.writeFileSync(path.join(projectDir, 'CLAUDE.md'), content);
-}
-
-/**
- * Generate switch-role command file
- */
-function generateSwitchRole(projectDir, frameworkPath, domainList, primarySpecialist) {
-  if (domainList.length === 0) {
-    return false; // No specialists to switch between
-  }
-
-  // Build numbered list
-  const numberedList = domainList.map((d, i) => `${i + 1}. ${d}`).join('\n');
-
-  // Build file paths
-  const filePaths = domainList.map(d =>
-    `- ${d}: \`${frameworkPath}/System-Instructions/Domain/${d}.md\``
-  ).join('\n');
-
-  const content = `# Switch Domain Specialist Role
-
-Switch to a different domain specialist role and make it the default for future sessions.
-
-## Available Roles
-
-${numberedList}
-
-## Instructions
-
-When invoked:
-
-### Step 1: Read Current Configuration
-
-Read \`framework-config.json\` to get the current \`primarySpecialist\` value.
-
-### Step 2: Display Options and Get Selection
-
-Show available roles (mark current primary if set) and ask user to select one:
-
-\`\`\`
-Available roles:
-${numberedList}
-
-Current default: [primarySpecialist or "None"]
-
-Select a role (1-${domainList.length}):
-\`\`\`
-
-### Step 3: Update Configuration (Persist Selection)
-
-Edit \`framework-config.json\` to set the new \`primarySpecialist\` value.
-
-**Example edit:**
-- Change \`"primarySpecialist": "Backend-Specialist"\` to \`"primarySpecialist": "Frontend-Specialist"\`
-
-### Step 4: Load New Specialist Instructions
-
-Read the new specialist's instruction file:
-
-${filePaths}
-
-### Step 5: Confirm Switch
-
-**Response format:**
-\`\`\`
-⊘ Deactivating: [Previous-Role]
-
-✓ Updated framework-config.json (new default: [New-Role])
-
-Loading [New-Role]...
-
-✓ Now operating exclusively as: [New-Role]
-  Focus areas: [from specialist file]
-
-  This role will load automatically in future sessions.
-  Previous role instructions are now inactive.
-
-What would you like to work on?
-\`\`\`
-
-## Context Management
-
-Previous role instructions remain in conversation history but are explicitly deprioritized. The new role takes exclusive precedence for all subsequent work.
-
-## File Paths
-
-${filePaths}
-
-## Usage
-
-User says: \`/switch-role\` or "switch to frontend" or "I need backend help now"
-
-## Natural Language Triggers
-
-- "switch to [role]"
-- "I need [role] help"
-- "change to [role] mode"
-- "activate [role]"
-`;
-
-  const commandsDir = path.join(projectDir, '.claude', 'commands');
-  fs.mkdirSync(commandsDir, { recursive: true });
-  fs.writeFileSync(path.join(commandsDir, 'switch-role.md'), content);
-  return true;
-}
-
-/**
- * Generate add-role command file
- * Uses directory discovery instead of embedded lists to reduce token consumption
- */
-function generateAddRole(projectDir, frameworkPath, domainList) {
-  const content = `---
-argument-hint: [specialist-name] (optional)
----
-
-# Add Domain Specialist Role
-
-Add a new domain specialist to your project.
-
-## Arguments
-
-| Argument | Required | Description |
-|----------|----------|-------------|
-| \`$ARGUMENTS\` | No | Specialist name for direct add (e.g., \`Security-Engineer\`) |
-
-## Workflow
-
-### Step 1: Read Configuration
-
-Read \`framework-config.json\` to get \`frameworkPath\` and \`domainSpecialists\` array.
-
-### Step 2: Discover Available Specialists
-
-List all specialists from the framework:
-\`\`\`bash
-ls "\${frameworkPath}/System-Instructions/Domain/"
-\`\`\`
-
-Filter out those already in \`domainSpecialists\`.
-
-### Step 3: Handle Selection
-
-**If \`$ARGUMENTS\` provided:**
-- Validate it exists in Domain/ directory
-- If valid, skip to Step 4
-- If invalid, show error with available options
-
-**If no argument:**
-- Display numbered list of available specialists (not yet installed)
-- Ask user to select
-
-### Step 4: Update Configuration
-
-Edit \`framework-config.json\`:
-1. Add specialist to \`domainSpecialists\` array
-2. Ask if user wants to set as \`primarySpecialist\`
-
-### Step 5: Load and Confirm
-
-Read \`\${frameworkPath}/System-Instructions/Domain/\${specialist}.md\`
-
-Report:
-\`\`\`
-✓ Added [Specialist] to project
-✓ Now operating as: [Specialist]
-
-Use /switch-role to change between installed specialists.
-\`\`\`
-
-## Usage
-
-- \`/add-role\` - Browse and select from available specialists
-- \`/add-role Security-Engineer\` - Directly add Security-Engineer
-- "add DevOps" - Natural language trigger
-`;
-
-  const commandsDir = path.join(projectDir, '.claude', 'commands');
-  fs.mkdirSync(commandsDir, { recursive: true });
-  fs.writeFileSync(path.join(commandsDir, 'add-role.md'), content);
-  return true;
 }
 
 /**
@@ -453,22 +267,26 @@ See \`Templates/Testing-Approach-Selection-Guide.md\` for guidance on:
 
 /**
  * Generate startup rules content for user projects
+ * @param {string} frameworkPath - Path to framework installation
+ * @param {string} processFramework - Selected process framework
+ * @param {string} domainSpecialist - Selected domain specialist (v0.17.0+: singular)
+ * @param {string} _unused - Deprecated parameter (kept for API compatibility)
+ * @param {string} version - Framework version
  */
-function generateStartupRules(frameworkPath, processFramework, domainListStr, primarySpecialist, version) {
-  const hasPrimary = primarySpecialist && primarySpecialist !== 'None';
-  const specialistStep = hasPrimary
-    ? `2. **Load Primary Specialist**: Read \`${frameworkPath}/System-Instructions/Domain/${primarySpecialist}.md\`
-3. **Report Ready**: Confirm initialization complete with "Active Role: ${primarySpecialist}"
+function generateStartupRules(frameworkPath, processFramework, domainSpecialist, _unused, version) {
+  const hasSpecialist = domainSpecialist && domainSpecialist !== 'None';
+  const specialistStep = hasSpecialist
+    ? `2. **Load Specialist**: Read \`${frameworkPath}/System-Instructions/Domain/Base/${domainSpecialist}.md\`
+3. **Report Ready**: Confirm initialization complete with "Active Role: ${domainSpecialist}"
 4. **Ask**: What would you like to work on?`
     : `2. **Report Ready**: Confirm initialization complete
 3. **Ask**: What would you like to work on?`;
 
   return `# Session Startup
 
-**Version:** ${version || '0.16.1'}
+**Version:** ${version || '0.17.0'}
 **Framework:** ${processFramework}
-**Specialists:** ${domainListStr || 'None'}
-**Primary Specialist:** ${primarySpecialist || 'None'}
+**Domain Specialist:** ${domainSpecialist || 'None'}
 
 ---
 
@@ -486,7 +304,7 @@ ${specialistStep}
 | When Needed | Load From |
 |-------------|-----------|
 | Framework workflow | \`${frameworkPath}/${processFramework}/\` |
-| Domain specialist | \`${frameworkPath}/System-Instructions/Domain/{specialist}.md\` |
+| Domain specialist | \`${frameworkPath}/System-Instructions/Domain/Base/{specialist}.md\` |
 | Skill usage | \`.claude/skills/{skill-name}/SKILL.md\` |
 
 ---
@@ -499,8 +317,8 @@ module.exports = {
   getCoreFrameworkFileName,
   // generateFrameworkConfig removed in v0.16.1 - use createOrUpdateConfig from config.js
   generateClaudeMd,
-  generateSwitchRole,
-  generateAddRole,
+  // generateSwitchRole removed in v0.17.0 - single specialist model
+  // generateAddRole removed in v0.17.0 - single specialist model
   generateGhPmuConfig,
   generateSettingsLocal,
   generatePrdReadme,

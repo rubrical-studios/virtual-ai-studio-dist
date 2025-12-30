@@ -1,6 +1,6 @@
 # IDPF Framework - AI-Assisted Development
 
-**Current Version:** v0.16.1
+**Current Version:** v0.17.0
 
 A comprehensive ecosystem for AI-assisted software development with Claude.
 

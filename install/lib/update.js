@@ -98,9 +98,11 @@ async function updateTrackedProjects(frameworkPath, prompts) {
               projectConfig.projectType.processFramework = newFramework;
               log(`    ${colors.green(`Framework: ${currentFramework} → ${newFramework}`)}`);
 
-              // Regenerate CLAUDE.md with new framework
-              const domainListStr = (projectConfig.projectType.domainSpecialists || []).join(', ');
-              const primarySpecialist = projectConfig.projectType.primarySpecialist;
+              // Regenerate CLAUDE.md with new framework (v0.17.0+: singular domainSpecialist)
+              const domainSpecialist = projectConfig.projectType.domainSpecialist ||
+                                        projectConfig.projectType.primarySpecialist ||
+                                        (projectConfig.projectType.domainSpecialists || [])[0] ||
+                                        'Full-Stack-Developer';
               const claudeMdPath = path.join(projectPath, 'CLAUDE.md');
               let existingProjectInstructions = null;
               if (fs.existsSync(claudeMdPath)) {
@@ -120,7 +122,7 @@ async function updateTrackedProjects(frameworkPath, prompts) {
                   }
                 }
               }
-              generateClaudeMd(projectPath, frameworkPath, newFramework, domainListStr, primarySpecialist, existingProjectInstructions);
+              generateClaudeMd(projectPath, frameworkPath, newFramework, domainSpecialist, null, existingProjectInstructions);
               log(`    ${colors.dim('  Regenerated CLAUDE.md')}`);
 
               // Update skills for new framework
@@ -194,9 +196,11 @@ async function updateTrackedProjects(frameworkPath, prompts) {
               projectConfig.projectType.processFramework = newFramework;
               log(`    ${colors.green(`Framework: ${currentFramework} → ${newFramework}`)}`);
 
-              // Regenerate CLAUDE.md with new framework
-              const domainListStr = (projectConfig.projectType.domainSpecialists || []).join(', ');
-              const primarySpecialist = projectConfig.projectType.primarySpecialist;
+              // Regenerate CLAUDE.md with new framework (v0.17.0+: singular domainSpecialist)
+              const domainSpecialist = projectConfig.projectType.domainSpecialist ||
+                                        projectConfig.projectType.primarySpecialist ||
+                                        (projectConfig.projectType.domainSpecialists || [])[0] ||
+                                        'Full-Stack-Developer';
               const claudeMdPath = path.join(projectPath, 'CLAUDE.md');
               let existingProjectInstructions = null;
               if (fs.existsSync(claudeMdPath)) {
@@ -216,7 +220,7 @@ async function updateTrackedProjects(frameworkPath, prompts) {
                   }
                 }
               }
-              generateClaudeMd(projectPath, frameworkPath, newFramework, domainListStr, primarySpecialist, existingProjectInstructions);
+              generateClaudeMd(projectPath, frameworkPath, newFramework, domainSpecialist, null, existingProjectInstructions);
               log(`    ${colors.dim('  Regenerated CLAUDE.md')}`);
 
               // Update skills for new framework
@@ -248,12 +252,14 @@ async function updateTrackedProjects(frameworkPath, prompts) {
         migration.migrate(projectPath, frameworkPath, projectConfig);
       }
 
-      // Redeploy rules (always update to latest)
+      // Redeploy rules (always update to latest) - v0.17.0+: singular domainSpecialist
       const hasGitHubWorkflow = fs.existsSync(path.join(projectPath, '.claude', 'hooks', 'workflow-trigger.js'));
-      const domainListStr = (projectConfig.projectType?.domainSpecialists || []).join(', ');
-      const primarySpecialist = projectConfig.projectType?.primarySpecialist;
+      const domainSpecialist = projectConfig.projectType?.domainSpecialist ||
+                               projectConfig.projectType?.primarySpecialist ||
+                               (projectConfig.projectType?.domainSpecialists || [])[0] ||
+                               'Full-Stack-Developer';
       const currentFrameworkForRules = projectConfig.projectType?.processFramework;
-      const rulesResult = deployRules(projectPath, frameworkPath, currentFrameworkForRules, domainListStr, primarySpecialist, hasGitHubWorkflow, currentVersion);
+      const rulesResult = deployRules(projectPath, frameworkPath, currentFrameworkForRules, domainSpecialist, null, hasGitHubWorkflow, currentVersion);
       if (rulesResult.antiHallucination) {
         log(`    ${colors.dim('  Updated: .claude/rules/01-anti-hallucination.md')}`);
       }
@@ -297,9 +303,12 @@ async function updateTrackedProjects(frameworkPath, prompts) {
         }
       }
 
-      // Clean up orphaned files after migrations
+      // Clean up orphaned files after migrations (v0.17.0+: singular domainSpecialist)
       const cleanupConfig = {
-        domainSpecialists: projectConfig.projectType?.domainSpecialists || [],
+        domainSpecialist: projectConfig.projectType?.domainSpecialist ||
+                          projectConfig.projectType?.primarySpecialist ||
+                          (projectConfig.projectType?.domainSpecialists || [])[0] ||
+                          'Full-Stack-Developer',
         enableGitHubWorkflow: hasGitHubWorkflow,
       };
       const cleanupResult = cleanupOrphanedFiles(projectPath, cleanupConfig);

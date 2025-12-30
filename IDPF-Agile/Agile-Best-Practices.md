@@ -1,30 +1,50 @@
 # Agile-Driven Development Framework - Best Practices
-**Version:** v0.16.1
-**Module:** Best Practices
+**Version:** v0.17.0
+**Module:** Best Practices (loaded on-demand)
 
 ---
 
 ## Story Writing
-**DO:** "As a...I want...So that...", small stories (1-3 days), clear acceptance criteria, relative estimates
-**DON'T:** Technical tasks as stories, large stories, skip criteria, estimate in hours
+**DO:** Use "As a... I want... So that...", focus on user value, keep small (1-3 days), include acceptance criteria, estimate relatively
+**DON'T:** Write technical tasks as stories, make too large, skip criteria, estimate in hours
+
+---
 
 ## Sprint Planning
-**DO:** Cohesive sprint goal, consider dependencies, sustainable velocity, include tech debt, buffer for issues
-**DON'T:** Overcommit, unrelated stories, ignore debt, skip estimation
+**DO:** Select cohesive stories, consider dependencies, sustainable velocity, mix features/tech debt, leave buffer
+**DON'T:** Overcommit, select unrelated stories, ignore tech debt, skip estimation
+
+---
 
 ## Development
-**DO:** Follow TDD (RED-GREEN-REFACTOR), commit frequently, update status, ask when blocked
-**DON'T:** Skip tests, work multiple stories, accumulate debt, ignore failures
+**DO:** TDD rigorously, commit frequently with references, update status, ask for help, refactor continuously
+**DON'T:** Skip tests, work multiple stories, let debt accumulate, ignore failing tests
 
-## Review & Retro
-**DO:** Celebrate, be honest, actionable improvements, track velocity
+---
+
+## Review & Retrospective
+**DO:** Celebrate, be honest, identify actions, adjust process, track velocity
 **DON'T:** Skip retros, blame individuals, repeat mistakes, ignore data
 
+---
+
 ## Special Scenarios
-- **Story-Blocked:** Add `blocked` label + reason
-- **Story-Growing:** Add `scope-creep` label, split if needed
-- **Emergency-Bug:** Create P0 issue with `emergency` label
-- **Pivot:** Review each story (keep/archive/close)
+
+### Story Blocked
+`Story-Blocked [#ID] [reason]` → adds `blocked` label, comments reason
+Options: Resolve, Archive-Story, work different story
+
+### Story Scope Creep
+`Story-Growing [#ID]` → adds `scope-creep` label
+Options: Split-Story, Estimate-Story, archive and create new
+
+### Emergency Bug
+`Emergency-Bug [description]` → creates issue with `emergency` label, P0 priority
+Fix with TDD
+
+### Scope Change
+`Pivot [new direction]` → documents in epic/PRD issue
+For each open story: Keep / Archive / Close
 
 ---
 

@@ -1,50 +1,140 @@
-# Vibe-to-Structured Framework (Mobile)
-**Version:** v0.16.1
+# Vibe-to-Structured Development Framework (Mobile)
+**Version:** v0.17.0
 **Type:** Mobile Application Specialization
 **Extends:** Vibe-to-Structured-Core-Framework.md
 
 ---
 
+## Purpose
+Specializes Core Framework for iOS, Android, cross-platform mobile development.
+**Evolution Options:** IDPF-Structured or IDPF-Agile
+
+---
+
 ## Platform Coverage
-- iOS (Swift, Objective-C)
-- Android (Kotlin, Java)
-- Cross-platform: React Native, Flutter, Ionic
+**iOS** (Swift, React Native, Flutter)
+**Android** (Kotlin, React Native, Flutter)
+**Cross-platform** (React Native, Flutter, Ionic)
 
-## Prerequisites
+---
 
-**iOS:** macOS + Xcode + Command Line Tools + iOS Simulator
-**Android:** Android Studio + Android SDK + Emulator
-**React Native:** Node.js + React Native CLI + Platform tools
-**Flutter:** Flutter SDK + `flutter doctor` passes
+## Prerequisites Verification
+Before ANY mobile project, verify tools are installed:
+- **iOS:** macOS + Xcode + iOS Simulator
+- **Android:** Android Studio + SDK + Emulator
+- **React Native:** Node.js + platform tools
+- **Flutter:** Flutter SDK + `flutter doctor` passes
 
-## Initialization Questions
-- iOS / Android / Cross-platform?
-- Native / React Native / Flutter?
+---
+
+## Session Initialization Questions
+- Target platform? (iOS/Android/Both)
+- Development approach? (Native/React Native/Flutter)
+- Testing method? (Simulator/Emulator/Device)
 - App type?
-- Target devices?
 
-## Framework Comparison
-| Framework | Language | Platform | Best For |
-|-----------|----------|----------|----------|
-| SwiftUI | Swift | iOS | Native iOS |
-| Jetpack Compose | Kotlin | Android | Native Android |
-| React Native | JavaScript | Both | Web dev background |
-| Flutter | Dart | Both | Consistent UI |
+---
 
-## Verification Pattern
+## iOS Development
+
+### Running
+- Xcode: Select simulator, Cmd+R
+- React Native: `npx react-native run-ios`
+- Flutter: `flutter run -d "iPhone 15 Pro"`
+
+### Verification
+Build → Run in simulator → Test features → Report results
+
+---
+
+## Android Development
+
+### Running
+- Android Studio: Select device, Shift+F10
+- React Native: `npx react-native run-android`
+- Flutter: `flutter run -d emulator-5554`
+
+### Verification
+Build → Wait for emulator → Test features → Report results
+
+---
+
+## React Native Workflow
+```bash
+npx create-expo-app MyApp && cd MyApp && npm start
+npm run ios    # or npm run android
 ```
-STEP 6: Build and run on simulator/emulator
-STEP 7: Verify app launches
-STEP 8: Test touch interactions
-STEP 9: Check console for errors
-STEP 10: Report results
+
+**Hot reload:** Changes appear instantly on save
+
+---
+
+## Flutter Workflow
+```bash
+flutter create my_app && cd my_app && flutter run
 ```
 
-## Mobile Best Practices
-- Verify environment before coding
-- Use simulator for rapid iteration
-- Test on real device before evolution
-- Consider app lifecycle and permissions
+**Hot reload:** Press `r` | **Hot restart:** Press `R`
+
+---
+
+## Mobile UI/UX Patterns
+
+### Touch Interactions
+- Tap, Long press, Swipe, Pinch, Drag, Pull to refresh
+- Minimum touch target: 44x44 pt (iOS), 48x48 dp (Android)
+
+### Navigation
+- Tab Navigation: Bottom tabs for primary sections
+- Stack Navigation: Push/pop for hierarchical content
+
+---
+
+## Mobile Requirements Additions
+
+### Platform Support
+```markdown
+iOS: Minimum iOS 15.0, iPhone 8+
+Android: Minimum SDK 24 (Android 7.0)
+```
+
+### Permissions
+Camera, Location, Notifications
+
+---
+
+## Vibe Coding Patterns
+
+### Screen-First
+Create visible screen immediately, add interaction, iterate
+
+### Hot Reload Workflow
+Make change → Save → See instantly → Adjust → Repeat
+**Target:** < 5 seconds per iteration
+
+### Platform Toggle
+```dart
+final isIOS = Platform.isIOS;
+final isAndroid = Platform.isAndroid;
+```
+
+---
+
+## Transition Triggers
+
+| Trigger | Threshold |
+|---------|-----------|
+| Navigation depth | > 5 levels |
+| State management | > 3 screens sharing state |
+| API integrations | > 3 endpoints |
+| Offline support | Any requirement |
+| App Store submission | Any public release |
+
+---
+
+## When to Use
+**Use for:** Native iOS/Android, Cross-platform mobile, Apps requiring device features
+**Consider other frameworks for:** Desktop, Web
 
 ---
 

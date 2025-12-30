@@ -1,41 +1,48 @@
 # Session Startup Instructions
-**Version:** v0.16.1
+**Version:** v0.17.0
+**Purpose:** Standard initialization procedure for AI assistant sessions
 
 ---
 
-## Rules Auto-Loading
-Rules in `.claude/rules/` load automatically:
-- `01-anti-hallucination.md` - Framework development rules
-- `02-github-workflow.md` - GitHub issue management
-- `03-session-startup.md` - Startup procedure
+## Rules Auto-Loading (v2.9+)
+Rules auto-load from `.claude/rules/`:
+| File | Content |
+|------|---------|
+| `01-anti-hallucination.md` | Framework development quality |
+| `02-github-workflow.md` | GitHub issue management |
+| `03-session-startup.md` | Startup procedure |
 
-No explicit file reads required at startup. Rules persist after compaction.
+---
 
 ## Startup Sequence
 
-### 1. Acknowledge the Date
-State date from environment. User can correct if needed.
+### 1. Acknowledge Date
+State date from environment, proceed with startup.
 
 ### 2. Read Framework Summary
-Load `Overview/Framework-Summary.md` for context (versions, counts, matrix).
+Load `Overview/Framework-Summary.md` for context (versions, counts, skills).
 
 ### 3. Confirm Initialization
-Report: Date, Framework version, Skill count, Specialists count, GitHub Workflow activation.
-Ask user what they would like to work on.
+Report: Date, Framework version, Skill count, Specialists count, GitHub Workflow status.
+Ask: What would you like to work on?
 
 ### 4. Check Open Releases
 ```bash
 gh pmu release list
 ```
-If no releases: `gh pmu release start --version "X.Y.Z"`
+If none: Suggest `gh pmu release start --version "X.Y.Z"`
+
+---
 
 ## Post-Compact Behavior
 Rules auto-reload. No re-reading required.
 
-## On-Demand Documentation
+---
 
-| When Working On | Load File |
-|-----------------|-----------|
+## On-Demand Loading
+
+| Working On | Load File |
+|------------|-----------|
 | IDPF frameworks | `Overview/Framework-Development.md` |
 | Testing frameworks | `Overview/Framework-Testing.md` |
 | System Instructions | `Overview/Framework-System-Instructions.md` |
@@ -46,4 +53,5 @@ Rules auto-reload. No re-reading required.
 | PRD work | `Assistant/Anti-Hallucination-Rules-for-PRD-Work.md` |
 
 ---
+
 **End of Session Startup Instructions**

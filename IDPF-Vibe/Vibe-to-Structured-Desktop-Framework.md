@@ -1,64 +1,154 @@
-# Vibe-to-Structured Framework (Desktop)
-**Version:** v0.16.1
+# Vibe-to-Structured Development Framework (Desktop)
+**Version:** v0.17.0
 **Type:** Desktop Application Specialization
 **Extends:** Vibe-to-Structured-Core-Framework.md
 
 ---
 
-## Platform Coverage
-- Windows, macOS, Linux desktop applications
-- CLI tools, GUI applications, system utilities
-- Cross-platform: Electron, Tauri, Qt
+## Purpose
+Specializes Core Framework for Windows, macOS, Linux desktop applications.
+**Evolution Options:** IDPF-Structured or IDPF-Agile
 
-## Initialization Questions
-- Primary target platform?
+---
+
+## Platform Coverage
+**Windows, macOS, Linux, Cross-platform (Electron, Tauri, Qt)**
+
+### Application Types
+CLI tools, GUI apps (WinForms, WPF, SwiftUI, GTK), System utilities, File processors
+
+---
+
+## Session Initialization Questions
+- Primary target platform? (Windows/macOS/Linux/Cross-platform)
 - Application type? (CLI/GUI/System utility)
 - User environment?
 - Language preference?
 
-## Platform-Specific Commands
+---
 
-### Windows
-- Paths: `E:\Projects\my-app\src\main.py`
-- Scripts: `.cmd` or `.bat` (NOT `.ps1`)
-- Test: `python src\main.py`
+## Windows Development
 
-### macOS
-- Paths: `/Users/username/Projects/my-app/`
-- Scripts: `.sh` bash scripts
-- Test: `python3 src/main.py`
+### Paths and Scripts
+- Use backslashes: `E:\Projects\my-app\src\main.py`
+- Environment: `%USERPROFILE%`, `%APPDATA%`, `%TEMP%`
+- Use `.cmd` or `.bat` scripts (NOT PowerShell)
 
-### Linux
-- Paths: `/home/username/projects/my-app/`
-- Scripts: `.sh` bash scripts
-- XDG directory specifications
-
-## Desktop Frameworks
-| Framework | Best For |
-|-----------|----------|
-| Electron | Web tech, large apps |
-| Tauri | Rust + Web, small bundle |
-| Qt | Native look, comprehensive |
-| tkinter | Python, quick prototypes |
-
-## Vibe Patterns
-1. **Window-First:** Create visible window immediately
-2. **Single-File:** Keep everything in one file during exploration
-3. **Rapid Feedback:** < 30 seconds per iteration cycle
-4. **Platform-Aware:** Quick platform detection for tweaks
-
-## Verification Pattern
+### Verification
 ```
-STEP 6: Run application
-STEP 7: Test window/CLI behavior
-STEP 8: Test interaction
-STEP 9: Report results
+cd E:\Projects\my-app
+python src\main.py --help
 ```
+
+---
+
+## macOS Development
+
+### Paths and Scripts
+- Use forward slashes: `/Users/username/Projects/my-app/`
+- Environment: `$HOME`, `$TMPDIR`
+- Use `.sh` bash scripts, make executable with `chmod +x`
+
+### Verification
+```bash
+cd ~/Projects/my-app
+python3 src/main.py --help
+```
+
+---
+
+## Linux Development
+
+### Paths and Scripts
+- Use forward slashes: `/home/username/projects/my-app/`
+- Environment: `$HOME`, `$XDG_CONFIG_HOME`
+- Follow XDG directory specs
+
+---
+
+## Cross-Platform Development
+
+### Frameworks
+| Framework | Description |
+|-----------|-------------|
+| Electron | JS/Node.js, web tech |
+| Tauri | Rust + Web, lightweight |
+| Qt | C++/Python, native look |
+| .NET MAUI | C#, cross-platform |
+
+### Path Handling
+```python
+import os
+from pathlib import Path
+data_path = os.path.join('data', 'input.txt')
+config = Path.home() / '.config' / 'myapp'
+```
+
+---
+
+## Desktop Verification Patterns
+
+### CLI
+```
+python src\main.py
+python src\main.py --input data\test.txt
+python src\main.py --input nonexistent.txt  # Error handling
+```
+
+### GUI
+- Does window appear?
+- Do controls render?
+- Click, type, check menus
+
+---
+
+## Electron Workflow
+```bash
+npm init -y && npm install electron --save-dev
+```
+- `main.js` (main process), `preload.js` (bridge), `index.html` (UI)
+- Use `contextBridge` for security
+
+## Tauri Workflow
+```bash
+npm create tauri-app@latest my-app
+```
+- Rust backend, web frontend
+- Smaller bundles than Electron
+
+---
+
+## Best Practices
+
+### Vibe Phase
+- Test in cmd.exe (Windows), Terminal (macOS/Linux)
+- Handle spaces in paths
+- Use pathlib for cross-platform
+
+### Evolution Point
+- Document platform requirements
+- Plan packaging per platform
+
+### Structured Phase
+- Platform-specific tests
+- Create installers
+
+---
 
 ## Packaging
-- Windows: PyInstaller → .exe, NSIS installer
-- macOS: py2app → .app, DMG
-- Linux: AppImage, .deb
+
+| Platform | Tool | Output |
+|----------|------|--------|
+| Windows | PyInstaller | .exe |
+| macOS | py2app | .app |
+| Linux | AppImage | .AppImage |
+| Cross | electron-builder | All platforms |
+
+---
+
+## When to Use
+**Use for:** CLI tools, GUI apps, System utilities, File processors, Cross-platform desktop
+**Consider other frameworks for:** Mobile, Web, Games
 
 ---
 

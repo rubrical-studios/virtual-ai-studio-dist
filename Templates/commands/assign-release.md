@@ -1,5 +1,5 @@
 ---
-version: v0.16.1
+version: v0.17.0
 allowed-tools: Bash, AskUserQuestion
 description: Assign issues to a release (project)
 ---
