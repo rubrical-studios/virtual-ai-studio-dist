@@ -8,6 +8,25 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [0.20.0] - 2025-12-31
+
+### Added
+- **Lifecycle Artifacts Implementation** (#647-#650) - Complete DAD-inspired lifecycle management:
+  - `/charter` command creates Inception/, Construction/, Transition/ directories
+  - Charter Enforcement validates scope at key checkpoints (Proposals, PRDs, Issues)
+  - Runtime Artifact Triggers offer documentation during development
+  - Inception Mode guides charter creation with dynamic questions
+- **`promote-to-prd` skill** - New skill transforms proposals into PRDs using Inception/ context. Replaces IDPF-PRD 4-phase workflow with single conversational flow.
+
+### Changed
+- **IDPF-PRD Deprecated** - Framework deprecated in favor of `promote-to-prd` skill. Existing PRD files continue to work; new work should use the skill.
+- **`extract-prd` skill** - Updated to generate Inception/ artifacts (CHARTER.md + Inception/ directory) instead of PRD worksheets.
+
+### Removed
+- **Guided PRD by Application Type Proposal** - Archived; superseded by Lifecycle Artifacts implementation.
+
+---
+
 ## [0.19.1] - 2025-12-31
 
 ### Removed
@@ -69,7 +88,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
-## [v0.19.1] - 2025-12-29
+## [v0.20.0] - 2025-12-29
 
 ### Breaking Changes
 - **Single-Specialist Model** (#588) - Users now select ONE Base Expert at install time instead of multiple specialists:

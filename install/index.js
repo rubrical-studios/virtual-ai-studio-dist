@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// **Version:** 0.19.1
+// **Version:** 0.18.0
 /**
  * IDPF Framework Installer - Main Entry Point
  * Unified cross-platform installer for Windows, macOS, and Linux
@@ -58,8 +58,8 @@ const {
 
 const {
   generateClaudeMd,
-  // generateSwitchRole removed in v0.19.1 - single specialist model
-  // generateAddRole removed in v0.19.1 - single specialist model
+  // generateSwitchRole removed in v0.20.0 - single specialist model
+  // generateAddRole removed in v0.20.0 - single specialist model
   generateGhPmuConfig,
   generateSettingsLocal,
   generatePrdReadme,
@@ -563,10 +563,10 @@ async function main() {
     divider();
     log();
 
-    // framework-config.json (using new v0.19.1+ schema - single specialist)
+    // framework-config.json (using new v0.20.0+ schema - single specialist)
     createOrUpdateConfig(projectDir, manifest, {
       processFramework,
-      domainSpecialist,  // v0.19.1: singular string instead of array
+      domainSpecialist,  // v0.20.0: singular string instead of array
       frameworkPath,
     });
     logSuccess('  ✓ framework-config.json');
@@ -627,6 +627,79 @@ async function main() {
       }
     }
 
+    // Lifecycle directories (DAD-aligned structure)
+    // Create Inception/, Construction/, Transition/ directories
+    const lifecycleDirs = [
+      'Inception',
+      'Construction/Test-Plans',
+      'Construction/Design-Decisions',
+      'Construction/Sprint-Retros',
+      'Construction/Tech-Debt',
+      'Transition',
+    ];
+
+    for (const dir of lifecycleDirs) {
+      const fullPath = path.join(projectDir, dir);
+      if (!fs.existsSync(fullPath)) {
+        fs.mkdirSync(fullPath, { recursive: true });
+      }
+    }
+    logSuccess('  ✓ Lifecycle directories (Inception/, Construction/, Transition/)');
+
+    // Copy lifecycle templates
+    const lifecycleTemplatesDir = path.join(frameworkPath, 'Templates', 'Lifecycle');
+    if (fs.existsSync(lifecycleTemplatesDir)) {
+      // Copy Inception templates
+      const inceptionSrc = path.join(lifecycleTemplatesDir, 'Inception');
+      const inceptionDest = path.join(projectDir, 'Inception');
+      if (fs.existsSync(inceptionSrc)) {
+        const inceptionFiles = fs.readdirSync(inceptionSrc).filter(f => f.endsWith('.md'));
+        for (const file of inceptionFiles) {
+          const destFile = path.join(inceptionDest, file);
+          if (!fs.existsSync(destFile)) {
+            fs.copyFileSync(path.join(inceptionSrc, file), destFile);
+          }
+        }
+        if (inceptionFiles.length > 0) {
+          logSuccess(`  ✓ Inception/ templates (${inceptionFiles.length} files)`);
+        }
+      }
+
+      // Copy Construction README
+      const constructionReadme = path.join(lifecycleTemplatesDir, 'Construction', 'README.md');
+      if (fs.existsSync(constructionReadme)) {
+        const destReadme = path.join(projectDir, 'Construction', 'README.md');
+        if (!fs.existsSync(destReadme)) {
+          fs.copyFileSync(constructionReadme, destReadme);
+          logSuccess('  ✓ Construction/README.md');
+        }
+      }
+
+      // Copy Transition templates
+      const transitionSrc = path.join(lifecycleTemplatesDir, 'Transition');
+      const transitionDest = path.join(projectDir, 'Transition');
+      if (fs.existsSync(transitionSrc)) {
+        const transitionFiles = fs.readdirSync(transitionSrc).filter(f => f.endsWith('.md'));
+        for (const file of transitionFiles) {
+          const destFile = path.join(transitionDest, file);
+          if (!fs.existsSync(destFile)) {
+            fs.copyFileSync(path.join(transitionSrc, file), destFile);
+          }
+        }
+        if (transitionFiles.length > 0) {
+          logSuccess(`  ✓ Transition/ templates (${transitionFiles.length} files)`);
+        }
+      }
+
+      // Copy CHARTER.md template (optional - only if it doesn't exist)
+      const charterTemplate = path.join(lifecycleTemplatesDir, 'CHARTER.md');
+      const charterDest = path.join(projectDir, 'CHARTER.md');
+      if (fs.existsSync(charterTemplate) && !fs.existsSync(charterDest)) {
+        fs.copyFileSync(charterTemplate, charterDest);
+        logSuccess('  ✓ CHARTER.md template');
+      }
+    }
+
     // CLAUDE.md
     generateClaudeMd(projectDir, frameworkPath, processFramework, domainSpecialist, domainSpecialist, projectInstructions);
     logSuccess('  ✓ CLAUDE.md');
@@ -646,7 +719,7 @@ async function main() {
       logSuccess('  ✓ .claude/rules/05-windows-shell.md (Windows only)');
     }
 
-    // switch-role and add-role commands removed in v0.19.1 - single specialist model
+    // switch-role and add-role commands removed in v0.20.0 - single specialist model
     // prepare-release/prepare-beta moved to deployWorkflowCommands in v0.17.1
 
     // Deploy core commands (always available, not tied to GitHub workflow)
@@ -725,7 +798,7 @@ async function main() {
 
     // Clean up orphaned files from previous installations
     const cleanupConfig = {
-      domainSpecialist,  // v0.19.1: singular
+      domainSpecialist,  // v0.20.0: singular
       enableGitHubWorkflow: enableGitHubWorkflow,
     };
     const cleanupResult = cleanupOrphanedFiles(projectDir, cleanupConfig);

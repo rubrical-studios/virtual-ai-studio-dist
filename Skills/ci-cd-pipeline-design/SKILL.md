@@ -5,7 +5,7 @@ license: Complete terms in LICENSE.txt
 ---
 
 # CI/CD Pipeline Design
-**Version:** v0.19.1
+**Version:** v0.20.0
 
 ## When to Use
 - Setting up CI/CD for new project
